@@ -13,6 +13,7 @@
         justify-content: center;
         align-items: center;
         height: 100vh;
+        width: 100vw;
         font-size: 2rem;
     }
 </style>
