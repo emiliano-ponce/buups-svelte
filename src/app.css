@@ -1,3 +1,29 @@
-@import 'tailwindcss/base';
-@import 'tailwindcss/components';
-@import 'tailwindcss/utilities';
+@import "tailwindcss";
+
+.dark {
+    --background: #1B1B1B;
+    --text-main: #c7f;
+    --text-secondary: #f70;
+}
+.light {
+    --background: #F9F9F9;
+}
+.red-alert {
+    --background: #F20;
+}
+
+@theme inline {
+    --color-background: var(--background);
+    
+    --color-main: var(--text-main);
+    --color-secondary: var(--text-secondary);
+    
+    --color-red: #c44;
+    --color-blue: #45f;
+    --color-blue-light: #89f;
+    --color-purple: #c9f;
+    --color-orange: #f80;
+    --color-tan: #f96;
+    --color-alert: #f20;
+    --color-gold: #fa0;
+}
