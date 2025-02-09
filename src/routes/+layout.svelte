@@ -1,8 +1,8 @@
 <script lang="ts">
-  import MainContent from '$lib/components/MainContent.svelte';
-  import MainNavigation from '$lib/components/MainNavigation.svelte';
-  import Sidebar from '$lib/components/Sidebar.svelte';
-  import '../app.css';
+  import MainContent from '$lib/components/MainContent.svelte'
+  import MainNavigation from '$lib/components/MainNavigation.svelte'
+  import Sidebar from '$lib/components/Sidebar.svelte'
+  import '../app.css'
 
   let { children } = $props();
 </script>

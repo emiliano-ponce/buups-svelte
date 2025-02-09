@@ -1,5 +1,5 @@
 <script>
-    let { data: reviews } = $props();
+    let { reviews } = $props();
 </script>
 
 <style>
