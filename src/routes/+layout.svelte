@@ -1,6 +1,34 @@
 <script lang="ts">
-	let { children } = $props();
-	import '../app.css';
+  import MainContent from '$lib/components/MainContent.svelte';
+  import MainNavigation from '$lib/components/MainNavigation.svelte';
+  import Sidebar from '$lib/components/Sidebar.svelte';
+  import '../app.css';
+
+  let { children } = $props();
 </script>
 
-{@render children()}
+<div class="app-wrapper">
+	<div class="sidebar-wrapper">
+		<Sidebar/>
+	</div>
+	<div class="main-wrapper">
+		<MainNavigation />
+		<MainContent>
+			{@render children()}
+		</MainContent>
+	</div>
+</div>
+
+<style>
+  .app-wrapper {
+    display: flex;
+    height: 100vh;
+    width: 100vw;
+  }
+  .main-wrapper {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+  }
+</style>
