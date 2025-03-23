@@ -26,6 +26,3 @@ vite.config.ts.timestamp-*
 
 # SQLite
 *.db
-
-# Drizzle
-drizzle/seed.ts

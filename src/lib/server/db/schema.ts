@@ -33,12 +33,11 @@ export type Session = typeof session.$inferSelect
 
 // Review
 export const review = sqliteTable('review', {
-    id: text().primaryKey(),
+    id: integer().primaryKey(),
     body: text().notNull(),
     score: integer().notNull(),
-    title: text(),
     authorId: text('author_id').notNull(),
-    mediaId: text('media_id').notNull(),
+    mediaId: integer('media_id').notNull(),
     createDt: integer('create_date', { mode: 'timestamp' })
         .notNull()
         .default(sql`(unixepoch())`),
@@ -48,7 +47,7 @@ export type Review = typeof review.$inferSelect
 export const reviewRelations = relations(review, ({ one }) => ({
     author: one(user, {
         fields: [review.authorId],
-        references: [user.id],
+        references: [user.id], 
     }),
     media: one(media, {
         fields: [review.mediaId],
@@ -58,18 +57,22 @@ export const reviewRelations = relations(review, ({ one }) => ({
 
 // End Review
 
+const tmdbStats = text('tmdb_stats', { mode: 'json' }).$type<{ voteCount: number; voteAvg: number }>().notNull();
+
 // Media
 export const media = sqliteTable(
     'media',
     {
-        id: text().primaryKey(),
+        id: integer().primaryKey(),
         title: text().notNull(),
-        summary: text().notNull(),
-        seriesId: text('series_id').notNull(),
+        overview: text().notNull(),
+        date: text().notNull(),
+        seriesId: integer('series_id').notNull(),
         type: text({ enum: ['movie', 'episode', 'special'] }).notNull(),
         imageUrl: text('image_url'),
         seasonId: integer('season_id'),
-        episode: integer(),
+        episode: integer().notNull(),
+        tmdbStats,
         createDt: integer('create_date', { mode: 'timestamp' })
             .notNull()
             .default(sql`(unixepoch())`),
@@ -103,11 +106,13 @@ export const mediaRelations = relations(media, ({ one, many }) => ({
 
 // Season
 export const season = sqliteTable('season', {
-    id: text().primaryKey(),
+    id: integer().primaryKey(),
+    title: text().notNull(),
     number: integer().notNull(),
     overview: text().notNull(),
     imageUrl: text('image_url'),
-    seriesId: text('series_id').notNull(),
+    seriesId: integer('series_id').notNull(),
+    tmdbStats,
 })
 export type Season = typeof season.$inferSelect
 
@@ -123,11 +128,12 @@ export const seasonRelations = relations(season, ({ one, many }) => ({
 
 // Series
 export const series = sqliteTable('series', {
-    id: text().primaryKey(),
-    name: text().notNull(),
-    acronym: text().notNull(),
+    id: integer().primaryKey(),
+    title: text().notNull(),
+    acronym: text({ enum: ['TOS', 'TAS', 'TNG', 'DS9', 'VOY', 'ENT', 'DIS', 'PIC', 'LWD', 'SNW'] }).notNull(),
     overview: text().notNull(),
     imageUrl: text('image_url'),
+    tmdbStats,
 })
 export type Series = typeof series.$inferSelect
 
