@@ -73,7 +73,6 @@
         "storybook": "^8.5.1",
         "svelte": "^5.0.0",
         "svelte-check": "^4.0.0",
-        "ts-node": "^10.9.2",
         "tsconfig-paths": "^4.2.0",
         "tsx": "^4.19.3",
         "typescript": "^5.0.0",

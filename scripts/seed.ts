@@ -112,7 +112,7 @@ async function main() {
 
                         eScore = parseInt(Emiliano, 10)
                         if (isNaN(eScore)) throw new Error(`Invalid Emiliano score: ${Emiliano}`)
-                    } catch (error) {
+                    } catch (error: any) {
                         console.error(`Error processing row ${i + 1} in sheet ${sheetName}:`, error.message)
                         continue // Skip this row instead of failing the whole transaction
                     }
@@ -189,7 +189,7 @@ async function main() {
                                         `Skipping duplicate review for Emiliano on ${sheetName} S:${seasonNum || 'N/A'} E:${episodeNum}`
                                     )
                                 }
-                            } catch (error) {
+                            } catch (error: any) {
                                 console.error(
                                     `Error processing episode ${epString} in row ${i + 1} in sheet ${sheetName}:`,
                                     error.message
@@ -204,7 +204,7 @@ async function main() {
                         if (i % 2 === 0) {
                             trekDate = getNextWeek(trekDate)
                         }
-                    } catch (error) {
+                    } catch (error: any) {
                         console.error(`Error inserting reviews for row ${i + 1} in sheet ${sheetName}:`, error.message)
                         continue // Skip this row instead of failing the whole transaction
                     }

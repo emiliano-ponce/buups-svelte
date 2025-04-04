@@ -1,4 +1,4 @@
-export const TMDBIds: Record<TrekSeries, TMDBIds> = { 
+export const TMDBIds: Record<TrekSeries, TMDBIds> = {
     TOS: {
         seriesId: 253,
         movieIds: [
@@ -11,11 +11,11 @@ export const TMDBIds: Record<TrekSeries, TMDBIds> = {
             13475, // Star Trek (2009)
             54138, // Star Trek Into Darkness
             188927, // Star Trek Beyond
-        ]
+        ],
     },
     TAS: {
         seriesId: 1992,
-        movieIds: []
+        movieIds: [],
     },
     TNG: {
         seriesId: 655,
@@ -24,34 +24,34 @@ export const TMDBIds: Record<TrekSeries, TMDBIds> = {
             199, // First Contact
             200, // Insurrection
             201, // Nemesis
-        ]
+        ],
     },
     DS9: {
         seriesId: 580,
-        movieIds: []
+        movieIds: [],
     },
     VOY: {
         seriesId: 1855,
-        movieIds: []
+        movieIds: [],
     },
     ENT: {
         seriesId: 314,
-        movieIds: []
+        movieIds: [],
     },
     DIS: {
         seriesId: 67198,
-        movieIds: []
+        movieIds: [],
     },
     PIC: {
         seriesId: 85949,
-        movieIds: []
+        movieIds: [],
     },
     LWD: {
         seriesId: 85948,
-        movieIds: []
+        movieIds: [],
     },
     SNW: {
         seriesId: 103516,
-        movieIds: []
+        movieIds: [],
     },
 }
