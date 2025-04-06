@@ -30,7 +30,7 @@ export const TMDBIds: Record<TrekSeries, TMDBIds> = {
         seriesId: 580,
         movieIds: [],
     },
-    VOY: {
+    "V'GER": {
         seriesId: 1855,
         movieIds: [],
     },

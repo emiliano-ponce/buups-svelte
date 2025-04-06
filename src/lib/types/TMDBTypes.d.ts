@@ -9,7 +9,7 @@ interface XLData {
     ENotes: string
 }
 
-type TrekSeries = 'TOS' | 'TAS' | 'TNG' | 'DS9' | 'VOY' | 'ENT' | 'DIS' | 'PIC' | 'LWD' | 'SNW'
+type TrekSeries = 'TOS' | 'TAS' | 'TNG' | 'DS9' | "V'GER" | 'ENT' | 'DIS' | 'PIC' | 'LWD' | 'SNW'
 
 type TrekSeriesData = { series: TMDBSeries; seasons: TMDBSeason[]; movies: TMDBMovie[] }
 type TrekSeriesMap = Record<TrekSeries, TrekSeriesData>

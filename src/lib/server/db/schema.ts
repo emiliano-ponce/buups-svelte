@@ -130,7 +130,7 @@ export const seasonRelations = relations(season, ({ one, many }) => ({
 export const series = sqliteTable('series', {
     id: integer().primaryKey(),
     title: text().notNull(),
-    acronym: text({ enum: ['TOS', 'TAS', 'TNG', 'DS9', 'VOY', 'ENT', 'DIS', 'PIC', 'LWD', 'SNW'] }).notNull(),
+    acronym: text({ enum: ['TOS', 'TAS', 'TNG', 'DS9', "V'GER", 'ENT', 'DIS', 'PIC', 'LWD', 'SNW'] }).notNull(),
     overview: text().notNull(),
     imageUrl: text('image_url'),
     tmdbStats,
