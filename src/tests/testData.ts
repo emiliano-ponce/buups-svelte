@@ -1,11 +1,10 @@
 import type { Review } from "$lib/server/db/schema";
 
 const testReview: Review = {
-    id: "test",
-    title: "Test review",
+    id: 1,
     authorId: "testUser",
     body: "What an amazing review!",
-    mediaId: "testMedia",
+    mediaId: 1,
     score: 7,
     createDt: new Date('2023-01-01T00:00:00.000Z')
 }
@@ -13,20 +12,18 @@ const testReview: Review = {
 const testReviews: Review[] = [
     testReview,
     {
-        id: "test2",
-        title: "Test review 2",
+        id: 2,
         authorId: "testUser",
         body: "What an amazing review 2!",
-        mediaId: "testMedia",
+        mediaId: 1,
         score: 7,
         createDt: new Date()
     },
     {
-        id: "test3",
-        title: "Test review 3",
+        id: 3,
         authorId: "testUser",
         body: "What an amazing review 3!",
-        mediaId: "testMedia",
+        mediaId: 1,
         score: 7,
         createDt: new Date()
     },
