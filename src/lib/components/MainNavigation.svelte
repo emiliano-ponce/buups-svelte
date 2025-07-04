@@ -1,5 +1,5 @@
 <script>
-  import FramePart from './FramePart.svelte';
+  import FramePart from './FramePart.svelte'
 </script>
 
 <div class="h[300px] flex w-full">
@@ -22,7 +22,4 @@
 </div>
 
 <style>
-  main {
-    border-top-left-radius: 60px;
-  }
 </style>

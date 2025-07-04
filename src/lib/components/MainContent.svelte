@@ -1,5 +1,5 @@
 <script>
-  import FramePart from './FramePart.svelte';
+  import FramePart from './FramePart.svelte'
   
   let { children } = $props();
   
@@ -23,7 +23,7 @@
       <FramePart variant="row" className="bg-blue" size="sm"></FramePart>
     </div>
     <div id="ContentWrap" class="bg-red flex-1">
-      <main class="min-h[200px] min-w[200] bg-background h-full overflow-auto p-2">
+      <main class="min-h[200px] min-w[200] bg-background h-full overflow-auto p-6">
         {@render children()}
       </main>
     </div>

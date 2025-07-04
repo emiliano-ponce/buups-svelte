@@ -23,7 +23,6 @@
   .app-wrapper {
     display: flex;
     height: 100vh;
-    width: 100vw;
   }
   .main-wrapper {
     display: flex;
