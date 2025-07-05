@@ -7,11 +7,11 @@
   let { children } = $props();
 </script>
 
-<div class="app-wrapper">
+<div class="flex">
 	<div class="sidebar-wrapper">
 		<Sidebar/>
 	</div>
-	<div class="main-wrapper">
+	<div class="flex flex-col gap-1">
 		<MainNavigation />
 		<MainContent>
 			{@render children()}
@@ -20,14 +20,4 @@
 </div>
 
 <style>
-  .app-wrapper {
-    display: flex;
-    height: 100vh;
-  }
-  .main-wrapper {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    width: 100%;
-  }
 </style>

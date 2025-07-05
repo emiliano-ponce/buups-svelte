@@ -1,21 +1,25 @@
 <script lang="ts">
-    import type { Snippet } from 'svelte';
+    import type { Snippet } from 'svelte'
+
+    type FrameSize = 'sm' | 'md' | 'lg' | 'flex'
 
     interface FramePartProps {
-        children?: Snippet;
-        className?: string;
-        variant: 'row' | 'column';
-        corner?: 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right';
+        children?: Snippet
+        className?: string
+        corner?: 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right'
         // Determines the width of vertical frames and the height of horizontal frames
-        size?: FrameSize;
+        size?: FrameSize
         // Determines the height of vertical frames and the width of horizontal frames
-        thickness?: 1 | 2 | 3;
+        thickness?: 1 | 2 | 3
     }
 
-    let { variant, corner, className, size = 'md', thickness = 2, children }: FramePartProps = $props();
-    let style = corner ? `border-${corner}-radius: 160px;` : '';
-
+    let { corner, className, size = 'md', thickness = 2, children }: FramePartProps = $props()
+    let style = corner ? `border-${corner}-radius: 160px;` : ''
 </script>
+
+<div class="frame-part {className} {size} thickness-{thickness}" {style}>
+    {@render children?.()}
+</div>
 
 <style>
     .frame-part {
@@ -46,25 +50,16 @@
         }
         &.flex {
             flex: 1;
-            &.row {
-                min-width: 40px;
-            }
+            min-width: 40px;
             &.column {
                 min-height: 40px;
             }
         }
-        &.row {
-            height: var(--row-height);
-            width: var(--row-width);
-        }
+        height: var(--row-height);
+        width: var(--row-width);
         &.column {
             height: var(--column-height);
             width: var(--column-width);
         }
-        
     }
 </style>
-
-<div class="frame-part {className} {variant} {size} thickness-{thickness}" style={style}>
-    {@render children?.()}
-</div>

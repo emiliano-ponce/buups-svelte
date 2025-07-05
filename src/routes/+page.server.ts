@@ -9,6 +9,25 @@ export async function load() {
     },
     orderBy: (reviews, { desc }) => [desc(reviews.createDt)]
   });
+
+  const groupedReviews = reviews.reduce<Map<string, typeof reviews>>((acc, review) => {
+    const { media } = review;
+    const { title } = media;
+    if (!acc.has(title)) {
+      acc.set(title, []);
+    }
+    acc.get(title)!.push(review);
+    return acc;
+  }, new Map());
+
+  // Convert to array of groups, preserving order
+  const orderedGroups = Array.from(groupedReviews.entries()).map(([title, reviews]) => ({
+    title,
+    reviews
+  }));
   
-  return { reviews }
+  return { reviews: orderedGroups };
 }
+
+export type PageData = Awaited<ReturnType<typeof load>>;
+export type GroupedReviews = PageData['reviews'];
