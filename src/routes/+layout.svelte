@@ -1,6 +1,7 @@
 <script lang="ts">
     import { makeCascade, type CascadeData } from '$lib/utils/cascadeHelper'
     import { onMount } from 'svelte'
+    import '../app.css'
     import '../classic.css'
 
     let { children } = $props();

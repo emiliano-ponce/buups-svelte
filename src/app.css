@@ -1,7 +1,7 @@
 @import 'tailwindcss';
 
 .dark {
-    --background: #1b1b1b;
+    --background: black;
     --text-main: #c7f;
     --text-secondary: #f70;
 }

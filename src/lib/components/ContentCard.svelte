@@ -1,61 +1,49 @@
 <script lang="ts">
     interface ContentCardProps {
-        title?: string;
-        subtitle?: string;
-        className?: string;
-        variant?: 'default' | 'primary' | 'secondary' | 'accent';
-        children?: any;
+        title?: string
+        subtitle?: string
+        className?: string
+        theme?: 'default' | 'primary' | 'secondary' | 'accent'
+        variant?: 'full' | 'left' | 'right'
+        children?: any
     }
 
-    let { 
-        title, 
-        subtitle, 
-        className = '', 
-        variant = 'default',
-        children 
-    }: ContentCardProps = $props();
+    let { title, subtitle, className = '', variant = 'full', theme = 'default', children }: ContentCardProps = $props()
 
-    // Color variants based on LCARS color scheme
-    const variants = {
-        default: {
-            frame: 'var(--african-violet)',
-            accent: 'var(--orange)',
-            bg: 'var(--background-color)'
-        },
-        primary: {
-            frame: 'var(--bluey)',
-            accent: 'var(--african-violet)',
-            bg: 'var(--background-color)'
-        },
-        secondary: {
-            frame: 'var(--orange)',
-            accent: 'var(--butterscotch)',
-            bg: 'var(--background-color)'
-        },
-        accent: {
-            frame: 'var(--red)',
-            accent: 'var(--african-violet)',
-            bg: 'var(--background-color)'
-        }
-    };
-
-    const currentVariant = variants[variant];
+    const themes = {
+        default: ['var(--bluey)', 'var(--african-violet)', 'var(--orange)', 'var(--butterscotch)', 'var(--red)'],
+    }
+    const themeValues: string[] = themes[theme]
 </script>
 
-<div class="content-card {className}" style="--frame-color: {currentVariant.frame}; --accent-color: {currentVariant.accent}">
-    {#if title || subtitle}
-        <div class="card-header">
-            {#if title}
-                <h3 class="card-title">{title}</h3>
-            {/if}
-            {#if subtitle}
-                <p class="card-subtitle">{subtitle}</p>
-            {/if}
+<div
+    class={`content-card ${className} variant-${variant}`}
+    style={`
+    --color-1: ${themeValues[0]};
+    --color-2: ${themeValues[1]};
+    --color-3: ${themeValues[2]};
+    --color-4: ${themeValues[3]};
+    --color-5: ${themeValues[4]};
+`}
+>
+    <div class="flex flex-row">
+        <div class="flex flex-col gap-1">
+            
+            <div class="l-bar-1"></div>
+            <div class="l-bar-2"></div>
+            <div class="bl-bar"></div>
         </div>
-    {/if}
-    
-    <div class="card-content">
-        {@render children?.()}
+        <div class="flex flex-col flex-1">
+            <div class="flex flex-row items-center gap-1">
+                <div class="t-bar-2"></div>
+                <h4 class="card-title">{title}</h4>
+                <div class="t-bar-1"></div>
+                <div class="t-bar-2"></div>
+            </div>
+            <div class="card-content">
+                {@render children?.()}
+            </div>
+        </div>
     </div>
 </div>
 
@@ -63,77 +51,101 @@
     .content-card {
         display: block;
         margin: 1.75rem auto;
-        width: fit-content;
-        max-width: 100%;
-        background: var(--frame-color);
-        border-radius: 25px 0 0 25px;
+        width: 100%;
+        max-width: 1440px;
+        border-radius: 25px;
         position: relative;
         padding: 1rem;
-        border: 2px solid var(--frame-color);
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
     }
-
-    .content-card::before {
-        content: '';
-        display: block;
-        width: 20px;
-        height: 20px;
-        background-color: black;
-        position: absolute;
-        right: 0;
-        top: 0;
-        border-radius: 0 25px 0 0;
+    .tl-bar {
+        height: 2rem;
+        background: var(--color-1);
+        border-top-left-radius: 25px;
+        width: 12rem;
     }
-
-    .content-card::after {
-        content: '';
-        display: block;
-        width: 20px;
-        height: 100%;
-        background-color: var(--accent-color);
-        position: absolute;
-        left: 0;
-        top: 0;
-        border-radius: 25px 0 0 25px;
+    .t-bar-1 {
+        height: 2rem;
+        background: var(--color-2);
+        flex: 1;
     }
-
-    .card-header {
-        margin-bottom: 1rem;
-        padding-bottom: 0.5rem;
-        border-bottom: 2px solid var(--accent-color);
+    .t-bar-2 {
+        height: 2rem;
+        background: var(--color-3);
+        flex: 1;
+    }
+    /* top left */
+    .l-bar-1 {
+        width: 1.5rem;
+        background: var(--color-3);
+        height: 4rem;
+        border-top-left-radius: 25px;
+        position: relative;
+        &::before {
+            content: '';
+            display: block;
+            width: 1.5rem;
+            height: 1.5rem;
+            background: linear-gradient(to bottom right, var(--color-3) 50%, var(--background) 50%);;
+            position: absolute;
+            top: 2rem;
+            left: 1.5rem;
+            z-index: 1;
+        }
+        &::after {
+            content: '';
+            display: block;
+            width: 1.5rem;
+            height: 1.5rem;
+            background-color: var(--background);
+            border-top-left-radius: 50%;
+            position: absolute;
+            top: 2rem;
+            left: 1.5rem;
+            z-index: 1;
+        }
+    }
+    .l-bar-2 {
+        width: 1.5rem;
+        background: var(--color-5);
+        flex: 1;
+    }
+    .bl-bar {
+        background: var(--color-1);
+        border-bottom-left-radius: 25px;
+        width: 1.5rem;
+        flex: 2;
     }
 
     .card-title {
-        margin: 0 0 0.5rem 0;
+        margin: 0;
         font-size: clamp(1.15rem, 1.05rem + 1.25vw, 1.875rem);
         font-weight: bold;
         color: white;
         text-transform: uppercase;
         text-align: right;
-        background-color: black;
-        padding: 0.25rem 0.5rem;
+        /* background-color: black; */
+        padding: 0 0.25rem;
         border-radius: 0 15px 15px 0;
         display: inline-block;
     }
 
     .card-subtitle {
-        margin: 0.5rem 0 0 0;
+        margin: 0;
         font-size: 0.875rem;
-        color: var(--accent-color);
+        color: var(--color-2);
         text-align: right;
         font-weight: bold;
-        background-color: rgba(0, 0, 0, 0.7);
-        padding: 0.25rem 0.5rem;
+        /* background-color: rgba(0, 0, 0, 0.7); */
+        padding: 0 0.25rem;
         border-radius: 0 10px 10px 0;
         display: inline-block;
     }
 
     .card-content {
-        background-color: black;
+        /* background-color: black; */
         padding: 1.5rem;
-        border-radius: 20px 0 0 20px;
-        margin-left: 20px;
-        color: var(--font-color);
+        border-radius: 20px;
+        color: var(--color-2);
         line-height: 1.6;
     }
 
@@ -159,7 +171,7 @@
         line-height: 1.2;
         text-transform: uppercase;
         text-box: trim-both cap alphabetic;
-        color: var(--accent-color);
+        color: var(--color-2);
     }
 
     .card-content :global(h1) {
@@ -196,7 +208,7 @@
         padding-left: 1rem;
         position: relative;
         text-box: trim-both cap alphabetic;
-        color: var(--accent-color);
+        color: var(--color-2);
         font-style: italic;
     }
 
@@ -205,7 +217,7 @@
         display: block;
         width: 4px;
         height: 100%;
-        background-color: var(--accent-color);
+        background-color: var(--color-2);
         border-radius: 2px;
         position: absolute;
         left: 0;
@@ -257,12 +269,24 @@
 
     @media (max-width: 525px) {
         .content-card {
-            border-radius: 15px 0 0 15px;
+            border-radius: 15px;
+        }
+
+        .content-card::before {
+            width: 15px;
+            height: 15px;
+            border-radius: 15px;
+        }
+
+        .content-card::after {
+            width: 15px;
+            border-radius: 0 15px 15px 0;
         }
 
         .card-content {
             margin-left: 10px;
             padding: 0.75rem;
+            border-radius: 15px;
         }
 
         .card-title {
