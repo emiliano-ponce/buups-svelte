@@ -1,5 +1,6 @@
 <script lang="ts">
     import type { GroupedReviews } from '../../routes/+page.server'
+    import ContentCard from './ContentCard.svelte'
 
     interface ReviewListProps {
         reviews: GroupedReviews
@@ -9,14 +10,12 @@
 
 <div class="review-list">
     {#each reviews as group}
-        <div class="media-group">
+        <ContentCard className="media-group">
             <h3>{group.title}</h3>
             {#each group.reviews as review}
-                <div class="review">
-                    <!-- Your review content -->
-                </div>
+                <div class="review"></div>
             {/each}
-        </div>
+        </ContentCard>
     {/each}
 </div>
 
