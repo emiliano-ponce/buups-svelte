@@ -156,7 +156,7 @@
 
 @media (max-width: 1300px) {
     :root {
-        font-size: 1.2rem;
+        font-size: 1rem;
         --sub-fonts: 0.9rem;
         --lfw: 180px;
         --nav-width: 180px;
@@ -213,11 +213,11 @@
     box-sizing: border-box;
 }
 
-* {
+/* * {
     margin: 0;
     padding: 0;
     font: inherit;
-}
+} */
 
 img {
     display: block;
@@ -1686,6 +1686,7 @@ nav button:nth-child(4) {
 .right-frame {
     flex: 1;
     position: relative;
+    min-width: 0;
 }
 
 .right-frame::before {
@@ -1716,7 +1717,7 @@ nav button:nth-child(4) {
 main {
     padding-top: 1.5rem;
     padding-bottom: 0.5rem;
-    padding-left: clamp(20px, 3vw, 50px);
+    padding-left: clamp(16px, 3vw, 50px);
 }
 
 main > *:first-child,
@@ -1752,7 +1753,6 @@ h1,
 h2,
 h3,
 h4 {
-    margin-block: 1.75rem;
     font-weight: normal;
     line-height: 1.2;
     text-transform: uppercase;
@@ -2828,7 +2828,7 @@ footer:has(.footer-frame) {
 
     .wrap {
         padding-left: 0;
-        padding-right: 0.25rem;
+        padding-right: 0;
     }
 
     .left-frame {

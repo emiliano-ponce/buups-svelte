@@ -26,4 +26,6 @@
     --color-tan: #f96;
     --color-alert: #f20;
     --color-gold: #fa0;
+
+    --mobile-breakpoint: 768px;
 }

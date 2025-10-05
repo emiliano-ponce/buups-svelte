@@ -1,5 +1,6 @@
 <script lang="ts">
     import { makeCascade, type CascadeData } from '$lib/utils/cascadeHelper'
+    import { getIsMobile, updateIsMobile } from '$lib/utils/global.svelte'
     import { onMount } from 'svelte'
     import '../app.css'
     import '../classic.css'
@@ -67,7 +68,13 @@
                 lcarsKeystroke.play()
             })
         })
+
+        updateIsMobile();
+        window.addEventListener('resize', updateIsMobile);
+        return () => window.removeEventListener('resize', updateIsMobile);
     })
+
+    const sysInfoText = $derived(getIsMobile() ? 'SYSTEM INFO' : 'SYSTEM INFORMATION');
 </script>
 
 <audio id="beep1" src="beep1.mp3" preload="auto"></audio>
@@ -79,7 +86,7 @@
     <div class="wrap">
         <div class="left-frame-top">
             <!-- Example button – keep the inline handler for simplicity -->
-            <button onclick={() => playSoundAndRedirect('beep2', '#')} class="panel-1-button"> SYSTEM INFORMATION </button>
+            <button onclick={() => playSoundAndRedirect('beep2', '#')} class="panel-1-button">{sysInfoText}</button>
             <div class="panel-2">02<span class="hop">-262000</span></div>
         </div>
 

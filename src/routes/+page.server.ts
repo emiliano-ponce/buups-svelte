@@ -31,3 +31,4 @@ export async function load() {
 
 export type PageData = Awaited<ReturnType<typeof load>>;
 export type GroupedReviews = PageData['reviews'];
+export type DisplayReview = GroupedReviews[number]['reviews'][number];
