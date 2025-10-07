@@ -1,28 +1,13 @@
 <script lang="ts">
     import { getIsMobile } from '$lib/utils/global.svelte'
-    import { onMount } from 'svelte'
-    import type { DisplayReview } from '../../routes/+page.server'
+    import type { ReviewWithRelations } from '../../routes/+page.server'
 
     interface ReviewProps {
-        review: DisplayReview
+        review: ReviewWithRelations
     }
     let { review }: ReviewProps = $props()
 
-    let expanded = $state(!getIsMobile())
-    let timeoutId
-    onMount(() => {
-        window.addEventListener('resize', () => {
-            clearTimeout(timeoutId)
-            timeoutId = setTimeout(() => {
-                if (!getIsMobile() && !expanded) {
-                    expanded = true
-                }
-            }, 100)
-        })
-        return () => {
-            window.removeEventListener('resize', () => {})
-        }
-    })
+    let expanded = $state(false)
 
     const scorePercentage = (review.score / 10) * 100
 </script>
@@ -37,7 +22,7 @@
             <span class="score-text">{review.score}</span>
         </div>
     </div>
-    <div class="review-body" class:expanded>
+    <div class={["review-body", { expanded: !getIsMobile() || expanded }]}>
         {review.body}
     </div>
     {#if getIsMobile()}

@@ -1,16 +1,18 @@
 <script lang="ts">
     import { getIsMobile } from '$lib/utils/global.svelte'
+    import type { Snippet } from 'svelte'
     import Bar from './Bar.svelte'
 
     interface ContentCardProps {
         title?: string
+        subtitle?: string | Snippet
         className?: string
         theme?: 'default' | 'primary' | 'secondary' | 'accent'
         variant?: 'full' | 'left' | 'right'
         children?: any
     }
 
-    let { title, className = '', variant = 'full', theme = 'default', children }: ContentCardProps = $props()
+    let { title, subtitle, className = '', variant = 'full', theme = 'default', children }: ContentCardProps = $props()
 
     const themes = {
         default: ['var(--bluey)', 'var(--african-violet)', 'var(--orange)', 'var(--butterscotch)', 'var(--red)'],
@@ -21,22 +23,24 @@
     const thicknessLg = getIsMobile() ? '2rem' : `${baseThickness * 2.5}rem`
 
     let fontSize = $state('1.5rem')
-    
+    let subtitleFontSize = $state('1rem')
+
     $effect(() => {
         if (title && getIsMobile()) {
             const titleLength = title.length
             if (titleLength > 25) {
                 fontSize = '0.875rem'
-            }
-            else if (titleLength > 20) {
+            } else if (titleLength > 20) {
                 fontSize = '1.15rem'
             } else if (titleLength > 15) {
                 fontSize = '1.175rem'
             } else {
                 fontSize = '1.5rem'
             }
+            subtitleFontSize = '0.75rem'
         } else {
             fontSize = '1.5rem'
+            subtitleFontSize = '1rem'
         }
     })
 
@@ -50,6 +54,10 @@
     function getColor(role: keyof typeof color): string {
         const idx = color[role]
         return themeValues[idx] ?? themeValues[0]
+    }
+
+    const isSnippet = (value: any): value is Snippet => {
+        return typeof value === 'function'
     }
 </script>
 
@@ -86,10 +94,27 @@
                 --size={getIsMobile() ? '2rem' : '5rem'}
                 orientation="horizontal"
             />
-            {#if title}
+            {#if title || subtitle}
                 <div class="card-title-wrapper">
-                    <h2 style={`font-size: ${fontSize}`} class="card-title-shim">{title}</h2>
-                    <h2 style={`font-size: ${fontSize}`} class="card-title">{title}</h2>
+                    {#if subtitle}
+                        <div class="card-subtitle-wrapper" style={`font-size: ${subtitleFontSize}`}>
+                            {#if typeof subtitle === 'string'}
+                                <h3 class="card-subtitle">{subtitle}</h3>
+                            {:else if isSnippet(subtitle)}
+                                {@render subtitle()}
+                            {/if}
+                        </div>
+                    {/if}
+                    {#if title}
+                        <h2 style={`font-size: ${fontSize}`} class="card-title-shim">{title}</h2>
+                        <h2 style={`font-size: ${fontSize}`} class="card-title">{title}</h2>
+                    {/if}
+                </div>
+                <div class="title-section">
+                    {#if title}
+                        <h2 style={`font-size: ${fontSize}`} class="card-title-shim">{title}</h2>
+                        <h2 style={`font-size: ${fontSize}`} class="card-title">{title}</h2>
+                    {/if}
                 </div>
             {/if}
             <Bar --thickness={thickness} --color={themeValues[1]} --flex="1" orientation="horizontal" />
@@ -153,6 +178,23 @@
             padding: 0.5rem;
             padding-right: 0;
         }
+    }
+
+    .card-subtitle-wrapper {
+        position: absolute;
+        bottom: 100%;
+        right: 0;
+        margin-bottom: 0.15rem;
+    }
+
+    .card-subtitle {
+        margin: 0;
+        font-weight: 600;
+        text-transform: uppercase;
+        text-align: right;
+        white-space: nowrap;
+        font-size: inherit;
+        color: white;
     }
 
     .card-title-wrapper {
