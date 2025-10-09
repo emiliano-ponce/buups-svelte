@@ -28,6 +28,7 @@
     --color-gold: #fa0;
 
     --mobile-breakpoint: 768px;
+    --max-width: 1440px;
 }
 
 body {
@@ -45,4 +46,9 @@ input {
     border-radius: 4px;
     font-size: 1rem;
     box-sizing: border-box;
+}
+
+.content {
+    max-width: var(--max-width);
+    margin: 0 auto;
 }

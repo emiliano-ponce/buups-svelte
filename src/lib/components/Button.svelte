@@ -1,9 +1,22 @@
 <script lang="ts">
+    import { playSound } from "$lib/utils/audioHelpers"
     import type { HTMLButtonAttributes } from "svelte/elements"
-    const { children, ...rest }: HTMLButtonAttributes = $props()
+    interface ButtonProps extends HTMLButtonAttributes {
+        sound?: string
+    }
+    const { children, sound, ...rest }: ButtonProps = $props()
+
+    const handleClick: HTMLButtonAttributes['onclick'] = (e) => {
+        if (sound) {
+            playSound(sound)
+        }
+        if (rest.onclick) {
+            rest.onclick(e)
+        }
+    }
 </script>
 
-<button {...rest} class={`button ${rest.class}`}>{@render children?.()}</button>
+<button {...rest} class={`button ${rest.class}`} onclick={handleClick}>{@render children?.()}</button>
 
 <style>
     .button {

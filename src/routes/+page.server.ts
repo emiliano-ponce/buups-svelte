@@ -30,7 +30,9 @@ export async function load({ locals, url }) {
         conditions.push(eq(media.seriesId, parseInt(seriesFilter)))
     }
 
-    if (seasonFilter && seriesFilter) {
+    if (seasonFilter === 'movie') {
+        conditions.push(eq(media.type, 'movie'))
+    } else if (seasonFilter && seriesFilter) {
         conditions.push(eq(media.seasonId, parseInt(seasonFilter)))
     }
 

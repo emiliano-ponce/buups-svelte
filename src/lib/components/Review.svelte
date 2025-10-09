@@ -9,7 +9,7 @@
 
     let expanded = $state(false)
 
-    const scorePercentage = (review.score / 10) * 100
+    const scorePercentage = $derived((review.score / 10) * 100)
 </script>
 
 <div class="review">
