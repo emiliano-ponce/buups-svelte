@@ -8,11 +8,18 @@
         subtitle?: string | Snippet
         className?: string
         theme?: 'default' | 'primary' | 'secondary' | 'accent'
-        variant?: 'full' | 'left' | 'right'
+        variant?: 'full' | 'left' | 'right' | 'sides'
         children?: any
     }
 
     let { title, subtitle, className = '', variant = 'full', theme = 'default', children }: ContentCardProps = $props()
+
+    const showSide = {
+        left: ['full', 'left', 'sides'].includes(variant),
+        right: ['full', 'right', 'sides'].includes(variant),
+        top: ['full', 'left', 'right'].includes(variant),
+        bottom: ['full', 'left', 'right'].includes(variant),
+    }
 
     const themes = {
         default: ['var(--bluey)', 'var(--african-violet)', 'var(--orange)', 'var(--butterscotch)', 'var(--red)'],
@@ -21,28 +28,6 @@
     const baseThickness = 1
     const thickness = getIsMobile() ? '0.75rem' : `${baseThickness}rem`
     const thicknessLg = getIsMobile() ? '2rem' : `${baseThickness * 2.5}rem`
-
-    let fontSize = $state('1.5rem')
-    let subtitleFontSize = $state('1rem')
-
-    $effect(() => {
-        if (title && getIsMobile()) {
-            const titleLength = title.length
-            if (titleLength > 25) {
-                fontSize = '0.875rem'
-            } else if (titleLength > 20) {
-                fontSize = '1.15rem'
-            } else if (titleLength > 15) {
-                fontSize = '1.175rem'
-            } else {
-                fontSize = '1.5rem'
-            }
-            subtitleFontSize = '0.75rem'
-        } else {
-            fontSize = '1.5rem'
-            subtitleFontSize = '1rem'
-        }
-    })
 
     const color = {
         topLeft: 0,
@@ -66,24 +51,26 @@
     style={`--bar-thickness: ${thickness}; --bar-thicknessLg: ${thicknessLg}`}
 >
     <!-- Left Column -->
-    <div class="flex flex-col gap-1">
-        <Bar
-            --thickness={thicknessLg}
-            --thickness2={thickness}
-            --size="5rem"
-            --color={getColor('topLeft')}
-            orientation="top-left"
-        />
-        <Bar --thickness={thicknessLg} --color={themeValues[4]} --flex="2" />
-        <Bar --thickness={thicknessLg} --color={themeValues[3]} --flex="1" />
-        <Bar
-            --thickness={thicknessLg}
-            --thickness2={thickness}
-            --size="3rem"
-            --color={getColor('bottomLeft')}
-            orientation="bottom-left"
-        />
-    </div>
+    {#if showSide.left}
+        <div class="flex flex-col gap-1">
+            <Bar
+                --thickness={thicknessLg}
+                --thickness2={thickness}
+                --size="5rem"
+                --color={getColor('topLeft')}
+                orientation="top-left"
+            />
+            <Bar --thickness={thicknessLg} --color={themeValues[4]} --flex="2" />
+            <Bar --thickness={thicknessLg} --color={themeValues[3]} --flex="1" />
+            <Bar
+                --thickness={thicknessLg}
+                --thickness2={thickness}
+                --size="3rem"
+                --color={getColor('bottomLeft')}
+                orientation="bottom-left"
+            />
+        </div>
+    {/if}
     <div class="flex flex-1 flex-col">
         <!-- Top Row -->
         <div class="flex flex-row items-center gap-1">
@@ -91,53 +78,84 @@
             <Bar
                 --thickness={thickness}
                 --color={getColor('topLeft')}
-                --size={getIsMobile() ? '2rem' : '5rem'}
+                --size={getIsMobile() ? '2.5rem' : '5rem'}
                 orientation="horizontal"
             />
             {#if title || subtitle}
                 <div class="card-title-wrapper">
-                    {#if subtitle}
-                        <div class="card-subtitle-wrapper" style={`font-size: ${subtitleFontSize}`}>
+                    <div class="title-shim">
+                        {#if subtitle}
                             {#if typeof subtitle === 'string'}
-                                <h3 class="card-subtitle">{subtitle}</h3>
+                                <h3 class="subtitle">{subtitle}</h3>
                             {:else if isSnippet(subtitle)}
-                                {@render subtitle()}
+                                <div class="subtitle">{@render subtitle()}</div>
                             {/if}
-                        </div>
-                    {/if}
-                    {#if title}
-                        <h2 style={`font-size: ${fontSize}`} class="card-title-shim">{title}</h2>
-                        <h2 style={`font-size: ${fontSize}`} class="card-title">{title}</h2>
-                    {/if}
-                </div>
-                <div class="title-section">
-                    {#if title}
-                        <h2 style={`font-size: ${fontSize}`} class="card-title-shim">{title}</h2>
-                        <h2 style={`font-size: ${fontSize}`} class="card-title">{title}</h2>
-                    {/if}
+                        {/if}
+                        {#if title}
+                            <h2 class="title">{title}</h2>
+                        {/if}
+                    </div>
+                    <div class="title-wrapper">
+                        {#if subtitle}
+                            {#if typeof subtitle === 'string'}
+                                <h3 class="subtitle">{subtitle}</h3>
+                            {:else if isSnippet(subtitle)}
+                                <div class="subtitle">{@render subtitle()}</div>
+                            {/if}
+                        {/if}
+                        {#if title}
+                            <h2 class="title">{title}</h2>
+                        {/if}
+                    </div>
                 </div>
             {/if}
-            <Bar --thickness={thickness} --color={themeValues[1]} --flex="1" orientation="horizontal" />
-            <Bar --thickness={thickness} --color={themeValues[0]} --flex="3" orientation="horizontal" />
+            {#if showSide.top}
+                <Bar --thickness={thickness} --color={themeValues[1]} --flex="1" orientation="horizontal" />
+                <Bar --thickness={thickness} --color={themeValues[0]} --flex="3" orientation="horizontal" />
+            {/if}
             {#if !getIsMobile()}
-                <Bar --thickness={thickness} --color={themeValues[3]} --flex="2" orientation="horizontal" />
+                {#if showSide.top}
+                    <Bar --thickness={thickness} --color={themeValues[3]} --flex="2" orientation="horizontal" />
+                {/if}
                 <!-- Last Bar must be the same color as top-right -->
-                <Bar --thickness={thickness} --color={getColor('topRight')} --flex="1" orientation="horizontal" />
+                <Bar
+                    --thickness={thickness}
+                    --color={getColor('topRight')}
+                    --flex={showSide.top ? '1' : 'unset'}
+                    --size={showSide.top ? 'unset' : '5rem'}
+                    className="ml-auto"
+                    orientation="horizontal"
+                />
             {/if}
         </div>
         <div class="card-content">
             {@render children?.()}
         </div>
         <!-- Bottom Row -->
-        <div class="mt-auto flex flex-row items-end gap-1">
+        <div class="flex flex-row items-end gap-1">
             <!-- First Bar must be the same color as bottom-left -->
-            <Bar --thickness={thickness} --color={getColor('bottomLeft')} --flex="1" orientation="horizontal" />
-            <Bar --thickness={thickness} --color={themeValues[4]} --flex="3" orientation="horizontal" />
+            <Bar
+                --thickness={thickness}
+                --color={getColor('bottomLeft')}
+                --flex={showSide.top ? '1' : 'unset'}
+                --size={showSide.top ? 'unset' : '5rem'}
+                orientation="horizontal"
+            />
+            {#if showSide.bottom}
+                <Bar --thickness={thickness} --color={themeValues[4]} --flex="3" orientation="horizontal" />
+            {/if}
             <!-- Last Bar must be the same color as bottom-right -->
-            <Bar --thickness={thickness} --color={getColor('bottomRight')} --flex="1" orientation="horizontal" />
+            <Bar
+                --thickness={thickness}
+                --color={getColor('bottomRight')}
+                --flex={showSide.top ? '1' : 'unset'}
+                --size={showSide.top ? 'unset' : '5rem'}
+                className="ml-auto"
+                orientation="horizontal"
+            />
         </div>
     </div>
-    {#if !getIsMobile()}
+    {#if !getIsMobile() && showSide.right}
         <!-- Right Column -->
         <div class="flex flex-col gap-1">
             <Bar
@@ -180,23 +198,6 @@
         }
     }
 
-    .card-subtitle-wrapper {
-        position: absolute;
-        bottom: 100%;
-        right: 0;
-        margin-bottom: 0.15rem;
-    }
-
-    .card-subtitle {
-        margin: 0;
-        font-weight: 600;
-        text-transform: uppercase;
-        text-align: right;
-        white-space: nowrap;
-        font-size: inherit;
-        color: white;
-    }
-
     .card-title-wrapper {
         padding: 0 0.25rem;
         display: inline-block;
@@ -204,28 +205,58 @@
         height: var(--bar-thickness);
     }
 
-    .card-title-shim,
-    .card-title {
-        margin: 0;
-        font-weight: bold;
-        text-transform: uppercase;
-        text-align: right;
-        white-space: nowrap;
+    .title-shim,
+    .title-wrapper {
+        display: flex;
+        gap: 8px;
+        align-items: center;
     }
 
-    .card-title-shim {
-        color: transparent;
+    .title-shim {
+        opacity: 0;
+        pointer-events: none;
     }
 
-    .card-title {
-        color: white;
+    .title-wrapper {
         position: absolute;
-        bottom: 0;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+
+    .title {
+        font-size: 1.75rem;
+        color: white;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+    }
+
+    .subtitle {
+        font-size: 1.25rem;
+        color: var(--link-color);
+    }
+
+    @media (max-width: 768px) {
+        .title-shim,
+        .title-wrapper {
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+        }
+        .title {
+            font-size: 1.25rem;
+            max-width: 185px;
+        }
+        .subtitle {
+            font-size: 0.875rem;
+        }
     }
 
     .card-content {
         padding: 1.5rem var(--bar-thicknessLg, 1.5rem);
         border-radius: 20px;
         line-height: 1.6;
+        margin: auto 0;
     }
 </style>

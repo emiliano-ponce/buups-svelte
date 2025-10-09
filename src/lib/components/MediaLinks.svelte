@@ -8,7 +8,7 @@
 
 <div class="media-links">
     {#each breadcrumbs as crumb, i}
-        {#if i > 0}<span class="separator">›</span>{/if}
+        {#if i > 0}<span class="separator"></span>{/if}
         <a href={crumb.href}>{crumb.label}</a>
     {/each}
 </div>
@@ -24,22 +24,23 @@
         margin: 0;
     }
 
-    .media-links {
-        color: rgba(255, 255, 255, 0.7);
-    }
-
     .media-links a {
-        color: rgba(255, 255, 255, 0.7);
+        color: inherit;
         text-decoration: none;
         transition: color 0.2s ease;
     }
 
     .media-links a:hover {
-        color: white;
+        color: inherit;
     }
 
     .separator {
-        margin: 0 0.35rem;
-        color: rgba(255, 255, 255, 0.5);
+        vertical-align: middle;
+        margin: 0 0.25em;
+        height: 0.5em;
+        width: 0.5em;
+        background-color: var(--link-color);
+        border-radius: 100%;
+        display: inline-block;
     }
 </style>

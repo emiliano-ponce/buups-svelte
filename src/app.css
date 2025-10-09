@@ -29,3 +29,20 @@
 
     --mobile-breakpoint: 768px;
 }
+
+body {
+    width: 100%;
+}
+
+button,
+a {
+    cursor: pointer;
+}
+
+input {
+    padding: 0.5rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 1rem;
+    box-sizing: border-box;
+}

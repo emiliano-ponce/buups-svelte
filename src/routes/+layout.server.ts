@@ -1,2 +1,8 @@
-// -- https://svelte.dev/docs/kit/load#Layout-data --
-// load data and read/write cookies for all pages under this layout
+import type { LayoutServerLoad } from './$types'
+
+export const load: LayoutServerLoad = async ({ locals }) => {
+    return {
+        user: locals.user,
+        session: locals.session,
+    }
+}

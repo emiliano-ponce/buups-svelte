@@ -14,7 +14,9 @@
 
 <div class="review">
     <div class="review-header">
-        <h4 class="author">{review.author.username}</h4>
+        <a class="author" href="/users/{review.author.username}">
+            <h4>{review.author.username}</h4>
+        </a>
         <div class="score-container">
             <div class="score-bar">
                 <div class="score-fill" style="width: {scorePercentage}%"></div>
@@ -35,12 +37,10 @@
 <style>
     .review {
         padding: 0.5rem 0;
-        border-bottom: 1px solid #e5e7eb;
     }
 
     .review:last-child {
         padding-bottom: 0;
-        border-bottom: none;
     }
 
     .review-header {
@@ -52,7 +52,7 @@
     }
 
     .author {
-        color: var(--banner-color);
+        text-decoration: none;
     }
 
     .score-container {

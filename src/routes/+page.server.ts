@@ -1,19 +1,90 @@
-// page.server.ts
 import { db } from '$lib/server/db'
+import { media, review, season, series, user } from '$lib/server/db/schema'
+import { redirect } from '@sveltejs/kit'
+import { and, desc, eq, gte, SQL, sql } from 'drizzle-orm'
+import { lte } from 'drizzle-orm/mysql-core/expressions'
 
-export async function load() {
-    const reviews = await db.query.review.findMany({
-        with: {
-            author: true,
-            media: {
-                with: {
-                    series: true,
-                    season: true,
+export async function load({ locals, url }) {
+    if (!locals.user) {
+        throw redirect(303, '/login')
+    }
+
+    const seriesFilter = url.searchParams.get('series')
+    const seasonFilter = url.searchParams.get('season')
+    const scoreFilter = url.searchParams.get('score')
+    const titleSearch = url.searchParams.get('title')
+
+    const allSeries = await db.query.series.findMany()
+
+    let availableSeasons: (typeof season.$inferSelect)[] = []
+    if (seriesFilter) {
+        availableSeasons = await db.query.season.findMany({
+            where: eq(season.seriesId, parseInt(seriesFilter)),
+            orderBy: (season, { asc }) => [asc(season.number)],
+        })
+    }
+
+    const conditions: SQL<unknown>[] = []
+
+    if (seriesFilter) {
+        conditions.push(eq(media.seriesId, parseInt(seriesFilter)))
+    }
+
+    if (seasonFilter && seriesFilter) {
+        conditions.push(eq(media.seasonId, parseInt(seasonFilter)))
+    }
+
+    if (scoreFilter) {
+        let compareFn = eq
+        if (scoreFilter === '1') {
+            compareFn = lte
+        } else if (scoreFilter === '10') {
+            compareFn = gte
+        }
+        conditions.push(compareFn(review.score, parseInt(scoreFilter)))
+    }
+
+    if (titleSearch && titleSearch.trim()) {
+        conditions.push(sql`${media.title} LIKE ${`%${titleSearch.trim()}%`}`)
+    }
+
+    // Query reviews with filters
+    const reviewResults = await db
+        .select({
+            review: review,
+            author: user,
+            media: media,
+        })
+        .from(review)
+        .innerJoin(user, eq(review.authorId, user.id))
+        .innerJoin(media, eq(review.mediaId, media.id))
+        .where(conditions.length > 0 ? and(...conditions) : undefined)
+        .orderBy(desc(review.createDt))
+
+    const reviews = await Promise.all(
+        reviewResults.map(async row => {
+            const [mediaSeries, mediaSeason] = await Promise.all([
+                db.query.series.findFirst({
+                    where: eq(series.id, row.media.seriesId),
+                }),
+                row.media.seasonId
+                    ? db.query.season.findFirst({
+                          where: eq(season.id, row.media.seasonId),
+                      })
+                    : null,
+            ])
+
+            return {
+                ...row.review,
+                author: row.author,
+                media: {
+                    ...row.media,
+                    series: mediaSeries!,
+                    season: mediaSeason,
                 },
-            },
-        },
-        orderBy: (reviews, { desc }) => [desc(reviews.createDt)],
-    })
+            }
+        })
+    )
 
     const groupedReviews = reviews.reduce<Map<string, typeof reviews>>((acc, review) => {
         const { media } = review
@@ -30,7 +101,17 @@ export async function load() {
         reviews,
     }))
 
-    return { reviews: orderedGroups }
+    return {
+        reviews: orderedGroups,
+        filters: {
+            series: seriesFilter,
+            season: seasonFilter,
+            score: scoreFilter,
+            title: titleSearch,
+        },
+        allSeries,
+        availableSeasons,
+    }
 }
 
 export type PageData = Awaited<ReturnType<typeof load>>

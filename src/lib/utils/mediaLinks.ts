@@ -23,8 +23,8 @@ export function getMediaBreadcrumbs(media: MediaWithRelations) {
     const crumbs = [{ label: series.acronym as string, href: `/series/${series.acronym}` }]
 
     if (type === 'episode' && season) {
-        crumbs.push({ label: season.number.toString(), href: `/series/${series.acronym}/season/${season.number}` })
-        crumbs.push({ label: episode.toString(), href: `/series/${series.acronym}/season/${season.number}/episode/${episode}` })
+        crumbs.push({ label: `S${season.number}`, href: `/series/${series.acronym}/season/${season.number}` })
+        crumbs.push({ label: `EP${episode}`, href: `/series/${series.acronym}/season/${season.number}/episode/${episode}` })
     }
 
     if (type === 'movie' || type === 'special') {

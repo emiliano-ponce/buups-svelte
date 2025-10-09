@@ -20,13 +20,22 @@
             {#snippet subtitle()}
                 <MediaLinks {breadcrumbs} />
             {/snippet}
-            
-            {#each group.reviews as review}
+            <span class="overview">
+                {firstMedia.overview}
+            </span>
+            <hr class="lcars-bar" />
+            {#each group.reviews as review, index}
                 <Review {review} />
+                {#if index < group.reviews.length - 1}
+                    <hr class="lcars-bar" />
+                {/if}
             {/each}
         </ContentCard>
     {/each}
 </div>
 
 <style>
+    .overview {
+        color: var(--banner-color);
+    }
 </style>
