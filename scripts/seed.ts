@@ -1,3 +1,4 @@
+import { hashPassword } from '$lib/server/password'
 import Database from 'better-sqlite3'
 import * as dotenv from 'dotenv'
 import { drizzle } from 'drizzle-orm/better-sqlite3'
@@ -36,13 +37,13 @@ async function main() {
             let jUser = await getOrCreateUser(db, {
                 username: 'jars',
                 email: 'jrae.seitz@gmail.com',
-                passwordHash: 'test',
+                passwordHash: hashPassword('test'),
             })
 
             let eUser = await getOrCreateUser(db, {
                 username: 'Emiliano',
                 email: 'wumbo10@proton.me',
-                passwordHash: 'test',
+                passwordHash: hashPassword('test'),
             })
 
             let trekDate = new Date('2020-11-04T00:00:00') // November 4, 2020 - official star trek night day
