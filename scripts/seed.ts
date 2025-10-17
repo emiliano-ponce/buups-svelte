@@ -22,7 +22,7 @@ async function main() {
 
         console.info('Importing reviews from Google Sheets')
         const sheets = google.sheets({ version: 'v4', auth: process.env.GOOGLE_SHEETS_KEY })
-        const spreadsheetId = '1wDuQVI1hvNuV50294zj8vgtdwyODObLNdjt7bw8xx-U'
+        const spreadsheetId = process.env.SPREADSHEET_ID
         const spreadsheetData = await sheets.spreadsheets.get({
             spreadsheetId,
         })
@@ -105,7 +105,7 @@ async function main() {
                     try {
                         if (!isMovie && Season) {
                             seasonNum = parseInt(Season, 10)
-                            if (isNaN(seasonNum)) throw new Error(`Invalid movie number: ${Season}`)
+                            if (isNaN(seasonNum)) throw new Error(`Invalid season number: ${Season}`)
                         }
 
                         jScore = parseInt(Jasmine, 10)

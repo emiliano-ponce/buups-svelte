@@ -72,12 +72,14 @@
     })
 
     const sysInfoText = $derived(getIsMobile() ? 'SYSTEM INFO' : 'SYSTEM INFORMATION')
+    // const playBgm = $derived(data.user ? true : false)
 </script>
 
 <audio id="beep1" src="beep1.mp3" preload="auto"></audio>
 <audio id="beep2" src="beep2.mp3" preload="auto"></audio>
 <audio id="beep3" src="beep3.mp3" preload="auto"></audio>
 <audio id="beep4" src="beep4.mp3" preload="auto"></audio>
+<!-- <audio id="bgm" src="tos_bridge_9.mp3" preload="auto" loop volume={0.65} autoplay={playBgm}></audio> -->
 
 <div class="wrap">
     <div class="left-frame-top">

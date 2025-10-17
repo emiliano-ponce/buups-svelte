@@ -50,7 +50,6 @@ export async function load({ locals, url }) {
         conditions.push(sql`${media.title} LIKE ${`%${titleSearch.trim()}%`}`)
     }
 
-    // Query reviews with filters
     const reviewResults = await db
         .select({
             review: review,
@@ -61,7 +60,7 @@ export async function load({ locals, url }) {
         .innerJoin(user, eq(review.authorId, user.id))
         .innerJoin(media, eq(review.mediaId, media.id))
         .where(conditions.length > 0 ? and(...conditions) : undefined)
-        .orderBy(desc(review.createDt))
+        .orderBy(desc(review.createDt), desc(media.id))
 
     const reviews = await Promise.all(
         reviewResults.map(async row => {

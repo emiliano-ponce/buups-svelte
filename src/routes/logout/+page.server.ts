@@ -9,6 +9,6 @@ export const actions: Actions = {
             deleteSessionTokenCookie(event)
         }
 
-        throw redirect(303, '/login')
+        redirect(303, '/login')
     },
 }

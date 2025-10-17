@@ -38,6 +38,6 @@ export const actions: Actions = {
         const session = await createSession(token, existingUser.id)
         setSessionTokenCookie(event, token, session.expiresAt)
 
-        throw redirect(303, '/')
+        redirect(303, '/')
     },
 }

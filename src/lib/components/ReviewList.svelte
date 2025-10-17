@@ -15,14 +15,17 @@
     {#each reviews as group}
         {@const firstMedia = group.reviews[0].media}
         {@const breadcrumbs = getMediaBreadcrumbs(firstMedia)}
-        
+
         <ContentCard title={group.title}>
             {#snippet subtitle()}
                 <MediaLinks {breadcrumbs} />
             {/snippet}
-            <span class="overview">
-                {firstMedia.overview}
-            </span>
+            <div class="flex gap-2">
+                <img loading="lazy" src={firstMedia.imageUrl} alt={firstMedia.title} class="ep-image" />
+                <span class="overview">
+                    {firstMedia.overview}
+                </span>
+            </div>
             <hr class="lcars-bar" />
             {#each group.reviews as review, index}
                 <Review {review} />
@@ -35,6 +38,13 @@
 </div>
 
 <style>
+    .ep-image {
+        display: block;
+        margin: auto 0;
+        width: 200px;
+        height: 112px;
+        object-fit: cover;
+    }
     .overview {
         color: var(--banner-color);
     }
