@@ -36,6 +36,13 @@ export async function load({ locals, url }) {
         conditions.push(eq(media.seasonId, parseInt(seasonFilter)))
     }
 
+    if (titleSearch && titleSearch.trim()) {
+        conditions.push(sql`${media.title} LIKE ${`%${titleSearch.trim()}%`}`)
+    }
+
+    // Subquery to get media IDs that have at least one review meeting the score condition
+    let mediaIdSubquery: SQL<unknown> | undefined
+
     if (scoreFilter) {
         let compareFn = eq
         if (scoreFilter === '1') {
@@ -43,11 +50,19 @@ export async function load({ locals, url }) {
         } else if (scoreFilter === '10') {
             compareFn = gte
         }
-        conditions.push(compareFn(review.score, parseInt(scoreFilter)))
+
+        const subqueryConditions: SQL<unknown>[] = [compareFn(review.score, parseInt(scoreFilter))]
+
+        mediaIdSubquery = sql`${review.mediaId} IN (
+            SELECT DISTINCT ${review.mediaId}
+            FROM ${review}
+            WHERE ${and(...subqueryConditions)}
+        )`
     }
 
-    if (titleSearch && titleSearch.trim()) {
-        conditions.push(sql`${media.title} LIKE ${`%${titleSearch.trim()}%`}`)
+    const allConditions = [...conditions]
+    if (mediaIdSubquery) {
+        allConditions.push(mediaIdSubquery)
     }
 
     const reviewResults = await db
@@ -59,7 +74,7 @@ export async function load({ locals, url }) {
         .from(review)
         .innerJoin(user, eq(review.authorId, user.id))
         .innerJoin(media, eq(review.mediaId, media.id))
-        .where(conditions.length > 0 ? and(...conditions) : undefined)
+        .where(allConditions.length > 0 ? and(...allConditions) : undefined)
         .orderBy(desc(review.createDt), desc(media.id))
 
     const reviews = await Promise.all(
@@ -87,18 +102,18 @@ export async function load({ locals, url }) {
         })
     )
 
-    const groupedReviews = reviews.reduce<Map<string, typeof reviews>>((acc, review) => {
-        const { media } = review
-        const { title } = media
-        if (!acc.has(title)) {
-            acc.set(title, [])
+    const groupedReviews = reviews.reduce<Map<number, typeof reviews>>((acc, review) => {
+        const mediaId = review.media.id
+        if (!acc.has(mediaId)) {
+            acc.set(mediaId, [])
         }
-        acc.get(title)!.push(review)
+        acc.get(mediaId)!.push(review)
         return acc
     }, new Map())
 
-    const orderedGroups = Array.from(groupedReviews.entries()).map(([title, reviews]) => ({
-        title,
+    const orderedGroups = Array.from(groupedReviews.entries()).map(([mediaId, reviews]) => ({
+        mediaId,
+        title: reviews[0].media.title,
         reviews,
     }))
 
