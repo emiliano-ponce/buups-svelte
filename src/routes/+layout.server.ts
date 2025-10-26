@@ -19,7 +19,7 @@ export const load: LayoutServerLoad = async ({ locals }) => {
 
     const latestReview = await db.query.review.findFirst({
         where: eq(review.authorId, locals.user.id),
-        orderBy: desc(review.createDt),
+        orderBy: [desc(review.createDt), desc(media.id)],
     })
 
     let nextMedia: Media | undefined
