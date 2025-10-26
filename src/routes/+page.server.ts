@@ -4,25 +4,15 @@ import { redirect } from '@sveltejs/kit'
 import { and, desc, eq, gte, SQL, sql } from 'drizzle-orm'
 import { lte } from 'drizzle-orm/mysql-core/expressions'
 
-export async function load({ locals, url }) {
+export async function load({ locals, url, parent }) {
     if (!locals.user) {
         throw redirect(303, '/login')
     }
 
-    const seriesFilter = url.searchParams.get('series')
-    const seasonFilter = url.searchParams.get('season')
-    const scoreFilter = url.searchParams.get('score')
-    const titleSearch = url.searchParams.get('title')
-
-    const allSeries = await db.query.series.findMany()
-
-    let availableSeasons: (typeof season.$inferSelect)[] = []
-    if (seriesFilter) {
-        availableSeasons = await db.query.season.findMany({
-            where: eq(season.seriesId, parseInt(seriesFilter)),
-            orderBy: (season, { asc }) => [asc(season.number)],
-        })
-    }
+    const seriesFilter = url.searchParams.get('series') ?? ''
+    const seasonFilter = url.searchParams.get('season') ?? ''
+    const scoreFilter = url.searchParams.get('score') ?? ''
+    const titleSearch = url.searchParams.get('title') ?? ''
 
     const conditions: SQL<unknown>[] = []
 
@@ -40,7 +30,6 @@ export async function load({ locals, url }) {
         conditions.push(sql`${media.title} LIKE ${`%${titleSearch.trim()}%`}`)
     }
 
-    // Subquery to get media IDs that have at least one review meeting the score condition
     let mediaIdSubquery: SQL<unknown> | undefined
 
     if (scoreFilter) {
@@ -60,9 +49,8 @@ export async function load({ locals, url }) {
         )`
     }
 
-    const allConditions = [...conditions]
     if (mediaIdSubquery) {
-        allConditions.push(mediaIdSubquery)
+        conditions.push(mediaIdSubquery)
     }
 
     const reviewResults = await db
@@ -74,7 +62,7 @@ export async function load({ locals, url }) {
         .from(review)
         .innerJoin(user, eq(review.authorId, user.id))
         .innerJoin(media, eq(review.mediaId, media.id))
-        .where(allConditions.length > 0 ? and(...allConditions) : undefined)
+        .where(conditions.length > 0 ? and(...conditions) : undefined)
         .orderBy(desc(review.createDt), desc(media.id))
 
     const reviews = await Promise.all(
@@ -125,8 +113,6 @@ export async function load({ locals, url }) {
             score: scoreFilter,
             title: titleSearch,
         },
-        allSeries,
-        availableSeasons,
     }
 }
 
