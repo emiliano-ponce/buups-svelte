@@ -15,6 +15,8 @@
     let cascade: CascadeData = $state([])
     let topBtn: HTMLButtonElement | null = null
     let lcarsKeystroke: HTMLAudioElement | null = null
+    let showLeftPanel = $state(true)
+    let viewportWidth = $state(typeof window !== 'undefined' ? window.innerWidth : 1200)
 
     function scrollFunction() {
         if (!topBtn) return
@@ -30,13 +32,23 @@
         document.documentElement.scrollTop = 0 // Chrome, Firefox, IE, Edge
     }
 
-    function goToAnchor(anchorId: string) {
-        window.location.hash = anchorId
+    function handleReviewButtonClick() {
+        const contentWidth = viewportWidth - 500
+        if (contentWidth < 1100) {
+            playSoundAndRedirect('beep2', '/review')
+        } else {
+            showLeftPanel = !showLeftPanel
+        }
+    }
+
+    function handleResize() {
+        viewportWidth = window.innerWidth
+        updateIsMobile()
     }
 
     onMount(() => {
         cascade = makeCascade(24, 9)
-        // Touch‑start listener (keeps the page from “ghost‑click” on mobile)
+        // Touch‑start listener (keeps the page from "ghost‑click" on mobile)
         document.addEventListener('touchstart', () => {}, false)
 
         // Scroll handling
@@ -68,11 +80,12 @@
         })
 
         updateIsMobile()
-        window.addEventListener('resize', updateIsMobile)
-        return () => window.removeEventListener('resize', updateIsMobile)
+        window.addEventListener('resize', handleResize)
+        return () => window.removeEventListener('resize', handleResize)
     })
 
     const sysInfoText = $derived(getIsMobile() ? 'SYSTEM INFO' : 'SYSTEM INFORMATION')
+    const shouldHideLeftPanel = $derived(viewportWidth - 500 < 1100 || !showLeftPanel)
     // const playBgm = $derived(data.user ? true : false)
 </script>
 
@@ -83,14 +96,15 @@
 <!-- <audio id="bgm" src="tos_bridge_9.mp3" preload="auto" loop volume={0.65} autoplay={playBgm}></audio> -->
 
 <div class="flex">
-    <div class="left-panel">
+    <div class="left-panel sticky top-2 h-screen overflow-y-auto transition-all duration-300" 
+         style="min-width: {shouldHideLeftPanel ? '0' : '500px'}; opacity: {shouldHideLeftPanel ? '0' : '1'}; flex: {shouldHideLeftPanel ? '0' : '1 0 500px'};">
         <ReviewForm 
             media={data.nextMedia}
             user={data.user}
             allSeries={data.allSeries}
         />
     </div>
-    <div class="min-w-0">
+    <div style="min-width: 1100px; flex: 1 1 1100px;">
         <div class="wrap">
             <div class="left-frame-top">
                 <!-- Example button – keep the inline handler for simplicity -->
@@ -117,8 +131,10 @@
                             --button-color="var(--african-violet)"
                             onclick={() => playSoundAndRedirect('beep2', '/')}>Home</Button
                         >
-                        <Button --button-color="var(--butterscotch)" onclick={() => playSoundAndRedirect('beep2', '#')}
-                            >Series</Button
+                        <Button 
+                            --button-color="var(--butterscotch)" 
+                            onclick={handleReviewButtonClick}
+                        >Review</Button
                         >
                         <Button --button-color="var(--orange)" onclick={() => playSoundAndRedirect('beep2', '#')}
                             >Stats</Button

@@ -10,9 +10,10 @@
         theme?: 'default' | 'primary' | 'secondary' | 'accent'
         variant?: 'full' | 'left' | 'right' | 'sides'
         children?: any
+        thickness?: number
     }
 
-    let { title, subtitle, className = '', variant = 'full', theme = 'default', children }: ContentCardProps = $props()
+    let { title, subtitle, className = '', variant = 'full', theme = 'default', children, thickness: _thickness }: ContentCardProps = $props()
 
     const showSide = {
         left: ['full', 'left', 'sides'].includes(variant),
@@ -25,7 +26,7 @@
         default: ['var(--bluey)', 'var(--african-violet)', 'var(--orange)', 'var(--butterscotch)', 'var(--red)'],
     }
     const themeValues: string[] = themes[theme]
-    const baseThickness = 1
+    const baseThickness = _thickness ?? 1
     const thickness = getIsMobile() ? '0.75rem' : `${baseThickness}rem`
     const thicknessLg = getIsMobile() ? '2rem' : `${baseThickness * 2.5}rem`
 
@@ -182,7 +183,7 @@
 <style>
     .content-card {
         display: flex;
-        margin: 1.75rem auto;
+        margin: 0 auto;
         width: 100%;
         max-width: 1440px;
         border-radius: 25px;

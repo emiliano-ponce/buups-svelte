@@ -255,7 +255,6 @@
         display: flex;
         flex-wrap: wrap;
         gap: 1rem;
-        margin-top: 1rem;
     }
 
     .filters {
