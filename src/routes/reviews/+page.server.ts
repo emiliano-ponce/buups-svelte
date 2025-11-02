@@ -47,7 +47,7 @@ export const actions: Actions = {
                 mediaId: mediaIdNum,
             })
 
-            throw redirect(303, `/media/${mediaIdNum}`)
+            throw redirect(303, `/`)
         } catch (error) {
             if (error instanceof Response) throw error
             console.error('Error creating review:', error)

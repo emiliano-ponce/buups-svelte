@@ -48,9 +48,9 @@
         </ContentCard>
     </div>
 {:else}
-    <div class="form-wrapper">
-        {#if currentMedia?.imageUrl}
-            <ContentCard variant="sides" thickness={0.55}>
+    <ContentCard variant="sides" thickness={0.55}>
+        <div class="form-wrapper">
+            {#if currentMedia?.imageUrl}
                 <img height="300px" src={currentMedia.imageUrl} alt={currentMedia.title} />
                 <div class="media-info">
                     {#if currentMedia.type === 'episode'}
@@ -58,52 +58,55 @@
                     {/if}
                     <h3>{currentMedia.title}</h3>
                 </div>
-            </ContentCard>
-        {/if}
+            {/if}
 
-        <form method="POST" action="/reviews" use:enhance>
-            <input type="hidden" name="mediaId" value={selectedMediaId ?? ''} />
-            <input type="hidden" name="authorId" value={user.id} />
+            <form method="POST" action="/reviews" use:enhance>
+                <input type="hidden" name="mediaId" value={selectedMediaId ?? ''} />
+                <input type="hidden" name="authorId" value={user.id} />
 
-            <div class="flex flex-col gap-4">
-                <MediaFilters
-                    {allSeries}
-                    initialValues={{
-                        seriesId: selectedSeriesId?.toString() ?? '',
-                        seasonId: selectedSeasonId?.toString() ?? '',
-                        mediaId: selectedMediaId?.toString() ?? '',
-                    }}
-                    showEpisode={true}
-                    showTitle={false}
-                    showScore={false}
-                    filtersOpen={true}
-                    onChange={handleFilterChange}
-                />
+                <div class="flex flex-col gap-4">
+                    <MediaFilters
+                        {allSeries}
+                        initialValues={{
+                            seriesId: selectedSeriesId?.toString() ?? '',
+                            seasonId: selectedSeasonId?.toString() ?? '',
+                            mediaId: selectedMediaId?.toString() ?? '',
+                        }}
+                        showEpisode={true}
+                        showTitle={false}
+                        showScore={false}
+                        filtersOpen={true}
+                        onChange={handleFilterChange}
+                    />
 
-                {#if currentMedia}
-                    <div class="form-group">
-                        <label for="score">Score (1-999)</label>
-                        <input type="number" id="score" name="score" min="1" max="999" required />
-                    </div>
+                    {#if currentMedia}
+                        <div class="form-group">
+                            <label for="score">Score (1-999)</label>
+                            <input type="number" id="score" name="score" min="1" max="999" required />
+                        </div>
 
-                    <div class="form-group">
-                        <label for="body">Review</label>
-                        <textarea id="body" name="body" rows="5" required></textarea>
-                    </div>
+                        <div class="form-group">
+                            <label for="body">Review</label>
+                            <textarea id="body" name="body" rows="5" required></textarea>
+                        </div>
 
-                    <Button class="self-end" type="submit">Submit Review</Button>
-                {:else if selectedSeriesId}
-                    <div class="no-media">
-                        <p>Select an episode or movie to review</p>
-                    </div>
-                {/if}
-            </div>
-        </form>
-    </div>
+                        <Button class="self-end" type="submit">Submit Review</Button>
+                    {:else if selectedSeriesId}
+                        <div class="no-media">
+                            <p>Select an episode or movie to review</p>
+                        </div>
+                    {/if}
+                </div>
+            </form>
+        </div>
+    </ContentCard>
 {/if}
 
 <style>
     .form-wrapper {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
         max-width: 1000px;
         width: 100%;
         padding: 0 1rem;
@@ -115,9 +118,14 @@
         opacity: 0.8;
     }
 
+    .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
     label {
         display: block;
-        margin-bottom: 0.5rem;
         font-weight: 600;
         font-size: 0.95rem;
     }
@@ -151,9 +159,11 @@
     }
 
     img {
-        width: 100%;
-        height: auto;
         display: block;
+        width: 100%;
+        max-width: 500px;
+        height: auto;
+        margin: 0 auto;
         border-radius: 4px;
     }
 </style>

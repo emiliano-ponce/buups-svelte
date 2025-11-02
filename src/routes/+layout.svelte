@@ -107,7 +107,6 @@
     <div style="min-width: 1100px; flex: 1 1 1100px;">
         <div class="wrap">
             <div class="left-frame-top">
-                <!-- Example button – keep the inline handler for simplicity -->
                 <button onclick={() => playSoundAndRedirect('beep2', '#')} class="panel-1-button">{sysInfoText}</button>
                 <div class="panel-2">02<span class="hop">-262000</span></div>
             </div>
