@@ -5,12 +5,14 @@ import { fail, redirect } from '@sveltejs/kit'
 import type { Actions } from './$types'
 
 export const actions: Actions = {
-    default: async ({ request }) => {
+    default: async ({ request, locals }) => {
         const data = await request.formData()
         const body = data.get('body')
         const score = data.get('score')
-        const authorId = data.get('authorId')
         const mediaId = data.get('mediaId')
+        
+        if (!locals.user) return fail(401, { error: 'Unauthorized' })
+        const authorId = locals.user.id
 
         // Validation
         if (!body || typeof body !== 'string' || body.trim().length === 0) {

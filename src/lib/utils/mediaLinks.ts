@@ -1,6 +1,4 @@
-import type { ReviewWithRelations } from '../../routes/+page.server'
-
-type MediaWithRelations = ReviewWithRelations['media']
+import type { MediaWithRelations } from "../../routes/reviews/+server"
 
 export function getMediaLink(media: MediaWithRelations): string {
     const { type, series, season, episode } = media

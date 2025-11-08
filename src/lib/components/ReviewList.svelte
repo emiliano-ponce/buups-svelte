@@ -1,6 +1,6 @@
 <script lang="ts">
     import { getMediaBreadcrumbs } from '$lib/utils/mediaLinks'
-    import type { GroupedReviews } from '../../routes/+page.server'
+    import type { GroupedReviews } from '../../routes/reviews/+server'
     import ContentCard from './ContentCard.svelte'
     import MediaLinks from './MediaLinks.svelte'
     import Review from './Review.svelte'
@@ -13,17 +13,16 @@
 
 <div>
     {#each reviews as group}
-        {@const firstMedia = group.reviews[0].media}
-        {@const breadcrumbs = getMediaBreadcrumbs(firstMedia)}
+        {@const breadcrumbs = getMediaBreadcrumbs(group.media)}
 
-        <ContentCard title={group.title}>
+        <ContentCard title={group.media.title}>
             {#snippet subtitle()}
                 <MediaLinks {breadcrumbs} />
             {/snippet}
             <div class="flex gap-2">
-                <img loading="lazy" src={firstMedia.imageUrl} alt={firstMedia.title} class="ep-image" />
+                <img loading="lazy" src={group.media.imageUrl} alt={group.media.title} class="ep-image" />
                 <span class="overview">
-                    {firstMedia.overview}
+                    {group.media.overview}
                 </span>
             </div>
             <hr class="lcars-bar" />

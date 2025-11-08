@@ -62,7 +62,6 @@
 
             <form method="POST" action="/reviews" use:enhance>
                 <input type="hidden" name="mediaId" value={selectedMediaId ?? ''} />
-                <input type="hidden" name="authorId" value={user.id} />
 
                 <div class="flex flex-col gap-4">
                     <MediaFilters
