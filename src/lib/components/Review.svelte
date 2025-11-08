@@ -1,9 +1,9 @@
 <script lang="ts">
     import { getIsMobile } from '$lib/utils/global.svelte'
-    import type { ReviewWithRelations } from '../../routes/+page.server'
+    import type { DisplayReview } from '../../routes/reviews/+server'
 
     interface ReviewProps {
-        review: ReviewWithRelations
+        review: DisplayReview
     }
     let { review }: ReviewProps = $props()
 
@@ -14,8 +14,8 @@
 
 <div class="review">
     <div class="review-header">
-        <a class="author" href="/users/{review.author.username}">
-            <h4>{review.author.username}</h4>
+        <a class="author" href="/users/{review.author}">
+            <h4>{review.author}</h4>
         </a>
         <div class="score-container">
             <div class="score-bar">

@@ -66,7 +66,7 @@ export async function GET({ locals, url }) {
                     season: {
                         columns: { number: true },
                     },
-                }
+                },
             },
             author: {
                 columns: { username: true },
@@ -88,16 +88,16 @@ export async function GET({ locals, url }) {
                 const existing = map.get(media.id)
                 if (existing) {
                     existing.reviews.push({
+                        ...review,
                         author: author.username,
-                        review,
                     })
                 } else {
                     map.set(media.id, {
                         media: media,
                         reviews: [
                             {
+                                ...review,
                                 author: author.username,
-                                review,
                             },
                         ],
                     })
@@ -126,10 +126,9 @@ export type MediaWithRelations = Media & {
     season: { number: number } | null
 }
 
+export type DisplayReview = Review & { author: User['username'] }
+
 export type GroupedReviews = {
     media: MediaWithRelations
-    reviews: {
-        author: User['username']
-        review: Review
-    }[]
+    reviews: Array<DisplayReview>
 }[]
