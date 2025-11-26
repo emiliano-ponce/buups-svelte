@@ -20,6 +20,7 @@
         "db:seed": "tsx scripts/seed.ts",
         "db:initTmdb": "tsx scripts/tmdbInit.ts",
         "db:studio": "drizzle-kit studio",
+        "db:sync": "tsx scripts/sync-from-sheets.ts",
         "storybook": "storybook dev -p 6006",
         "build-storybook": "storybook build"
     },

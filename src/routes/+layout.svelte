@@ -89,11 +89,12 @@
     // const playBgm = $derived(data.user ? true : false)
 </script>
 
-<audio id="beep1" src="beep1.mp3" preload="auto"></audio>
-<audio id="beep2" src="beep2.mp3" preload="auto"></audio>
-<audio id="beep3" src="beep3.mp3" preload="auto"></audio>
-<audio id="beep4" src="beep4.mp3" preload="auto"></audio>
+<audio id="beep1" src="sounds/beep1.mp3" preload="auto"></audio>
+<audio id="beep2" src="sounds/beep2.mp3" preload="auto"></audio>
+<audio id="beep3" src="sounds/beep3.mp3" preload="auto"></audio>
+<audio id="beep4" src="sounds/beep4.mp3" preload="auto"></audio>
 <!-- <audio id="bgm" src="tos_bridge_9.mp3" preload="auto" loop volume={0.65} autoplay={playBgm}></audio> -->
+<audio id="powerAndHold" src="sounds/power_hold_and_off.mp3" preload="auto"></audio>
 
 <div class="flex">
     <div class="left-panel sticky top-2 h-screen overflow-y-auto transition-all duration-300" 

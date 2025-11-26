@@ -40,12 +40,30 @@ a {
     cursor: pointer;
 }
 
-input {
+input,
+textarea,
+select {
+    color: var(--space-white);
     padding: 0.5rem;
     border: 1px solid #ddd;
     border-radius: 4px;
     font-size: 1rem;
     box-sizing: border-box;
+    &:focus {
+        outline: none;
+        border-color: var(--bluey);
+        box-shadow: 0 0 0 2px rgba(0, 102, 204, 0.1);
+    }
+}
+
+select option {
+    color: var(--text-main);
+    background-color: var(--background);
+}
+
+textarea {
+    resize: vertical;
+    min-height: 120px;
 }
 
 .content {

@@ -1,4 +1,4 @@
-import type { MediaWithRelations } from "../../routes/reviews/+server"
+import type { MediaWithRelations } from "../../routes/api/reviews/+server"
 
 export function getMediaLink(media: MediaWithRelations): string {
     const { type, series, season, episode } = media

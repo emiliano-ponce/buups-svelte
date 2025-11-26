@@ -1,6 +1,7 @@
 <script lang="ts">
     import { getIsMobile } from '$lib/utils/global.svelte'
-    import type { DisplayReview } from '../../routes/reviews/+server'
+    import type { DisplayReview } from '../../routes/api/reviews/+server'
+    import Scorebar from './Scorebar.svelte'
 
     interface ReviewProps {
         review: DisplayReview
@@ -17,14 +18,9 @@
         <a class="author" href="/users/{review.author}">
             <h4>{review.author}</h4>
         </a>
-        <div class="score-container">
-            <div class="score-bar">
-                <div class="score-fill" style="width: {scorePercentage}%"></div>
-            </div>
-            <span class="score-text">{review.score}</span>
-        </div>
+        <Scorebar score={review.score} />
     </div>
-    <div class={["review-body", { expanded: !getIsMobile() || expanded }]}>
+    <div class={['review-body', { expanded: !getIsMobile() || expanded }]}>
         {review.body}
     </div>
     {#if getIsMobile()}
@@ -53,44 +49,6 @@
 
     .author {
         text-decoration: none;
-    }
-
-    .score-container {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        flex: 1;
-        justify-content: flex-end;
-    }
-
-    .score-bar {
-        width: 100%;
-        max-width: 300px;
-        height: 1.5rem;
-        background: var(--space-white);
-        border: 1px solid var(--space-white);
-        border-radius: 2px;
-        overflow: hidden;
-        @media (max-width: 768px) {
-            max-width: 100px;
-        }
-    }
-
-    .score-fill {
-        height: 100%;
-        background-image: repeating-linear-gradient(
-            to right,
-            var(--mars) 0px,
-            var(--mars) 2px,
-            var(--space-white) 2px,
-            var(--space-white) 3px
-        );
-    }
-
-    .score-text {
-        font-weight: 700;
-        color: var(--magenta);
-        font-size: 1.25rem;
     }
 
     .review-body {

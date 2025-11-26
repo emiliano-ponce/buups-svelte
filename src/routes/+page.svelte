@@ -6,7 +6,7 @@
     import ReviewList from '$lib/components/ReviewList.svelte'
     import { onMount } from 'svelte'
     import type { PageProps } from './$types'
-    import type { GetReviewsResponse, GroupedReviews } from './reviews/+server'
+    import type { GetReviewsResponse, GroupedReviews } from './api/reviews/+server'
 
     let { data }: PageProps = $props()
 
@@ -51,13 +51,13 @@
             const params = new URLSearchParams($page.url.searchParams)
             params.set('page', pageNum.toString())
 
-            const response = await fetch(`/reviews?${params.toString()}`)
-            
+            const response = await fetch(`/api/reviews?${params.toString()}`)
+
             if (!response.ok) {
                 throw new Error('Failed to load reviews')
             }
 
-            const result = await response.json() as GetReviewsResponse
+            const result = (await response.json()) as GetReviewsResponse
 
             if (append) {
                 allReviews = [...allReviews, ...result.reviews]
@@ -82,7 +82,7 @@
 
     $effect(() => {
         const newFilters = $page.url.searchParams.toString()
-        
+
         if (newFilters !== currentFilters) {
             currentFilters = newFilters
             currentPage = 1
@@ -97,14 +97,14 @@
         loadReviews(1, false)
 
         observer = new IntersectionObserver(
-            (entries) => {
+            entries => {
                 if (entries[0].isIntersecting && hasMore && !loading && !initialLoading) {
                     loadMore()
                 }
             },
-            { 
+            {
                 threshold: 0.1,
-                rootMargin: '100px'
+                rootMargin: '100px',
             }
         )
 
@@ -121,12 +121,7 @@
         }
     })
 
-    const hasFilters = $derived(
-        data.filters.series || 
-        data.filters.season || 
-        data.filters.score || 
-        data.filters.title
-    )
+    const hasFilters = $derived(data.filters.series || data.filters.season || data.filters.score || data.filters.title)
 </script>
 
 <div class="heading">
@@ -146,20 +141,8 @@
 >
     {#snippet actions()}
         <div class="filter-actions">
-            <Button 
-                --button-color="var(--red)" 
-                onclick={clearFilters} 
-                disabled={!hasFilters}
-            >
-                Clear
-            </Button>
-            <Button 
-                --button-color="var(--blue)" 
-                sound="beep1" 
-                onclick={applyFilters}
-            >
-                Apply
-            </Button>
+            <Button --button-color="var(--red)" onclick={clearFilters} disabled={!hasFilters}>Clear</Button>
+            <Button --button-color="var(--blue)" sound="beep1" onclick={applyFilters}>Apply</Button>
         </div>
     {/snippet}
 </MediaFilters>
