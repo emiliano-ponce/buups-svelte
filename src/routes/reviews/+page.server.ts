@@ -1,12 +1,12 @@
 import { db } from '$lib/server/db'
 import { review } from '$lib/server/db/schema'
 import { clearReviewFromSheet, syncReviewToSheet } from '$lib/server/sheets-sync'
-import { fail, redirect } from '@sveltejs/kit'
+import { fail, isRedirect, redirect } from '@sveltejs/kit'
 import { eq } from 'drizzle-orm'
 import type { Actions } from './$types'
 
 export const actions: Actions = {
-    default: async ({ request, locals }) => {
+    create: async ({ request, locals }) => {
         const data = await request.formData()
         const body = data.get('body')
         const score = data.get('score')
@@ -74,7 +74,7 @@ export const actions: Actions = {
 
             throw redirect(303, `/`)
         } catch (error) {
-            if (error instanceof Response) throw error
+            if (isRedirect(error)) throw error
             console.error('Error creating review:', error)
             return fail(500, { error: 'Failed to create review' })
         }

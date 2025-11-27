@@ -176,7 +176,7 @@
 
             <form
                 method="POST"
-                action={isEditing ? '/reviews?/update' : '/reviews'}
+                action={isEditing ? '/reviews?/update' : '/reviews?/create'}
                 use:enhance={() => {
                     return async ({ result, update }) => {
                         if (result.type === 'success') {

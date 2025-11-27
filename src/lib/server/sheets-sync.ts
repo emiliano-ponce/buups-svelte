@@ -1,4 +1,4 @@
-import { GOOGLE_SHEETS_KEY, SPREADSHEET_ID } from '$env/static/private'
+import { GOOGLE_SHEETS_CREDENTIALS, SPREADSHEET_ID } from '$env/static/private'
 import { google, type sheets_v4 } from 'googleapis'
 import type { Media, Review, Season, Series, User } from './db/schema'
 
@@ -35,7 +35,12 @@ let sheetsClient: sheets_v4.Sheets | null = null
 
 function getSheets(): sheets_v4.Sheets {
     if (!sheetsClient) {
-        sheetsClient = google.sheets({ version: 'v4', auth: GOOGLE_SHEETS_KEY })
+        const auth = new google.auth.GoogleAuth({
+            credentials: JSON.parse(GOOGLE_SHEETS_CREDENTIALS),
+            scopes: ['https://www.googleapis.com/auth/spreadsheets'],
+        })
+
+        sheetsClient = google.sheets({ version: 'v4', auth })
     }
     return sheetsClient
 }

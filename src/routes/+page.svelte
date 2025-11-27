@@ -104,7 +104,7 @@
             },
             {
                 threshold: 0.1,
-                rootMargin: '100px',
+                rootMargin: '400px',
             }
         )
 
@@ -164,8 +164,11 @@
                 <div class="loading-more">
                     <p>Loading more reviews...</p>
                 </div>
+            {:else}
+                <Button onclick={loadMore} sound="beep1">Load More Reviews</Button>
             {/if}
         </div>
+        <div class="spacer"></div>
     {/if}
 {/if}
 
@@ -182,5 +185,16 @@
         gap: 0.5rem;
         align-items: flex-end;
         margin-left: auto;
+    }
+
+    .load-more-trigger {
+        min-height: 100px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .spacer {
+        height: 200px;
     }
 </style>
