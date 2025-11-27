@@ -1,4 +1,7 @@
 <script lang="ts">
+    import { settings } from '$lib/utils/settings.svelte'
+    import { onMount } from 'svelte'
+
     let { score = 0, editable = false, onChange = () => {}, name = 'score' } = $props()
 
     let isDragging = $state(false)
@@ -8,73 +11,81 @@
     const scorePercentage = $derived((score / 10) * 100)
 
     // ---------- Audio stuff ----------
-    // let audio: HTMLAudioElement | null = $state(null)
+    let audioCtx: AudioContext | null = $state(null)
+    let gainNode: GainNode | null = $state(null)
+    let powerHoldSource: AudioBufferSourceNode | null = $state(null)
+    let powerOnBuffer: AudioBuffer | null = $state(null)
+    let powerHoldBuffer: AudioBuffer | null = $state(null)
+    let powerOffBuffer: AudioBuffer | null = $state(null)
+    let isPlaying = $state(false)
 
-    // let shouldEndLoop = false
-    // let inLoop = false
+    onMount(async () => {
+        audioCtx = new AudioContext()
+        gainNode = audioCtx.createGain()
+        gainNode.connect(audioCtx.destination)
+        try {
+            // Load all three audio files
+            const [onRes, holdRes, offRes] = await Promise.all([
+                fetch('/sounds/power_on.mp3'),
+                fetch('/sounds/power_hold.mp3'),
+                fetch('/sounds/power_off.mp3'),
+            ])
 
-    // const INTRO_END = 1
-    // const LOOP_START = 1.95
-    // const LOOP_END = 2.95
-    // const OUTRO_START = 3
-    // const AUDIO_END = 4
+            const [onArrayBuffer, holdArrayBuffer, offArrayBuffer] = await Promise.all([
+                onRes.arrayBuffer(),
+                holdRes.arrayBuffer(),
+                offRes.arrayBuffer(),
+            ])
 
-    // $effect(() => {
-    //     const audioElement = document.getElementById('powerAndHold') as HTMLAudioElement
-    //     if (!audioElement) return
+            const [ponb, phb, poffb] = await Promise.all([
+                audioCtx.decodeAudioData(onArrayBuffer),
+                audioCtx.decodeAudioData(holdArrayBuffer),
+                audioCtx.decodeAudioData(offArrayBuffer),
+            ])
+            powerOnBuffer = ponb
+            powerHoldBuffer = phb
+            powerOffBuffer = poffb
+        } catch (err) {
+            console.error('Failed to load audio:', err)
+        }
+    })
+    
+    function beginAudio() {
+        if (!audioCtx || !powerOnBuffer || !powerHoldBuffer || isPlaying || !gainNode) return
+        isPlaying = true
+        
+        const powerOnSource = audioCtx.createBufferSource()
+        powerOnSource.buffer = powerOnBuffer
+        gainNode.gain.value = settings.volume
+        powerOnSource.connect(gainNode)
+        
+        powerHoldSource = audioCtx!.createBufferSource()
+        powerHoldSource!.loop = true
+        powerOnSource.onended = () => {
+            powerHoldSource!.buffer = powerHoldBuffer
+            gainNode!.gain.value = settings.volume
+            powerHoldSource!.connect(gainNode!)
+            powerHoldSource!.start()
+        }
 
-    //     audio = audioElement
+        powerOnSource.start()
+    }
 
-    //     const handleTimeUpdate = () => {
-    //         if (!audio) return
-    //         const t = audio.currentTime
+    function endAudio() {
+        if (!audioCtx || !powerHoldSource || !powerOffBuffer) return
 
-    //         // Intro phase: jump to loop when intro ends
-    //         if (!inLoop && t >= INTRO_END) {
-    //             inLoop = true
-    //             audio.currentTime = LOOP_START
-    //             return
-    //         }
-
-    //         if (inLoop && t >= LOOP_END) {
-    //             if (shouldEndLoop) {
-    //                 // Exit loop and play outro
-    //                 inLoop = false
-    //                 shouldEndLoop = false
-    //                 audio.currentTime = OUTRO_START
-    //             } else {
-    //                 // Continue looping
-    //                 audio.currentTime = LOOP_START
-    //             }
-    //             return
-    //         }
-
-    //         if (t >= AUDIO_END) {
-    //             audio.pause()
-    //             audio.currentTime = 0
-    //             inLoop = false
-    //             shouldEndLoop = false
-    //         }
-    //     }
-
-    //     audio.addEventListener('timeupdate', handleTimeUpdate)
-
-    //     return () => {
-    //         audio?.removeEventListener('timeupdate', handleTimeUpdate)
-    //     }
-    // })
-
-    // function beginAudio() {
-    //     if (!audio) return
-    //     audio.currentTime = 0
-    //     inLoop = false
-    //     shouldEndLoop = false
-    //     audio.play()
-    // }
-
-    // function endAudio() {
-    //     shouldEndLoop = true
-    // }
+        powerHoldSource.loop = false
+        powerHoldSource.onended = () => {
+            const powerOffSource = audioCtx!.createBufferSource()
+            powerOffSource.buffer = powerOffBuffer
+            gainNode!.gain.value = settings.volume
+            powerOffSource.connect(gainNode!)
+            powerOffSource.start()
+            powerOffSource.onended = () => {
+                isPlaying = false
+            }
+        }
+    }
     // ---------- END Audio stuff ----------
 
     function getScoreFromPosition(clientX) {
@@ -89,7 +100,7 @@
     function handleMouseDown(e) {
         if (!editable) return
         isDragging = true
-        // beginAudio()
+        beginAudio()
         const newScore = getScoreFromPosition(e.clientX)
         onChange(newScore)
     }
@@ -102,13 +113,13 @@
 
     function handleMouseUp() {
         isDragging = false
-        // endAudio()
+        endAudio()
     }
 
     function handleTouchStart(e) {
         if (!editable) return
         isDragging = true
-        // beginAudio()
+        beginAudio()
         const touch = e.touches[0]
         const newScore = getScoreFromPosition(touch.clientX)
         onChange(newScore)
@@ -224,8 +235,5 @@
         font-weight: 700;
         color: var(--magenta);
         font-size: 1.25rem;
-    }
-
-    @media (max-width: 768px) {
     }
 </style>
