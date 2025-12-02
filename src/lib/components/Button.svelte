@@ -16,10 +16,11 @@
     }
 </script>
 
-<button {...rest} class={`button ${rest.class}`} onclick={handleClick}>{@render children?.()}</button>
+<button {...rest} class={rest.class} onclick={handleClick}>{@render children?.()}</button>
 
 <style>
-    .button {
+    button {
+        cursor: pointer;
         display: flex;
         flex-direction: column;
         justify-content: flex-end;
@@ -40,6 +41,9 @@
         -webkit-user-select: none;
         -ms-user-select: none;
         user-select: none;
+        &:hover, &:active {
+            animation: none;
+        }
         &:hover {
             filter: brightness(115%);
         }

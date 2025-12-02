@@ -1,11 +1,10 @@
 <script lang="ts">
     import Button from '$lib/components/Button.svelte'
     import LogoutButton from '$lib/components/LogoutButton.svelte'
-    import ReviewForm from '$lib/components/ReviewForm.svelte'
     import SettingsPopover from '$lib/components/SettingsPopover.svelte'
     import { playSoundAndRedirect } from '$lib/utils/audioHelpers'
     import { makeCascade, type CascadeData } from '$lib/utils/cascadeHelper'
-    import { getIsMobile, updateIsMobile } from '$lib/utils/global.svelte'
+    import { updateIsMobile } from '$lib/utils/global.svelte'
     import { onMount } from 'svelte'
     import '../app.css'
     import '../classic.css'
@@ -16,8 +15,6 @@
     let cascade: CascadeData = $state([])
     let topBtn: HTMLButtonElement | null = null
     let lcarsKeystroke: HTMLAudioElement | null = null
-    let showLeftPanel = $state(true)
-    let viewportWidth = $state(typeof window !== 'undefined' ? window.innerWidth : 1200)
     let settingsOpen = $state(false)
 
     function scrollFunction() {
@@ -34,17 +31,7 @@
         document.documentElement.scrollTop = 0 // Chrome, Firefox, IE, Edge
     }
 
-    function handleReviewButtonClick() {
-        const contentWidth = viewportWidth - 500
-        if (contentWidth < 1100) {
-            playSoundAndRedirect('beep2', '/review')
-        } else {
-            showLeftPanel = !showLeftPanel
-        }
-    }
-
     function handleResize() {
-        viewportWidth = window.innerWidth
         updateIsMobile()
     }
 
@@ -85,9 +72,6 @@
         window.addEventListener('resize', handleResize)
         return () => window.removeEventListener('resize', handleResize)
     })
-
-    const sysInfoText = $derived(getIsMobile() ? 'SYSTEM INFO' : 'SYSTEM INFORMATION')
-    const shouldHideLeftPanel = $derived(viewportWidth - 500 < 1100 || !showLeftPanel)
     // const playBgm = $derived(data.user ? true : false)
 </script>
 
@@ -100,116 +84,101 @@
 <audio id="power-hold" src="/sounds/power_hold.mp3" preload="auto"></audio>
 <audio id="power-off" src="/sounds/power_off.mp3" preload="auto"></audio>
 
-<div class="flex">
-    <div class="left-panel sticky top-2 h-screen overflow-y-auto transition-all duration-300" 
-         style="min-width: {shouldHideLeftPanel ? '0' : '500px'}; opacity: {shouldHideLeftPanel ? '0' : '1'}; flex: {shouldHideLeftPanel ? '0' : '1 0 500px'};">
-        <ReviewForm 
-            media={data.nextMedia}
-            user={data.user}
-            allSeries={data.allSeries}
-        />
-    </div>
-    <div style="min-width: 1100px; flex: 1 1 1100px;">
-        <div class="wrap">
-            <div class="left-frame-top">
-                <SettingsPopover bind:open={settingsOpen} />
-                <div class="panel-2">02<span class="hop">-262000</span></div>
+<div style="flex: 1 1 1100px;">
+    <div class="wrap">
+        <div class="left-frame-top">
+            <SettingsPopover bind:open={settingsOpen} />
+            <div class="panel-2">02<span class="hop">-262000</span></div>
+        </div>
+
+        <div class="right-frame-top">
+            <div class="banner">LCARS LOG ENTRY</div>
+
+            <div class="data-cascade-button-group">
+                <div class="data-cascade-wrapper" id="default">
+                    {#each cascade as column}
+                        <div class="data-column">
+                            {#each column as cell, i}
+                                <div data-cascade-row class={'dc-row-' + (i + 1)}>{cell}</div>
+                            {/each}
+                        </div>
+                    {/each}
+                </div>
+
+                <nav>
+                    <Button --button-color="var(--african-violet)" onclick={() => playSoundAndRedirect('beep2', '/')}
+                        >Home</Button
+                    >
+                    <Button --button-color="var(--butterscotch)" onclick={() => playSoundAndRedirect('beep2', '/review')}>Review</Button>
+                    <Button --button-color="var(--orange)" onclick={() => playSoundAndRedirect('beep2', '#')}
+                        >Stats</Button
+                    >
+                    {#if data.user}
+                        <LogoutButton />
+                    {:else}
+                        <Button --button-color="var(--blue)" onclick={() => playSoundAndRedirect('beep2', '/login')}
+                            >Log in</Button
+                        >
+                    {/if}
+                </nav>
             </div>
 
-            <div class="right-frame-top">
-                <div class="banner">LCARS LOG ENTRY</div>
+            <div class="bar-panel first-bar-panel">
+                <div class="bar-1"></div>
+                <div class="bar-2"></div>
+                <div class="bar-3"></div>
+                <div class="bar-4"></div>
+                <div class="bar-5"></div>
+            </div>
+        </div>
+    </div>
 
-                <div class="data-cascade-button-group">
-                    <div class="data-cascade-wrapper" id="default">
-                        {#each cascade as column}
-                            <div class="data-column">
-                                {#each column as cell, i}
-                                    <div data-cascade-row class={'dc-row-' + (i + 1)}>{cell}</div>
-                                {/each}
-                            </div>
-                        {/each}
-                    </div>
+    <div class="wrap" id="gap">
+        <div class="left-frame">
+            <!-- Scroll‑to‑top button – we bind the element to `topBtn` -->
+            <button
+                bind:this={topBtn}
+                onclick={() => {
+                    topFunction()
+                    playSoundAndRedirect('beep4', '#')
+                }}
+                id="topBtn"
+            >
+                <span class="hop">screen</span> top
+            </button>
 
-                    <nav>
-                        <Button
-                            --button-color="var(--african-violet)"
-                            onclick={() => playSoundAndRedirect('beep2', '/')}>Home</Button
-                        >
-                        <Button 
-                            --button-color="var(--butterscotch)" 
-                            onclick={handleReviewButtonClick}
-                        >Review</Button
-                        >
-                        <Button --button-color="var(--orange)" onclick={() => playSoundAndRedirect('beep2', '#')}
-                            >Stats</Button
-                        >
-                        {#if data.user}
-                            <LogoutButton />
-                        {:else}
-                            <Button --button-color="var(--blue)" onclick={() => playSoundAndRedirect('beep2', '/login')}
-                                >Log in</Button
-                            >
-                        {/if}
-                    </nav>
-                </div>
+            <div>
+                <div class="panel-3">03<span class="hop">-111968</span></div>
+                <div class="panel-4">04<span class="hop">-041969</span></div>
+                <div class="panel-5">05<span class="hop">-1701D</span></div>
+                <div class="panel-6">06<span class="hop">-071984</span></div>
+                <div class="panel-7">07<span class="hop">-081940</span></div>
+                <div class="panel-8">08<span class="hop">-47148</span></div>
+                <div class="panel-9">09<span class="hop">-081966</span></div>
+            </div>
 
-                <div class="bar-panel first-bar-panel">
-                    <div class="bar-1"></div>
-                    <div class="bar-2"></div>
-                    <div class="bar-3"></div>
-                    <div class="bar-4"></div>
-                    <div class="bar-5"></div>
-                </div>
+            <div>
+                <div class="panel-10">10<span class="hop">-31</span></div>
             </div>
         </div>
 
-        <div class="wrap" id="gap">
-            <div class="left-frame">
-                <!-- Scroll‑to‑top button – we bind the element to `topBtn` -->
-                <button
-                    bind:this={topBtn}
-                    onclick={() => {
-                        topFunction()
-                        playSoundAndRedirect('beep4', '#')
-                    }}
-                    id="topBtn"
-                >
-                    <span class="hop">screen</span> top
-                </button>
-
-                <div>
-                    <div class="panel-3">03<span class="hop">-111968</span></div>
-                    <div class="panel-4">04<span class="hop">-041969</span></div>
-                    <div class="panel-5">05<span class="hop">-1701D</span></div>
-                    <div class="panel-6">06<span class="hop">-071984</span></div>
-                    <div class="panel-7">07<span class="hop">-081940</span></div>
-                    <div class="panel-8">08<span class="hop">-47148</span></div>
-                    <div class="panel-9">09<span class="hop">-081966</span></div>
-                </div>
-
-                <div>
-                    <div class="panel-10">10<span class="hop">-31</span></div>
-                </div>
+        <div class="right-frame">
+            <div class="bar-panel">
+                <div class="bar-6"></div>
+                <div class="bar-7"></div>
+                <div class="bar-8"></div>
+                <div class="bar-9"></div>
+                <div class="bar-10"></div>
             </div>
 
-            <div class="right-frame">
-                <div class="bar-panel">
-                    <div class="bar-6"></div>
-                    <div class="bar-7"></div>
-                    <div class="bar-8"></div>
-                    <div class="bar-9"></div>
-                    <div class="bar-10"></div>
-                </div>
+            <main>
+                {@render children()}
+            </main>
 
-                <main>
-                    {@render children()}
-                </main>
-
-                <footer>
-                    LCARS Inspired Website Template by
-                    <a href="https://www.thelcars.com">www.TheLCARS.com</a>. Modified with love. ♥
-                </footer>
-            </div>
+            <footer>
+                LCARS Inspired Website Template by
+                <a href="https://www.thelcars.com">www.TheLCARS.com</a>. Modified with love. ♥
+            </footer>
         </div>
     </div>
 </div>

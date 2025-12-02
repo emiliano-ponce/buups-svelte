@@ -1,32 +1,13 @@
+/* app.css */
 @import 'tailwindcss';
 
 .dark {
     --background: black;
-    --text-main: #c7f;
-    --text-secondary: #f70;
-}
-.light {
-    --background: #f9f9f9;
-}
-.red-alert {
-    --background: #f20;
+    --text-main: #c9f;
+    --text-secondary: #f80;
 }
 
 @theme inline {
-    --color-background: var(--background);
-
-    --color-main: var(--text-main);
-    --color-secondary: var(--text-secondary);
-
-    --color-red: #c44;
-    --color-blue: #45f;
-    --color-blue-light: #89f;
-    --color-purple: #c9f;
-    --color-orange: #f80;
-    --color-tan: #f96;
-    --color-alert: #f20;
-    --color-gold: #fa0;
-
     --mobile-breakpoint: 768px;
     --max-width: 1440px;
 }

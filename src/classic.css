@@ -1,7 +1,7 @@
 @charset "utf-8";
 
 /*
-
+    classic.css
 	CSS Document
 	LCARS Classic Theme
 	Version 24.2
@@ -312,184 +312,6 @@ a:active {
     #column-2 {
         display: none;
     }
-}
-
-.lcars-frame {
-    display: flex;
-    min-height: 280px;
-    position: relative;
-    --frame-color: var(--african-violet);
-}
-
-.frame-col-1 {
-    width: 20px;
-    height: 280px;
-    background: var(--frame-color);
-    border-radius: 16px 0 0 16px;
-    position: relative;
-}
-
-.frame-col-1:before {
-    content: '';
-    display: block;
-    width: 20px;
-    height: 200px;
-    border-top: 5px solid black;
-    border-bottom: 5px solid black;
-    background-color: var(--frame-color);
-    position: absolute;
-    top: 40px;
-    left: 0;
-}
-
-.frame-col-1-cell-a {
-    width: 14px;
-    height: 65px;
-    background-color: var(--tomato);
-    border-left: 4px solid black;
-    border-bottom: 4px solid black;
-    position: absolute;
-    top: 45px;
-    right: 0;
-    z-index: 2;
-}
-
-.frame-col-1-cell-b {
-    width: 14px;
-    height: 70px;
-    background-color: var(--bluey);
-    border-left: 4px solid black;
-    position: absolute;
-    top: 110px;
-    right: 0;
-    z-index: 2;
-}
-
-.frame-col-1-cell-c {
-    width: 14px;
-    height: 65px;
-    background-color: var(--orange);
-    border-top: 4px solid black;
-    border-left: 4px solid black;
-    position: absolute;
-    bottom: 45px;
-    right: 0;
-    z-index: 2;
-}
-
-.frame-col-1-blocks:before {
-    content: '';
-    display: block;
-    width: 10px;
-    height: 3px;
-    background-color: black;
-    position: absolute;
-    top: 54px;
-    left: 0;
-}
-
-.frame-col-2 {
-    width: 20px;
-    height: 280px;
-    background-color: var(--frame-color);
-    position: relative;
-}
-
-.frame-col-2:before {
-    content: '';
-    display: block;
-    width: 20px;
-    height: 240px;
-    background-color: black;
-    border-radius: 10px 0 0 10px;
-    position: absolute;
-    top: 20px;
-    left: 0;
-}
-
-.frame-col-3 {
-    display: flex;
-    width: 240px;
-    height: 280px;
-    align-items: center;
-    justify-content: center;
-}
-
-.frame-col-4 {
-    width: 20px;
-    height: 280px;
-    background-color: var(--frame-color);
-    position: relative;
-}
-
-.frame-col-4:before {
-    content: '';
-    display: block;
-    width: 20px;
-    height: 240px;
-    background-color: black;
-    border-radius: 0 10px 10px 0;
-    position: absolute;
-    top: 20px;
-    left: 0;
-}
-
-.display-horizontal {
-    rotate: 90deg;
-}
-
-.frame-col-5 {
-    width: 20px;
-    height: 280px;
-    background-color: var(--frame-color);
-    border-radius: 0 16px 16px 0;
-    padding-top: 40px;
-    position: relative;
-}
-
-.frame-col-5:before {
-    content: '';
-    display: block;
-    width: 20px;
-    height: 200px;
-    border-top: 5px solid black;
-    border-bottom: 5px solid black;
-    background-color: var(--frame-color);
-}
-
-.frame-col-5-cell-a {
-    width: 14px;
-    height: 65px;
-    background-color: var(--lilac);
-    border-bottom: 4px solid black;
-    border-right: 4px solid black;
-    position: absolute;
-    top: 45px;
-    left: 0;
-    z-index: 2;
-}
-
-.frame-col-5-cell-b {
-    width: 14px;
-    height: 70px;
-    background-color: var(--violet-creme);
-    border-right: 4px solid black;
-    position: absolute;
-    top: 110px;
-    left: 0;
-    z-index: 2;
-}
-
-.frame-col-5-cell-c {
-    width: 14px;
-    height: 65px;
-    background-color: var(--moonlit-violet);
-    border-top: 4px solid black;
-    border-right: 4px solid black;
-    position: absolute;
-    bottom: 45px;
-    left: 0;
-    z-index: 2;
 }
 
 .line {
@@ -1622,11 +1444,6 @@ main {
     padding-left: clamp(16px, 3vw, 50px);
 }
 
-main > *:first-child,
-article > *:first-child {
-    margin-top: 0;
-}
-
 main:has(.floor-heading) > *:nth-child(2) {
     margin-top: 0;
 }
@@ -1635,20 +1452,6 @@ main:has(.floor-heading) > *:nth-child(2) {
     main {
         padding-top: 1rem;
     }
-}
-
-.flexbox {
-    display: flex;
-    gap: 2vw;
-    flex-wrap: wrap;
-}
-
-.col {
-    flex: 1 1 360px;
-}
-
-.col > *:first-child {
-    margin-top: 0;
 }
 
 h1,
@@ -1724,10 +1527,6 @@ h4 {
     text-transform: uppercase;
 }
 
-article h1 {
-    margin-bottom: 0;
-}
-
 hr {
     margin-block: 1.5rem;
     height: 6px;
@@ -1769,55 +1568,6 @@ iframe {
     display: block;
     width: 100%;
     border: none;
-}
-
-.flush {
-    margin-top: -1rem;
-}
-
-.nomar {
-    margin-block: 0 !important;
-}
-
-.go-center {
-    text-align: center !important;
-}
-
-.go-right {
-    text-align: right !important;
-}
-
-.go-left {
-    text-align: left !important;
-}
-
-.go-big {
-    font-size: clamp(1.2rem, 1rem + 1vw, 1.275rem);
-}
-
-.uppercase {
-    text-transform: uppercase;
-}
-
-.strike {
-    text-decoration: line-through;
-    text-decoration-thickness: 0.15rem;
-}
-
-.now {
-    white-space: nowrap;
-}
-
-.big-sky {
-    margin-top: 5rem;
-}
-
-.smoke-glass {
-    opacity: 0.35;
-}
-
-strong {
-    font-weight: bold;
 }
 
 code {
@@ -2124,10 +1874,6 @@ NOTE: Gallery is experimental and still under development.
     border-left: clamp(16px, 4vh, 43px) solid var(--lcars-bar-start-color);
 }
 
-.the-end {
-    justify-content: flex-end;
-}
-
 .lcars-text-bar h2,
 .lcars-text-bar h3,
 .lcars-text-bar h4,
@@ -2322,248 +2068,6 @@ NOTE: Gallery is experimental and still under development.
         padding: 0.75rem;
         border-radius: 10px;
     }
-}
-
-/* color custom classes */
-
-.font-african-violet {
-    color: var(--african-violet) !important;
-}
-
-.button-african-violet,
-.background-african-violet,
-.bullet-african-violet {
-    background-color: var(--african-violet) !important;
-}
-
-.font-almond {
-    color: var(--almond) !important;
-}
-
-.button-almond,
-.background-almond,
-.bullet-almond::before {
-    background-color: var(--almond) !important;
-}
-
-.font-almond-creme {
-    color: var(--almond-creme) !important;
-}
-
-.button-almond-creme,
-.background-almond-creme,
-.bullet-almond-creme::before {
-    background-color: var(--almond-creme) !important;
-}
-
-.font-blue {
-    color: var(--blue) !important;
-}
-
-.button-blue,
-.background-blue,
-.bullet-blue::before {
-    background-color: var(--blue) !important;
-}
-
-.font-bluey {
-    color: var(--bluey) !important;
-}
-
-.button-bluey,
-.background-bluey,
-.bullet-bluey::before {
-    background-color: var(--bluey) !important;
-}
-
-.font-butterscotch {
-    color: var(--butterscotch) !important;
-}
-
-.button-butterscotch,
-.background-butterscotch,
-.bullet-butterscotch::before {
-    background-color: var(--butterscotch) !important;
-}
-
-.font-gold {
-    color: var(--gold) !important;
-}
-
-.button-gold,
-.background-gold,
-.bullet-gold::before {
-    background-color: var(--gold) !important;
-}
-
-.font-golden-orange {
-    color: var(--golden-orange) !important;
-}
-
-.button-golden-orange,
-.background-golden-orange,
-.bullet-golden-orange::before {
-    background-color: var(--golden-orange) !important;
-}
-
-.font-gray {
-    color: var(--gray) !important;
-}
-
-.button-gray,
-.background-gray,
-.bullet-gray::before {
-    background-color: var(--gray) !important;
-}
-
-.font-green {
-    color: var(--green) !important;
-}
-
-.button-green,
-.background-green,
-.bullet-green::before {
-    background-color: var(--green) !important;
-}
-
-.font-ice {
-    color: var(--ice) !important;
-}
-
-.button-ice,
-.background-ice,
-.bullet-ice::before {
-    background-color: var(--ice) !important;
-}
-
-.font-lilac {
-    color: var(--lilac) !important;
-}
-
-.button-lilac,
-.background-lilac,
-.bullet-lilac::before {
-    background-color: var(--lilac) !important;
-}
-
-.font-lima-bean {
-    color: var(--lima-bean) !important;
-}
-
-.button-lima-bean,
-.background-lima-bean,
-.bullet-lima-bean::before {
-    background-color: var(--lima-bean) !important;
-}
-
-.font-magenta {
-    color: var(--magenta) !important;
-}
-
-.button-magenta,
-.background-magenta,
-.bullet-magenta::before {
-    background-color: var(--magenta) !important;
-}
-
-.font-mars {
-    color: var(--mars) !important;
-}
-
-.button-mars,
-.background-mars,
-.bullet-mars::before {
-    background-color: var(--mars) !important;
-}
-
-.font-moonlit-violet {
-    color: var(--moonlit-violet) !important;
-}
-
-.button-moonlit-violet,
-.background-moonlit-violet,
-.bullet-moonlit-violet::before {
-    background-color: var(--moonlit-violet) !important;
-}
-
-.font-orange {
-    color: var(--orange) !important;
-}
-
-.button-orange,
-.background-orange,
-.bullet-orange::before {
-    background-color: var(--orange) !important;
-}
-
-.font-peach {
-    color: var(--peach) !important;
-}
-
-.button-peach,
-.background-peach,
-.bullet-peach::before {
-    background-color: var(--peach) !important;
-}
-
-.font-red {
-    color: var(--red) !important;
-}
-
-.button-red,
-.background-red,
-.bullet-red::before {
-    background-color: var(--red) !important;
-}
-
-.font-sky {
-    color: var(--sky) !important;
-}
-
-.button-sky,
-.background-sky,
-.bullet-sky::before {
-    background-color: var(--sky) !important;
-}
-
-.font-space-white {
-    color: var(--space-white) !important;
-}
-
-.button-space-white,
-.background-space-white,
-.bullet-space-white::before {
-    background-color: var(--space-white) !important;
-}
-
-.font-sunflower {
-    color: var(--sunflower) !important;
-}
-
-.button-sunflower,
-.background-sunflower,
-.bullet-sunflower::before {
-    background-color: var(--sunflower) !important;
-}
-
-.font-tomato {
-    color: var(--tomato) !important;
-}
-
-.button-tomato,
-.background-tomato,
-.bullet-tomato::before {
-    background-color: var(--tomato) !important;
-}
-
-.font-violet-creme {
-    color: var(--violet-creme) !important;
-}
-
-.button-violet-creme,
-.background-violet-creme,
-.bullet-violet-creme::before {
-    background-color: var(--violet-creme) !important;
 }
 
 /* Footer */
