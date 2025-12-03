@@ -1,6 +1,8 @@
 <script lang="ts">
     import Button from '$lib/components/Button.svelte'
     import LogoutButton from '$lib/components/LogoutButton.svelte'
+    import Navigation from '$lib/components/Navigation.svelte'
+    import ScrollToTop from '$lib/components/ScrollToTop.svelte'
     import SettingsPopover from '$lib/components/SettingsPopover.svelte'
     import { playSoundAndRedirect } from '$lib/utils/audioHelpers'
     import { makeCascade, type CascadeData } from '$lib/utils/cascadeHelper'
@@ -105,11 +107,14 @@
                     {/each}
                 </div>
 
-                <nav>
+                <Navigation>
                     <Button --button-color="var(--african-violet)" onclick={() => playSoundAndRedirect('beep2', '/')}
                         >Home</Button
                     >
-                    <Button --button-color="var(--butterscotch)" onclick={() => playSoundAndRedirect('beep2', '/review')}>Review</Button>
+                    <Button
+                        --button-color="var(--butterscotch)"
+                        onclick={() => playSoundAndRedirect('beep2', '/review')}>Review</Button
+                    >
                     <Button --button-color="var(--orange)" onclick={() => playSoundAndRedirect('beep2', '#')}
                         >Stats</Button
                     >
@@ -120,7 +125,7 @@
                             >Log in</Button
                         >
                     {/if}
-                </nav>
+                </Navigation>
             </div>
 
             <div class="bar-panel first-bar-panel">
@@ -135,17 +140,7 @@
 
     <div class="wrap" id="gap">
         <div class="left-frame">
-            <!-- Scroll‑to‑top button – we bind the element to `topBtn` -->
-            <button
-                bind:this={topBtn}
-                onclick={() => {
-                    topFunction()
-                    playSoundAndRedirect('beep4', '#')
-                }}
-                id="topBtn"
-            >
-                <span class="hop">screen</span> top
-            </button>
+            <ScrollToTop onclick={() => playSoundAndRedirect('beep4', '#')} />
 
             <div>
                 <div class="panel-3">03<span class="hop">-111968</span></div>

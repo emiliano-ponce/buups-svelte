@@ -26,7 +26,9 @@
                 <input type="password" id="password" name="password" required />
             </div>
 
-            <Button --button-color="var(--blue)" class="ml-auto" type="submit" onclick={() => playSound('beep2')}>Log In</Button>
+            <Button --button-color="var(--blue)" class="ml-auto" type="submit" onclick={() => playSound('beep2')}
+                >Log In</Button
+            >
         </form>
     </ContentCard>
 </div>
@@ -51,7 +53,7 @@
         font-weight: bold;
         font-size: 1.25rem;
     }
-    
+
     .form-group input {
         width: 100%;
     }

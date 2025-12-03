@@ -129,7 +129,7 @@
         cursor: pointer;
         transition: background 0.2s;
         position: relative;
-        top: -0.35rem;
+        top: -0.45rem;
     }
     
     .volume-slider::-webkit-slider-thumb:hover {
