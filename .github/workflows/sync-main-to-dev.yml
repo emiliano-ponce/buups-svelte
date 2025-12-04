@@ -9,7 +9,8 @@ jobs:
   create-pr:
     runs-on: ubuntu-latest
     permissions:
-      pull_requests: write
+      contents: read
+      pull-requests: write
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
