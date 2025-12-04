@@ -15,23 +15,8 @@
     let { children, data }: LayoutProps = $props()
 
     let cascade: CascadeData = $state([])
-    let topBtn: HTMLButtonElement | null = null
     let lcarsKeystroke: HTMLAudioElement | null = null
     let settingsOpen = $state(false)
-
-    function scrollFunction() {
-        if (!topBtn) return
-        if (document.body.scrollTop > 200 || document.documentElement.scrollTop > 200) {
-            topBtn.style.display = 'block'
-        } else {
-            topBtn.style.display = 'none'
-        }
-    }
-
-    function topFunction() {
-        document.body.scrollTop = 0 // Safari
-        document.documentElement.scrollTop = 0 // Chrome, Firefox, IE, Edge
-    }
 
     function handleResize() {
         updateIsMobile()
@@ -41,10 +26,6 @@
         cascade = makeCascade(24, 9)
         // Touch‑start listener (keeps the page from "ghost‑click" on mobile)
         document.addEventListener('touchstart', () => {}, false)
-
-        // Scroll handling
-        window.onscroll = scrollFunction
-        scrollFunction()
 
         const accordions = document.querySelectorAll<HTMLElement>('.accordion')
         accordions.forEach(acc => {
