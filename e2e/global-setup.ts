@@ -1,20 +1,34 @@
 // e2e/global-setup.ts
 import { hash } from '@node-rs/argon2'
 import Database from 'better-sqlite3'
+import { execSync } from 'child_process'
 import { drizzle } from 'drizzle-orm/better-sqlite3'
-import { migrate } from 'drizzle-orm/better-sqlite3/migrator'
+import { existsSync, unlinkSync } from 'fs'
 import { media, review, season, series, session, user } from '../src/lib/server/db/schema'
 
 async function globalSetup() {
-    const testDb = new Database('./test.db')
-    const db = drizzle(testDb)
-
-    // Run migrations
-    try {
-        migrate(db, { migrationsFolder: './drizzle' })
-    } catch (error) {
-        console.error('Error running migrations:', error)
+    const dbPath = './test.db'
+    
+    // Remove existing test db if it exists
+    if (existsSync(dbPath)) {
+        unlinkSync(dbPath)
     }
+
+    // Use drizzle-kit push to create schema
+    try {
+        execSync('npx drizzle-kit push', {
+            env: { ...process.env, DATABASE_URL: dbPath },
+            stdio: 'pipe' // Change to 'inherit' if you want to see drizzle-kit output
+        })
+        console.log('✅ Schema pushed successfully')
+    } catch (error) {
+        console.error('❌ Schema push failed:', error)
+        throw error
+    }
+
+    // Now connect and seed
+    const sqlite = new Database(dbPath)
+    const db = drizzle(sqlite)
 
     // Seed test data
     const passwordHash = await hash('testpassword123')
@@ -76,7 +90,7 @@ async function globalSetup() {
         mediaId: insertedMedia.id,
     })
 
-    testDb.close()
+    sqlite.close()
     console.log('✅ Test database seeded successfully')
 }
 
