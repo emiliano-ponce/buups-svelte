@@ -1,55 +1,40 @@
 // e2e/global-setup.ts
 import { hash } from '@node-rs/argon2'
 import Database from 'better-sqlite3'
-import { execSync } from 'child_process'
 import { drizzle } from 'drizzle-orm/better-sqlite3'
+import { migrate } from 'drizzle-orm/better-sqlite3/migrator'
 import { existsSync, unlinkSync } from 'fs'
 import * as schema from '../src/lib/server/db/schema'
 
 async function globalSetup() {
     const dbPath = './test.db'
     
-    // Remove existing test db if it exists
     if (existsSync(dbPath)) {
         unlinkSync(dbPath)
     }
 
-    // Use drizzle-kit push to create schema
-    try {
-        execSync('npx drizzle-kit push', {
-            env: { ...process.env, DATABASE_URL: dbPath },
-            stdio: 'pipe' // Change to 'inherit' if you want to see drizzle-kit output
-        })
-        console.log('✅ Schema pushed successfully')
-    } catch (error) {
-        console.error('❌ Schema push failed:', error)
-        throw error
-    }
-
-    // Now connect and seed
     const sqlite = new Database(dbPath)
     const db = drizzle(sqlite, { schema })
 
-    // Seed test data
+    migrate(db, { migrationsFolder: './drizzle' })
+    console.log('✅ Migrations applied successfully')
+
     const passwordHash = await hash('testpassword123')
 
     const { user, session, series, season, media, review } = schema
 
-    // Insert user
     const [insertedUser] = await db.insert(user).values({
         username: 'testuser',
         email: 'test@example.com',
         passwordHash,
     }).returning()
 
-    // Insert session
     await db.insert(session).values({
         id: 'test-session-id',
         userId: insertedUser.id,
         expiresAt: new Date(Date.now() + 1000 * 60 * 60 * 24 * 30), // 30 days
     })
 
-    // Insert series
     const [insertedSeries] = await db.insert(series).values({
         id: 1,
         title: 'Star Trek: The Original Series',
@@ -59,7 +44,6 @@ async function globalSetup() {
         tmdbStats: { voteCount: 1000, voteAvg: 8.5 },
     }).returning()
 
-    // Insert season
     const [insertedSeason] = await db.insert(season).values({
         id: 1,
         title: 'Season 1',
@@ -70,7 +54,6 @@ async function globalSetup() {
         tmdbStats: { voteCount: 500, voteAvg: 8.3 },
     }).returning()
 
-    // Insert media (episode)
     const [insertedMedia] = await db.insert(media).values({
         id: 1,
         title: 'The Man Trap',
@@ -84,7 +67,6 @@ async function globalSetup() {
         tmdbStats: { voteCount: 100, voteAvg: 7.8 },
     }).returning()
 
-    // Insert review
     await db.insert(review).values({
         body: 'A classic episode that sets the tone for the series!',
         score: 9,
