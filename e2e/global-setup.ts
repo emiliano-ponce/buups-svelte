@@ -4,7 +4,7 @@ import Database from 'better-sqlite3'
 import { execSync } from 'child_process'
 import { drizzle } from 'drizzle-orm/better-sqlite3'
 import { existsSync, unlinkSync } from 'fs'
-import { media, review, season, series, session, user } from '../src/lib/server/db/schema'
+import * as schema from '../src/lib/server/db/schema'
 
 async function globalSetup() {
     const dbPath = './test.db'
@@ -28,10 +28,12 @@ async function globalSetup() {
 
     // Now connect and seed
     const sqlite = new Database(dbPath)
-    const db = drizzle(sqlite)
+    const db = drizzle(sqlite, { schema })
 
     // Seed test data
     const passwordHash = await hash('testpassword123')
+
+    const { user, session, series, season, media, review } = schema
 
     // Insert user
     const [insertedUser] = await db.insert(user).values({
