@@ -1,10 +1,11 @@
-import { db } from '$lib/server/db'
+import { getDb } from '$lib/server/db'
 import { review } from '$lib/server/db/schema'
 import { json } from '@sveltejs/kit'
 import { and, desc, eq } from 'drizzle-orm'
 import type { RequestHandler } from './$types'
 
 export const GET: RequestHandler = async ({ url, params, locals }) => {
+    const db = getDb()
     if (!locals.user) {
         return json({ error: 'Unauthorized' }, { status: 401 })
     }

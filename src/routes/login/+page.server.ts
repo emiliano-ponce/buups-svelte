@@ -1,5 +1,5 @@
 import { createSession, generateSessionToken, setSessionTokenCookie } from '$lib/server/auth'
-import { db } from '$lib/server/db'
+import { getDb } from '$lib/server/db'
 import { user } from '$lib/server/db/schema'
 import { verifyPasswordHash } from '$lib/server/password'
 import { fail, redirect } from '@sveltejs/kit'
@@ -8,6 +8,7 @@ import type { Actions } from './$types'
 
 export const actions: Actions = {
     default: async event => {
+        const db = getDb()
         const data = await event.request.formData()
         const username = data.get('username')
         const password = data.get('password')

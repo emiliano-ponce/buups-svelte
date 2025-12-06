@@ -1,7 +1,8 @@
-import { db } from '$lib/server/db'
+import { getDb } from '$lib/server/db'
 import { redirect } from '@sveltejs/kit'
 
 export async function load({ locals, url }) {
+    const db = getDb()
     if (!locals.user) {
         throw redirect(303, '/login')
     }

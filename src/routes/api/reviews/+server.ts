@@ -1,4 +1,4 @@
-import { db } from '$lib/server/db'
+import { getDb } from '$lib/server/db'
 import { media, review, type Media, type Review, type User } from '$lib/server/db/schema'
 import { json } from '@sveltejs/kit'
 import { and, desc, eq, gte, SQL, sql } from 'drizzle-orm'
@@ -7,6 +7,7 @@ import { lte } from 'drizzle-orm/mysql-core/expressions'
 const REVIEWS_PER_PAGE = 10
 
 export async function GET({ locals, url }) {
+    const db = getDb()
     if (!locals.user) {
         return json({ error: 'Unauthorized' }, { status: 401 })
     }

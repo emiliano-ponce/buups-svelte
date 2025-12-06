@@ -1,10 +1,11 @@
-import { db } from '$lib/server/db'
+import { getDb } from '$lib/server/db'
 import { media } from '$lib/server/db/schema'
 import { error, json } from '@sveltejs/kit'
 import { eq } from 'drizzle-orm'
 import type { RequestHandler } from './$types'
 
 export const GET: RequestHandler = async ({ params }) => {
+    const db = getDb()
     const mediaId = parseInt(params.id)
 
     if (isNaN(mediaId)) {
