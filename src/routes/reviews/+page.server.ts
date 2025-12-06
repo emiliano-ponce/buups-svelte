@@ -1,4 +1,4 @@
-import { db } from '$lib/server/db'
+import { getDb } from '$lib/server/db'
 import { review } from '$lib/server/db/schema'
 import { clearReviewFromSheet, syncReviewToSheet } from '$lib/server/sheets-sync'
 import { fail, isRedirect, redirect } from '@sveltejs/kit'
@@ -7,6 +7,7 @@ import type { Actions } from './$types'
 
 export const actions: Actions = {
     create: async ({ request, locals }) => {
+        const db = getDb()
         const data = await request.formData()
         const body = data.get('body')
         const score = data.get('score')
@@ -81,6 +82,7 @@ export const actions: Actions = {
     },
 
     update: async ({ request, locals }) => {
+        const db = getDb()
         const user = locals.user
         if (!user) return fail(401, { message: 'Unauthorized' })
 
@@ -128,6 +130,7 @@ export const actions: Actions = {
     },
 
     delete: async ({ request, locals }) => {
+        const db = getDb()
         const user = locals.user
         if (!user) return fail(401, { message: 'Unauthorized' })
 

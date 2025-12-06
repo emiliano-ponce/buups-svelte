@@ -1,10 +1,11 @@
 // +layout.server.ts
-import { db } from '$lib/server/db'
+import { getDb } from '$lib/server/db'
 import { media, review, season, series, type Media } from '$lib/server/db/schema'
 import { and, asc, desc, eq, SQL } from 'drizzle-orm'
 import type { LayoutServerLoad } from './$types'
 
 export const load: LayoutServerLoad = async ({ locals }) => {
+    const db = getDb()
     if (!locals.user) {
         return {
             user: null,
