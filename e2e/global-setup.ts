@@ -10,7 +10,11 @@ async function globalSetup() {
     const db = drizzle(testDb)
 
     // Run migrations
-    migrate(db, { migrationsFolder: './drizzle' })
+    try {
+        migrate(db, { migrationsFolder: './drizzle' })
+    } catch (error) {
+        console.error('Error running migrations:', error)
+    }
 
     // Seed test data
     const passwordHash = await hash('testpassword123')
