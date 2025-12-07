@@ -70,16 +70,16 @@ export async function GET({ locals, url }) {
                 with: {
                     author: {
                         columns: { username: true },
-                    }
+                    },
                 },
                 where: reviewConditions.length > 0 ? and(...reviewConditions) : undefined,
             },
             series: {
-                columns: { acronym: true }
+                columns: { acronym: true },
             },
             season: {
-                columns: { number: true }
-            }
+                columns: { number: true },
+            },
         },
         where: mediaConditions.length > 0 ? and(...mediaConditions) : undefined,
         orderBy: [desc(media.id)],
@@ -94,12 +94,12 @@ export async function GET({ locals, url }) {
         media: {
             ...mediaItem,
             series: mediaItem.series,
-            season: mediaItem.season
+            season: mediaItem.season,
         } as MediaWithRelations,
         reviews: mediaItem.reviews.map(rev => ({
             ...rev,
-            author: rev.author.username
-        }))
+            author: rev.author.username,
+        })),
     }))
 
     return json({

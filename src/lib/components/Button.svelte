@@ -1,12 +1,12 @@
 <script lang="ts">
-    import { playSound } from "$lib/utils/audioHelpers"
-    import type { HTMLButtonAttributes } from "svelte/elements"
+    import { playSound } from '$lib/utils/audioHelpers'
+    import type { HTMLButtonAttributes } from 'svelte/elements'
     interface ButtonProps extends HTMLButtonAttributes {
         sound?: string
     }
     const { children, sound, ...rest }: ButtonProps = $props()
 
-    const handleClick: HTMLButtonAttributes['onclick'] = (e) => {
+    const handleClick: HTMLButtonAttributes['onclick'] = e => {
         if (sound) {
             playSound(sound)
         }
@@ -41,7 +41,8 @@
         -webkit-user-select: none;
         -ms-user-select: none;
         user-select: none;
-        &:hover, &:active {
+        &:hover,
+        &:active {
             animation: none;
         }
         &:hover {

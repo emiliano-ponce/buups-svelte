@@ -1,4 +1,5 @@
-TODO: 
+TODO:
+
 - Paginate reviews // v1
 - Add series, season, and user routes // v1
 - Update score bar styling // v1

@@ -1,4 +1,4 @@
-import { settings } from "./settings.svelte"
+import { settings } from './settings.svelte'
 
 export function playSound(audioId: string): HTMLAudioElement | undefined {
     const audio = document.getElementById(audioId) as HTMLAudioElement | null

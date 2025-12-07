@@ -176,9 +176,9 @@
 
             <div class="filter-group">
                 <label for="season-filter">Season</label>
-                <select 
-                    id="season-filter" 
-                    bind:value={() => seasonId, handleSeasonChange} 
+                <select
+                    id="season-filter"
+                    bind:value={() => seasonId, handleSeasonChange}
                     disabled={!seriesId || loadingSeasons}
                 >
                     <option value="">All</option>
@@ -198,9 +198,9 @@
                     <label for="media-filter">
                         {seasonId ? 'Episode' : 'Movie'}
                     </label>
-                    <select 
-                        id="media-filter" 
-                        bind:value={() => mediaId, handleMediaChange} 
+                    <select
+                        id="media-filter"
+                        bind:value={() => mediaId, handleMediaChange}
                         disabled={!seriesId || loadingMedia}
                     >
                         <option value="">All</option>

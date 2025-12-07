@@ -47,7 +47,7 @@ export type Review = typeof review.$inferSelect
 export const reviewRelations = relations(review, ({ one }) => ({
     author: one(user, {
         fields: [review.authorId],
-        references: [user.id], 
+        references: [user.id],
     }),
     media: one(media, {
         fields: [review.mediaId],
@@ -57,7 +57,7 @@ export const reviewRelations = relations(review, ({ one }) => ({
 
 // End Review
 
-const tmdbStats = text('tmdb_stats', { mode: 'json' }).$type<{ voteCount: number; voteAvg: number }>().notNull();
+const tmdbStats = text('tmdb_stats', { mode: 'json' }).$type<{ voteCount: number; voteAvg: number }>().notNull()
 
 // Media
 export const media = sqliteTable(
@@ -92,8 +92,8 @@ export type Media = typeof media.$inferSelect
 
 export const mediaRelations = relations(media, ({ one, many }) => ({
     season: one(season, {
-      fields: [media.seasonId],
-      references: [season.id],
+        fields: [media.seasonId],
+        references: [season.id],
     }),
     series: one(series, {
         fields: [media.seriesId],

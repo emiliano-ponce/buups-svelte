@@ -42,7 +42,9 @@ async function main() {
                 const { id: seasonId } = seasonRecord
 
                 // Insert episodes from seasons
-                const epsToInsert = season.episodes.filter(ep => ep.air_date).map(ep => ({ ...makeEpisode(ep), seriesId, seasonId }))
+                const epsToInsert = season.episodes
+                    .filter(ep => ep.air_date)
+                    .map(ep => ({ ...makeEpisode(ep), seriesId, seasonId }))
                 await db.insert(schema.media).values(epsToInsert).returning()
             }
 
@@ -103,7 +105,10 @@ const makeEpisode = (tmdbEp: TMDBEpisode): Omit<schema.Media, 'id' | 'seriesId' 
         imageUrl: makeImgUrl(still_path),
     }
 }
-const makeMovie = (tmdbMovie: TMDBMovie, movieNum: number): Omit<schema.Media, 'id' | 'seriesId' | 'seasonId' | 'createDt'> => {
+const makeMovie = (
+    tmdbMovie: TMDBMovie,
+    movieNum: number
+): Omit<schema.Media, 'id' | 'seriesId' | 'seasonId' | 'createDt'> => {
     const { overview, poster_path, release_date, title, vote_average, vote_count } = tmdbMovie
     return {
         date: release_date,
@@ -157,7 +162,10 @@ async function getTrekMedia(): Promise<TrekSeriesMap> {
                 }
                 const season = (await fetch(getSeasonUrl(seasonNum)).then(r => r.json())) as TMDBSeason
                 if (pilot) {
-                    const correctedSeason = { ...season, episodes: [{...pilot, episode_number: 0 }, ...season.episodes] }
+                    const correctedSeason = {
+                        ...season,
+                        episodes: [{ ...pilot, episode_number: 0 }, ...season.episodes],
+                    }
                     current.seasons.push(correctedSeason)
                 } else {
                     // only add seasons with air dates

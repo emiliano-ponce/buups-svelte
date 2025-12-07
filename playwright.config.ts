@@ -7,6 +7,6 @@ export default defineConfig({
         env: { DATABASE_URL: './test.db' },
     },
     testDir: 'e2e',
-	globalSetup: './e2e/global-setup.ts',
-	globalTeardown: './e2e/global-teardown.ts',
+    globalSetup: './e2e/global-setup.ts',
+    globalTeardown: './e2e/global-teardown.ts',
 })

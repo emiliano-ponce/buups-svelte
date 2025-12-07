@@ -1,15 +1,15 @@
 <script lang="ts">
     import { settings } from '$lib/utils/settings.svelte'
-    
+
     let { open = $bindable(false) } = $props()
     let popoverElement: HTMLDivElement | null = $state(null)
     let buttonElement: HTMLButtonElement | null = $state(null)
-    
+
     function handleVolumeChange(e: Event) {
         const target = e.target as HTMLInputElement
         settings.setVolume(parseFloat(target.value))
     }
-    
+
     function handleClickOutside(e: MouseEvent) {
         if (
             open &&
@@ -21,24 +21,18 @@
             open = false
         }
     }
-    
+
     $effect(() => {
         if (open) {
             document.addEventListener('click', handleClickOutside)
             return () => document.removeEventListener('click', handleClickOutside)
         }
     })
-    
+
     const volumePercentage = $derived(Math.round(settings.volume * 100))
 </script>
 
-<button 
-    bind:this={buttonElement}
-    onclick={() => open = !open} 
-    class="panel-1-button"
->
-    Settings
-</button>
+<button bind:this={buttonElement} onclick={() => (open = !open)} class="panel-1-button"> Settings </button>
 
 {#if open}
     <div bind:this={popoverElement} class="settings-popover">
@@ -75,7 +69,7 @@
         z-index: 1000;
         box-shadow: 0 4px 20px rgba(153, 153, 255, 0.3);
     }
-    
+
     .settings-header {
         font-size: 1.5rem;
         font-weight: bold;
@@ -83,13 +77,13 @@
         margin-bottom: 15px;
         text-transform: uppercase;
     }
-    
+
     .settings-content {
         display: flex;
         flex-direction: column;
         gap: 10px;
     }
-    
+
     label {
         display: flex;
         justify-content: space-between;
@@ -98,16 +92,16 @@
         font-size: 1.1rem;
         margin-bottom: 5px;
     }
-    
+
     .volume-label {
         text-transform: uppercase;
     }
-    
+
     .volume-value {
         font-weight: bold;
         color: var(--butterscotch, #ffcc99);
     }
-    
+
     .volume-slider {
         padding: 0.65rem 0;
         width: 100%;
@@ -118,7 +112,7 @@
         appearance: none;
         -webkit-appearance: none;
     }
-    
+
     .volume-slider::-webkit-slider-thumb {
         -webkit-appearance: none;
         appearance: none;
@@ -131,11 +125,11 @@
         position: relative;
         top: -0.45rem;
     }
-    
+
     .volume-slider::-webkit-slider-thumb:hover {
         background: var(--butterscotch, #ffcc99);
     }
-    
+
     .volume-slider::-moz-range-thumb {
         width: 1.25rem;
         height: 1.25rem;
@@ -145,19 +139,21 @@
         border: none;
         transition: background 0.2s;
     }
-    
+
     .volume-slider::-moz-range-thumb:hover {
         background: var(--butterscotch, #ffcc99);
     }
-    
+
     .volume-slider::-webkit-slider-runnable-track {
         width: 100%;
         height: 8px;
         border-radius: 5px;
-        background: linear-gradient(to right, 
-            var(--african-violet, #9999ff) 0%, 
-            var(--african-violet, #9999ff) calc(var(--volume) * 100%), 
-            #333 calc(var(--volume) * 100%), 
-            #333 100%);
+        background: linear-gradient(
+            to right,
+            var(--african-violet, #9999ff) 0%,
+            var(--african-violet, #9999ff) calc(var(--volume) * 100%),
+            #333 calc(var(--volume) * 100%),
+            #333 100%
+        );
     }
 </style>

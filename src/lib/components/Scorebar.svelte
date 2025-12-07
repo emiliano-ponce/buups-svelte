@@ -49,16 +49,16 @@
             console.error('Failed to load audio:', err)
         }
     })
-    
+
     function beginAudio() {
         if (!audioCtx || !powerOnBuffer || !powerHoldBuffer || isPlaying || !gainNode) return
         isPlaying = true
-        
+
         const powerOnSource = audioCtx.createBufferSource()
         powerOnSource.buffer = powerOnBuffer
         gainNode.gain.value = settings.volume
         powerOnSource.connect(gainNode)
-        
+
         powerHoldSource = audioCtx!.createBufferSource()
         powerHoldSource!.loop = true
         powerOnSource.onended = () => {

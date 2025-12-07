@@ -1,17 +1,17 @@
 {
-	"extends": "./.svelte-kit/tsconfig.json",
-	"compilerOptions": {
-		"allowJs": true,
-		"checkJs": true,
-		"esModuleInterop": true,
-		"forceConsistentCasingInFileNames": true,
-		"resolveJsonModule": true,
-		"skipLibCheck": true,
-		"sourceMap": true,
-		"strict": true,
-		"module": "esnext",
-		"moduleResolution": "bundler",
-		"noImplicitAny": false,
-	},
-	"include": ["src/**/*", "scripts/**/*", ".svelte-kit/ambient.d.ts"],
+    "extends": "./.svelte-kit/tsconfig.json",
+    "compilerOptions": {
+        "allowJs": true,
+        "checkJs": true,
+        "esModuleInterop": true,
+        "forceConsistentCasingInFileNames": true,
+        "resolveJsonModule": true,
+        "skipLibCheck": true,
+        "sourceMap": true,
+        "strict": true,
+        "module": "esnext",
+        "moduleResolution": "bundler",
+        "noImplicitAny": false
+    },
+    "include": ["src/**/*", "scripts/**/*", ".svelte-kit/ambient.d.ts"]
 }

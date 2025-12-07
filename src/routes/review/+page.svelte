@@ -1,16 +1,12 @@
 <script lang="ts">
-    import ReviewForm from "$lib/components/ReviewForm.svelte"
-    import type { PageProps } from "../$types"
-    
+    import ReviewForm from '$lib/components/ReviewForm.svelte'
+    import type { PageProps } from '../$types'
+
     let { data }: PageProps = $props()
 </script>
 
 <div class="container">
-    <ReviewForm
-        media={data.nextMedia}
-        user={data.user}
-        allSeries={data.allSeries}
-    />
+    <ReviewForm media={data.nextMedia} user={data.user} allSeries={data.allSeries} />
 </div>
 
 <style>

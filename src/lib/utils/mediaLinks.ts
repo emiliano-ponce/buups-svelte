@@ -1,4 +1,4 @@
-import type { MediaWithRelations } from "../../routes/api/reviews/+server"
+import type { MediaWithRelations } from '../../routes/api/reviews/+server'
 
 export function getMediaLink(media: MediaWithRelations): string {
     const { type, series, season, episode } = media
@@ -22,7 +22,10 @@ export function getMediaBreadcrumbs(media: MediaWithRelations) {
 
     if (type === 'episode' && season) {
         crumbs.push({ label: `S${season.number}`, href: `/series/${series.acronym}/season/${season.number}` })
-        crumbs.push({ label: `EP${episode}`, href: `/series/${series.acronym}/season/${season.number}/episode/${episode}` })
+        crumbs.push({
+            label: `EP${episode}`,
+            href: `/series/${series.acronym}/season/${season.number}/episode/${episode}`,
+        })
     }
 
     if (type === 'movie' || type === 'special') {

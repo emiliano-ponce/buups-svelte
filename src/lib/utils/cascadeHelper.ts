@@ -17,16 +17,11 @@ function themedRand(): string {
     }
 }
 
+type Cell = string
+type Column = Cell[]
+export type CascadeData = Column[]
 
-type Cell = string;
-type Column = Cell[];
-export type CascadeData = Column[];
-
-export function makeCascade(
-    colCount = 24,
-    rowsPerCol = 9
-    
-): CascadeData {
+export function makeCascade(colCount = 24, rowsPerCol = 9): CascadeData {
     const data: CascadeData = []
 
     for (let c = 0; c < colCount; ++c) {

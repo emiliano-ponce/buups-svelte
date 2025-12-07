@@ -14,7 +14,7 @@ export const GET: RequestHandler = async ({ url, params, locals }) => {
     if (isNaN(mediaId)) {
         return json({ error: 'Invalid media ID' }, { status: 400 })
     }
-    
+
     const authorId = url.searchParams.get('authorId') ?? locals.user.id
 
     if (!mediaId || !authorId) {

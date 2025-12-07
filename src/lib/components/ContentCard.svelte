@@ -13,7 +13,15 @@
         thickness?: number
     }
 
-    let { title, subtitle, className = '', variant = 'full', theme = 'default', children, thickness: _thickness }: ContentCardProps = $props()
+    let {
+        title,
+        subtitle,
+        className = '',
+        variant = 'full',
+        theme = 'default',
+        children,
+        thickness: _thickness,
+    }: ContentCardProps = $props()
 
     const showSide = {
         left: ['full', 'left', 'sides'].includes(variant),
