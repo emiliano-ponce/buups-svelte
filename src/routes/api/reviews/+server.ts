@@ -1,10 +1,10 @@
 import { getDb } from '$lib/server/db'
-import { media, review, type Media, type Review, type User } from '$lib/server/db/schema'
+import { media, review, user, type Media, type Review, type User } from '$lib/server/db/schema'
 import { json } from '@sveltejs/kit'
 import { and, desc, eq, gte, SQL, sql } from 'drizzle-orm'
 import { lte } from 'drizzle-orm/mysql-core/expressions'
 
-const REVIEWS_PER_PAGE = 10
+const MEDIA_PER_PAGE = 10
 
 export async function GET({ locals, url }) {
     const db = getDb()
@@ -34,6 +34,21 @@ export async function GET({ locals, url }) {
         mediaConditions.push(sql`${media.title} LIKE ${`%${titleSearch.trim()}%`}`)
     }
 
+    // Add condition to filter media with reviews from both users
+    mediaConditions.push(sql`${media.id} IN (
+        SELECT r1.media_id
+        FROM ${review} r1
+        INNER JOIN ${user} u1 ON r1.author_id = u1.id
+        WHERE u1.username = 'Emiliano'
+        AND EXISTS (
+            SELECT 1
+            FROM ${review} r2
+            INNER JOIN ${user} u2 ON r2.author_id = u2.id
+            WHERE r2.media_id = r1.media_id
+            AND u2.username = 'jars'
+        )
+    )`)
+
     const reviewConditions: SQL<unknown>[] = []
 
     if (scoreFilter) {
@@ -44,70 +59,48 @@ export async function GET({ locals, url }) {
             compareFn = gte
         }
 
-        const subqueryConditions: SQL<unknown>[] = [compareFn(review.score, parseInt(scoreFilter))]
-
-        reviewConditions.push(sql`${review.mediaId} IN (
-            SELECT DISTINCT ${review.mediaId}
-            FROM ${review}
-            WHERE ${and(...subqueryConditions)}
-        )`)
+        reviewConditions.push(compareFn(review.score, parseInt(scoreFilter)))
     }
 
-    const conditions = [...mediaConditions, ...reviewConditions]
+    const offset = (page - 1) * MEDIA_PER_PAGE
 
-    const offset = (page - 1) * REVIEWS_PER_PAGE
-
-    const reviewsWithMedia = await db.query.review.findMany({
+    const mediaWithReviews = await db.query.media.findMany({
         with: {
-            media: {
+            reviews: {
                 with: {
-                    series: {
-                        columns: { acronym: true },
-                    },
-                    season: {
-                        columns: { number: true },
-                    },
+                    author: {
+                        columns: { username: true },
+                    }
                 },
+                where: reviewConditions.length > 0 ? and(...reviewConditions) : undefined,
             },
-            author: {
-                columns: { username: true },
+            series: {
+                columns: { acronym: true }
             },
+            season: {
+                columns: { number: true }
+            }
         },
-        where: conditions.length > 0 ? and(...conditions) : undefined,
-        orderBy: [desc(review.createDt), desc(review.mediaId)],
-        limit: REVIEWS_PER_PAGE + 1,
+        where: mediaConditions.length > 0 ? and(...mediaConditions) : undefined,
+        orderBy: [desc(media.id)],
+        limit: MEDIA_PER_PAGE + 1,
         offset: offset,
     })
 
-    const hasMore = reviewsWithMedia.length > REVIEWS_PER_PAGE
+    const hasMore = mediaWithReviews.length > MEDIA_PER_PAGE
+    const paginatedMedia = hasMore ? mediaWithReviews.slice(0, MEDIA_PER_PAGE) : mediaWithReviews
 
-    const groupedReviews: GroupedReviews = Array.from(
-        reviewsWithMedia
-            .reduce((map, result) => {
-                const { media, author, ...review } = result
-
-                const existing = map.get(media.id)
-                if (existing) {
-                    existing.reviews.push({
-                        ...review,
-                        author: author.username,
-                    })
-                } else {
-                    map.set(media.id, {
-                        media: media,
-                        reviews: [
-                            {
-                                ...review,
-                                author: author.username,
-                            },
-                        ],
-                    })
-                }
-
-                return map
-            }, new Map<number, GroupedReviews[number]>())
-            .values()
-    )
+    const groupedReviews: GroupedReviews = paginatedMedia.map(mediaItem => ({
+        media: {
+            ...mediaItem,
+            series: mediaItem.series,
+            season: mediaItem.season
+        } as MediaWithRelations,
+        reviews: mediaItem.reviews.map(rev => ({
+            ...rev,
+            author: rev.author.username
+        }))
+    }))
 
     return json({
         reviews: groupedReviews,
@@ -124,10 +117,10 @@ export type GetReviewsResponse = {
 
 export type MediaWithRelations = Media & {
     series: { acronym: string }
-    season: { number: number } | null
+    season: { number: true } | null
 }
 
-export type DisplayReview = Review & { author: User['username'] }
+export type DisplayReview = Omit<Review, 'author'> & { author: User['username'] }
 
 export type GroupedReviews = {
     media: MediaWithRelations
