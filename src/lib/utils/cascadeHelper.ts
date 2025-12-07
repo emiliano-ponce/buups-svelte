@@ -6,13 +6,13 @@ function randInt(min: number, max: number, pad?: number): string {
 function themedRand(): string {
     const roll = Math.random()
     if (roll < 0.2) {
-        // 20 % chance: a short 2‑digit code, padded to 2
+        // 20% chance: a short 2‑digit code, padded to 2
         return randInt(0, 99, 2)
     } else if (roll < 0.7) {
-        // 50 % chance: a medium 4‑digit code
+        // 50% chance: a medium 4‑digit code
         return randInt(0, 9999, 4)
     } else {
-        // 30 % chance: a larger 6‑digit number
+        // 30% chance: a larger 6‑digit number
         return randInt(0, 999999, 6)
     }
 }

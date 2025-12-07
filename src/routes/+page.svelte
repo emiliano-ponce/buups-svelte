@@ -1,10 +1,12 @@
 <script lang="ts">
     import { goto } from '$app/navigation'
+    import { resolve } from '$app/paths'
     import { page } from '$app/stores'
     import Button from '$lib/components/Button.svelte'
     import MediaFilters from '$lib/components/MediaFilters.svelte'
     import ReviewList from '$lib/components/ReviewList.svelte'
     import { onMount } from 'svelte'
+    import { SvelteURLSearchParams } from 'svelte/reactivity'
     import type { PageProps } from './$types'
     import type { GetReviewsResponse, GroupedReviews } from './api/reviews/+server'
 
@@ -19,23 +21,23 @@
     let currentPage = $state(1)
     let observer: IntersectionObserver | null = null
     let loadMoreTrigger: HTMLElement | null = $state(null)
+    const params = new SvelteURLSearchParams($page.url.searchParams)
 
     let currentFilters = $state('')
 
     function applyFilters() {
         const values = filterRef.getValues()
-        const params = new URLSearchParams()
 
         if (values.seriesId) params.set('series', values.seriesId.toString())
         if (values.seasonId) params.set('season', values.seasonId.toString())
         if (values.score) params.set('score', values.score)
         if (values.title?.trim()) params.set('title', values.title.trim())
 
-        goto(`?${params.toString()}`, { keepFocus: true })
+        goto(resolve(`?${params.toString()}`, {}), { keepFocus: true })
     }
 
     async function clearFilters() {
-        await goto('?', { keepFocus: true })
+        await goto(resolve('?', {}), { keepFocus: true })
     }
 
     function toggleFilters() {
@@ -48,7 +50,6 @@
         loading = true
 
         try {
-            const params = new URLSearchParams($page.url.searchParams)
             params.set('page', pageNum.toString())
 
             const response = await fetch(`/api/reviews?${params.toString()}`)

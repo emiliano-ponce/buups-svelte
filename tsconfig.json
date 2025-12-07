@@ -13,5 +13,6 @@
         "moduleResolution": "bundler",
         "noImplicitAny": false
     },
-    "include": ["src/**/*", "scripts/**/*", ".svelte-kit/ambient.d.ts"]
+    "include": ["*.ts", "e2e/**/*", ".storybook/**/*", "src/**/*", "scripts/**/*", ".svelte-kit/ambient.d.ts"],
+    "exclude": ["node_modules/*", "__sapper__/*", "public/*"]
 }

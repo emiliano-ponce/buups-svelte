@@ -1,4 +1,5 @@
 <script lang="ts">
+    import { resolve } from '$app/paths'
     import { getIsMobile } from '$lib/utils/global.svelte'
     import type { DisplayReview } from '../../routes/api/reviews/+server'
     import Scorebar from './Scorebar.svelte'
@@ -9,13 +10,11 @@
     let { review }: ReviewProps = $props()
 
     let expanded = $state(false)
-
-    const scorePercentage = $derived((review.score / 10) * 100)
 </script>
 
 <div class="review">
     <div class="review-header">
-        <a class="author" href="/users/{review.author}">
+        <a class="author" href={resolve('/users/{review.author}', {})}>
             <h4>{review.author}</h4>
         </a>
         <Scorebar score={review.score} />

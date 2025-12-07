@@ -14,10 +14,10 @@
 
     const { media, user, allSeries }: ReviewFormProps = $props()
 
-    let selectedSeriesId = $state<number | null>(media?.seriesId ?? null)
-    let selectedSeasonId = $state<number | null>(media?.seasonId ?? null)
-    let selectedMediaId = $state<number | null>(media?.id ?? null)
-    let currentMedia = $state<Media | null>(media)
+    let selectedSeriesId = $derived<number | null>(media?.seriesId ?? null)
+    let selectedSeasonId = $derived<number | null>(media?.seasonId ?? null)
+    let selectedMediaId = $derived<number | null>(media?.id ?? null)
+    let currentMedia = $derived<Media | null>(media)
 
     // Existing review state
     let existingReviews = $state<Review[]>([])
@@ -214,7 +214,7 @@
                                 bind:value={() => selectedReviewId, handleReviewSelect}
                             >
                                 <option value="new">Add New</option>
-                                {#each existingReviews as review, index}
+                                {#each existingReviews as review, index (review.id)}
                                     <option value={review.id}>
                                         Review {existingReviews.length - index} (Score: {review.score})
                                     </option>

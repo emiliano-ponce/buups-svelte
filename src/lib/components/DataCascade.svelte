@@ -11,10 +11,10 @@
 </script>
 
 <div class="data-cascade-wrapper {className}" id={frozen ? 'frozen' : 'default'}>
-    {#each data as column}
+    {#each data as column, i (i)}
         <div class="data-column">
-            {#each column as cell, i}
-                <div data-cascade-row class="dc-row-{i + 1}">
+            {#each column as cell, ii (cell)}
+                <div data-cascade-row class="dc-row-{ii + 1}">
                     {cell}
                 </div>
             {/each}

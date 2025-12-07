@@ -36,13 +36,13 @@ async function main() {
         try {
             const testPassword = await hashPassword('test')
             // Get or create users with better handling for duplicates
-            let jUser = await getOrCreateUser(db, {
+            const jUser = await getOrCreateUser(db, {
                 username: 'jars',
                 email: 'jrae.seitz@gmail.com',
                 passwordHash: testPassword,
             })
 
-            let eUser = await getOrCreateUser(db, {
+            const eUser = await getOrCreateUser(db, {
                 username: 'Emiliano',
                 email: 'wumbo10@proton.me',
                 passwordHash: testPassword,

@@ -12,7 +12,7 @@
 </script>
 
 <div>
-    {#each reviews as group}
+    {#each reviews as group (group.media.id)}
         {@const breadcrumbs = getMediaBreadcrumbs(group.media)}
 
         <ContentCard title={group.media.title}>
@@ -26,7 +26,7 @@
                 </span>
             </div>
             <hr class="lcars-bar" />
-            {#each group.reviews as review, index}
+            {#each group.reviews as review (review.id)}
                 <Review {review} />
             {/each}
         </ContentCard>

@@ -1,4 +1,6 @@
 <script lang="ts">
+    import { resolve } from '$app/paths'
+    
     interface MediaLinksProps {
         breadcrumbs: { label: string; href: string }[]
     }
@@ -7,9 +9,9 @@
 </script>
 
 <div class="media-links">
-    {#each breadcrumbs as crumb, i}
+    {#each breadcrumbs as crumb, i (crumb.href)}
         {#if i > 0}<span class="separator"></span>{/if}
-        <a href={crumb.href}>{crumb.label}</a>
+        <a href={resolve(crumb.href, {})}>{crumb.label}</a>
     {/each}
 </div>
 

@@ -1,4 +1,6 @@
 <script lang="ts">
+    import { resolve } from '$app/paths'
+
     interface GalleryItem {
         src: string
         alt?: string
@@ -16,10 +18,10 @@
 </script>
 
 <ul class="gallery {className}" class:thumbs>
-    {#each items as item}
+    {#each items as item (item.src)}
         <li>
             {#if item.href}
-                <a href={item.href} target="_blank" rel="noopener noreferrer">
+                <a href={resolve(item.href, {})} target="_blank" rel="noopener noreferrer">
                     <img src={item.src} alt={item.alt || ''} />
                 </a>
             {:else}

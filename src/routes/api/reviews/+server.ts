@@ -1,7 +1,7 @@
 import { getDb } from '$lib/server/db'
 import { media, review, user, type Media, type Review, type User } from '$lib/server/db/schema'
 import { json } from '@sveltejs/kit'
-import { and, desc, eq, gte, SQL, sql } from 'drizzle-orm'
+import { and, desc, eq, gte, sql, type SQL } from 'drizzle-orm'
 import { lte } from 'drizzle-orm/mysql-core/expressions'
 
 const MEDIA_PER_PAGE = 10

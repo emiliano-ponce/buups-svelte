@@ -1,5 +1,6 @@
 <script lang="ts">
     import Button from '$lib/components/Button.svelte'
+    import DataCascade from '$lib/components/DataCascade.svelte'
     import LogoutButton from '$lib/components/LogoutButton.svelte'
     import Navigation from '$lib/components/Navigation.svelte'
     import ScrollToTop from '$lib/components/ScrollToTop.svelte'
@@ -78,15 +79,7 @@
             <div class="banner">LCARS LOG ENTRY</div>
 
             <div class="data-cascade-button-group">
-                <div class="data-cascade-wrapper" id="default">
-                    {#each cascade as column}
-                        <div class="data-column">
-                            {#each column as cell, i}
-                                <div data-cascade-row class={'dc-row-' + (i + 1)}>{cell}</div>
-                            {/each}
-                        </div>
-                    {/each}
-                </div>
+                <DataCascade data={cascade} />
 
                 <Navigation>
                     <Button --button-color="var(--african-violet)" onclick={() => playSoundAndRedirect('beep2', '/')}

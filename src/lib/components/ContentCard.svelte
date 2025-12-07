@@ -23,6 +23,7 @@
         thickness: _thickness,
     }: ContentCardProps = $props()
 
+    // svelte-ignore state_referenced_locally
     const showSide = {
         left: ['full', 'left', 'sides'].includes(variant),
         right: ['full', 'right', 'sides'].includes(variant),
@@ -33,7 +34,9 @@
     const themes = {
         default: ['var(--bluey)', 'var(--african-violet)', 'var(--orange)', 'var(--butterscotch)', 'var(--red)'],
     }
+    // svelte-ignore state_referenced_locally
     const themeValues: string[] = themes[theme]
+    // svelte-ignore state_referenced_locally
     const baseThickness = _thickness ?? 1
     const thickness = getIsMobile() ? '0.75rem' : `${baseThickness}rem`
     const thicknessLg = getIsMobile() ? '2rem' : `${baseThickness * 2.5}rem`

@@ -46,11 +46,11 @@
         { value: '10', label: '10+' },
     ]
 
-    let seriesId = $state<string>(initialValues.seriesId ?? '')
-    let seasonId = $state<string>(initialValues.seasonId ?? '')
-    let mediaId = $state<string>(initialValues.mediaId ?? '')
-    let minScore = $state<string>(initialValues.score ?? '')
-    let titleQuery = $state<string>(initialValues.title ?? '')
+    let seriesId = $derived<string>(initialValues.seriesId ?? '')
+    let seasonId = $derived<string>(initialValues.seasonId ?? '')
+    let mediaId = $derived<string>(initialValues.mediaId ?? '')
+    let minScore = $derived<string>(initialValues.score ?? '')
+    let titleQuery = $derived<string>(initialValues.title ?? '')
 
     let availableSeasons = $state<Season[]>([])
     let availableMedia = $state<Media[]>([])
@@ -124,7 +124,7 @@
     }
 
     function handleSeasonChange(value: string) {
-        value === 'movie' ? (seasonId = '') : (seasonId = value)
+        seasonId = value === 'movie' ? '' : value
         mediaId = ''
         notifyChange()
     }
@@ -168,7 +168,7 @@
                 <label for="series">Series</label>
                 <select id="series" bind:value={() => seriesId, handleSeriesChange}>
                     <option value="">All</option>
-                    {#each allSeries as series}
+                    {#each allSeries as series (series.id)}
                         <option value={`${series.id}`}>{series.title} ({series.acronym})</option>
                     {/each}
                 </select>
@@ -185,7 +185,7 @@
                     {#if loadingSeasons}
                         <option disabled>Loading...</option>
                     {:else}
-                        {#each availableSeasons as season}
+                        {#each availableSeasons as season (season.id)}
                             <option value={`${season.id}`}>Season {season.number}</option>
                         {/each}
                         <option value="movie">Movies</option>
@@ -207,7 +207,7 @@
                         {#if loadingMedia}
                             <option disabled>Loading...</option>
                         {:else}
-                            {#each availableMedia as m}
+                            {#each availableMedia as m (m.id)}
                                 <option value={`${m.id}`}>
                                     {#if m.type === 'episode'}
                                         {m.episode}
@@ -226,7 +226,7 @@
                     <label for="score-filter">Score</label>
                     <select id="score-filter" bind:value={() => minScore, handleScoreChange}>
                         <option value="">All</option>
-                        {#each scoreOptions as option}
+                        {#each scoreOptions as option (option.value)}
                             <option value={option.value}>{option.label}</option>
                         {/each}
                     </select>

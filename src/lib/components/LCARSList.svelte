@@ -12,14 +12,14 @@
 
     let { items = [], children, variant = 'standard', bulletColor, textColor, class: className = '' }: Props = $props()
 
-    const listClass = variant === 'alt' ? 'lcars-list-2' : 'lcars-list'
+    const listClass = $derived(variant === 'alt' ? 'lcars-list-2' : 'lcars-list')
 </script>
 
 <ul class="{listClass} {className}" style:--bullet-color={bulletColor} style:--text-color={textColor}>
     {#if children}
         {@render children()}
     {:else}
-        {#each items as item}
+        {#each items as item, i (i)}
             <li>{item}</li>
         {/each}
     {/if}

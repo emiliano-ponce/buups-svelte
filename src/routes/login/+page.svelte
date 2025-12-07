@@ -18,6 +18,7 @@
         <form method="POST" use:enhance>
             <div class="form-group">
                 <label for="username">Username</label>
+                <!-- svelte-ignore a11y-autofocus -->
                 <input type="text" id="username" name="username" required autofocus />
             </div>
 

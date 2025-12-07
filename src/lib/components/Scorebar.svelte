@@ -6,7 +6,7 @@
 
     let isDragging = $state(false)
     let barRef: HTMLDivElement | null = $state(null)
-    let inputValue = $state(score)
+    let inputValue = $derived(score)
 
     const scorePercentage = $derived((score / 10) * 100)
 
@@ -137,10 +137,6 @@
         inputValue = value
         onChange(value)
     }
-
-    $effect(() => {
-        inputValue = score
-    })
 
     $effect(() => {
         if (isDragging) {
