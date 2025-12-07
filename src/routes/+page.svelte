@@ -33,11 +33,15 @@
         if (values.score) params.set('score', values.score)
         if (values.title?.trim()) params.set('title', values.title.trim())
 
-        goto(resolve(`?${params.toString()}`, {}), { keepFocus: true })
+        goto(resolve(`${$page.url.pathname}?${params.toString()}`, {}), { keepFocus: true })
     }
 
     async function clearFilters() {
-        await goto(resolve('?', {}), { keepFocus: true })
+        params.delete('series')
+        params.delete('season')
+        params.delete('score')
+        params.delete('title')
+        await goto(resolve($page.url.pathname, {}), { keepFocus: true })
     }
 
     function toggleFilters() {

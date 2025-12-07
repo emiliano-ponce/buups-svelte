@@ -52,7 +52,6 @@ async function main() {
 
     try {
         console.info('🔄 Starting Sheet → App sync')
-        console.info('   (App data wins on conflicts)\n')
 
         if (!process.env.DATABASE_URL) throw new Error('DATABASE_URL is not set')
         const client = createClient({ url: process.env.DATABASE_URL })
@@ -194,25 +193,28 @@ async function main() {
     }
 }
 
-/**
- * Sync a single review - only creates if doesn't exist (app wins)
- * Returns true if created, false if skipped
- */
 async function syncReview(
     db: LibSQLDatabase<typeof schema> & { $client: Client },
     data: { authorId: string; mediaId: number; score: number; body: string }
 ): Promise<boolean> {
-    // Check if review already exists in app
     const existing = await db.query.review.findFirst({
         where: and(eq(schema.review.authorId, data.authorId), eq(schema.review.mediaId, data.mediaId)),
+        with: { media: true, author: true },
     })
 
-    // App wins - if review exists, don't overwrite
     if (existing) {
-        return false
+        if (existing.body !== data.body) {
+            console.log(
+                `   ⚠️  Review discrepancy, updating ${existing.author.username}'s ${existing.media.title} review`
+            )
+            await db
+                .update(schema.review)
+                .set({ authorId: data.authorId, mediaId: data.mediaId, score: data.score, body: data.body })
+                .where(eq(schema.review.id, existing.id))
+            return true
+        } else return false
     }
 
-    // Create new review from sheet
     await db.insert(schema.review).values({
         authorId: data.authorId,
         mediaId: data.mediaId,
