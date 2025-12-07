@@ -13,7 +13,7 @@
 <div class="data-cascade-wrapper {className}" id={frozen ? 'frozen' : 'default'}>
     {#each data as column, i (i)}
         <div class="data-column">
-            {#each column as cell, ii (cell)}
+            {#each column as cell, ii (`${cell}-${ii}`)}
                 <div data-cascade-row class="dc-row-{ii + 1}">
                     {cell}
                 </div>
@@ -39,7 +39,6 @@
     .data-column {
         display: grid;
         grid-template-columns: 1fr;
-        margin-top: 4px;
         text-align: right;
         font-size: var(--dc-font-size);
         line-height: 1;
