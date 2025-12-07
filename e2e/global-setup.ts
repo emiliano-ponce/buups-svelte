@@ -1,7 +1,7 @@
 // e2e/global-setup.ts
-import Database from 'better-sqlite3'
-import { drizzle } from 'drizzle-orm/better-sqlite3'
-import { migrate } from 'drizzle-orm/better-sqlite3/migrator'
+import { createClient } from '@libsql/client'
+import { drizzle } from 'drizzle-orm/libsql'
+import { migrate } from 'drizzle-orm/libsql/migrator'
 import { existsSync, unlinkSync } from 'fs'
 import * as schema from '../src/lib/server/db/schema'
 import { hashPassword } from '../src/lib/server/password'
@@ -13,7 +13,7 @@ async function globalSetup() {
         unlinkSync(dbPath)
     }
 
-    const sqlite = new Database(dbPath)
+    const sqlite = createClient({ url: `file:${dbPath}` })
     const db = drizzle(sqlite, { schema })
 
     migrate(db, { migrationsFolder: './drizzle' })

@@ -17,7 +17,7 @@ export function getDb() {
             const client = createClient({ url: DB_URL, authToken: env.DATABASE_AUTH_TOKEN })
             _db = drizzle(client, { schema })
         } else {
-            const client = createClient({ url: `file:${DB_URL}` })
+            const client = createClient({ url: DB_URL })
             _db = drizzle(client, { schema })
         }
     }

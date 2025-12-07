@@ -1,7 +1,7 @@
 import { hashPassword } from '$lib/server/password'
-import Database from 'better-sqlite3'
+import { createClient } from '@libsql/client'
 import * as dotenv from 'dotenv'
-import { drizzle } from 'drizzle-orm/better-sqlite3'
+import { drizzle } from 'drizzle-orm/libsql'
 import { google } from 'googleapis'
 import * as schema from '../src/lib/server/db/schema'
 
@@ -14,9 +14,10 @@ requiredEnvVars.forEach(val => {
 async function main() {
     try {
         console.info('Creating DB client')
-        const client = new Database(process.env.DATABASE_URL)
+        if (!process.env.DATABASE_URL) throw new Error('DATABASE_URL is not set')
+        const client = createClient({ url: process.env.DATABASE_URL })
         // Enable WAL mode for better performance and transaction support
-        client.pragma('journal_mode = WAL')
+        client.execute('PRAGMA journal_mode = WAL')
         const db = drizzle<typeof schema>(client, { schema })
         console.info('DB Client created!')
 
@@ -30,7 +31,7 @@ async function main() {
         if (!spreadsheetData.data.sheets) throw new Error('No sheets found in spreadsheet')
 
         // Begin true transaction
-        await client.exec('BEGIN TRANSACTION')
+        await client.execute('BEGIN TRANSACTION')
 
         try {
             const testPassword = await hashPassword('test')
@@ -216,11 +217,11 @@ async function main() {
             }
 
             // Commit the transaction if everything succeeded
-            await client.exec('COMMIT')
+            await client.execute('COMMIT')
             console.log('Import completed successfully')
         } catch (error) {
             // Roll back the transaction on error
-            await client.exec('ROLLBACK')
+            await client.execute('ROLLBACK')
             console.error('Transaction rolled back due to error:', error)
             throw error // Re-throw for the outer catch block
         }

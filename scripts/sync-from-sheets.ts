@@ -8,10 +8,10 @@
  * Or set up as a cron job for periodic sync
  */
 
-import Database from 'better-sqlite3'
+import { createClient, type Client } from '@libsql/client'
 import * as dotenv from 'dotenv'
 import { and, eq } from 'drizzle-orm'
-import { BetterSQLite3Database, drizzle } from 'drizzle-orm/better-sqlite3'
+import { drizzle, LibSQLDatabase } from 'drizzle-orm/libsql'
 import { google } from 'googleapis'
 import * as schema from '../src/lib/server/db/schema'
 
@@ -54,8 +54,9 @@ async function main() {
         console.info('🔄 Starting Sheet → App sync')
         console.info('   (App data wins on conflicts)\n')
 
-        const client = new Database(process.env.DATABASE_URL)
-        client.pragma('journal_mode = WAL')
+        if (!process.env.DATABASE_URL) throw new Error('DATABASE_URL is not set')
+        const client = createClient({ url: process.env.DATABASE_URL })
+        client.execute('PRAGMA journal_mode = WAL')
         const db = drizzle(client, { schema })
 
         const sheets = google.sheets({ version: 'v4', auth: process.env.GOOGLE_SHEETS_KEY })
@@ -198,7 +199,7 @@ async function main() {
  * Returns true if created, false if skipped
  */
 async function syncReview(
-    db: BetterSQLite3Database<typeof schema> & { $client: Database.Database },
+    db: LibSQLDatabase<typeof schema> & { $client: Client },
     data: { authorId: string; mediaId: number; score: number; body: string }
 ): Promise<boolean> {
     // Check if review already exists in app

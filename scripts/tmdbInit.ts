@@ -1,6 +1,6 @@
-import Database from 'better-sqlite3'
+import { createClient } from '@libsql/client'
 import * as dotenv from 'dotenv'
-import { drizzle } from 'drizzle-orm/better-sqlite3'
+import { drizzle } from 'drizzle-orm/libsql'
 import * as schema from '../src/lib/server/db/schema'
 import { TMDBIds } from '../src/lib/utils/tmdbData'
 
@@ -14,7 +14,8 @@ requiredEnvVars.forEach(val => {
 async function main() {
     try {
         console.info('Creating DB client')
-        const client = new Database(process.env.DATABASE_URL)
+        if (!process.env.DATABASE_URL) throw new Error('DATABASE_URL is not set')
+        const client = createClient({ url: process.env.DATABASE_URL })
         const db = drizzle<typeof schema>(client, { schema })
         console.info('DB Client created!')
 
