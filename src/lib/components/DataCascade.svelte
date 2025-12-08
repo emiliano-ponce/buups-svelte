@@ -43,6 +43,7 @@
         font-size: var(--dc-font-size);
         line-height: 1;
         color: black;
+        margin-top: 2px;
     }
 
     .data-column > div {

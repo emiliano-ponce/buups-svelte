@@ -201,6 +201,7 @@
         position: relative;
         padding: 1rem;
         min-height: 200px;
+        height: fit-content;
     }
 
     @media (max-width: 768px) {

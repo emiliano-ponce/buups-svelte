@@ -17,7 +17,6 @@ export const actions: Actions = {
             return fail(400, { error: 'Username and password are required' })
         }
 
-        // Find user
         const [existingUser] = await db
             .select()
             .from(user)
@@ -27,14 +26,23 @@ export const actions: Actions = {
             return fail(400, { error: 'Invalid username or password' })
         }
 
-        // Verify password
         const validPassword = await verifyPasswordHash(existingUser.passwordHash, password as string)
 
         if (!validPassword) {
             return fail(400, { error: 'Invalid username or password' })
         }
 
-        // Create session
+        if (existingUser.requirePasswordChange) {
+            event.cookies.set('pending_password_change', existingUser.id, {
+                path: '/',
+                httpOnly: true,
+                secure: process.env.NODE_ENV === 'production',
+                sameSite: 'lax',
+                maxAge: 60 * 15,
+            })
+            redirect(303, '/change-password')
+        }
+
         const token = generateSessionToken()
         const session = await createSession(token, existingUser.id)
         setSessionTokenCookie(event, token, session.expiresAt)

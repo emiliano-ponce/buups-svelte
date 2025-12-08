@@ -1,13 +1,20 @@
 {
-    "version": "7",
-    "dialect": "sqlite",
-    "entries": [
-        {
-            "idx": 0,
-            "version": "6",
-            "when": 1765034965157,
-            "tag": "0000_brief_ultron",
-            "breakpoints": true
-        }
-    ]
+  "version": "7",
+  "dialect": "sqlite",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "6",
+      "when": 1765034965157,
+      "tag": "0000_brief_ultron",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "6",
+      "when": 1765168241197,
+      "tag": "0001_flowery_sentry",
+      "breakpoints": true
+    }
+  ]
 }

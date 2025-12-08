@@ -10,11 +10,13 @@ export const user = sqliteTable('user', {
     username: text().notNull().unique(),
     email: text().notNull().unique(),
     passwordHash: text('password_hash').notNull(),
+    requirePasswordChange: integer('require_password_change', { mode: 'boolean' }).notNull().default(true),
 })
 export type User = typeof user.$inferSelect
 
 export const userRelations = relations(user, ({ many }) => ({
     reviews: many(review),
+    passwordResetTokens: many(passwordResetToken),
 }))
 
 // End User
@@ -30,6 +32,31 @@ export const session = sqliteTable('session', {
 export type Session = typeof session.$inferSelect
 
 // End Session
+
+// Password Reset Token
+export const passwordResetToken = sqliteTable('password_reset_token', {
+    id: text()
+        .primaryKey()
+        .$defaultFn(() => createId()),
+    userId: text('user_id')
+        .notNull()
+        .references(() => user.id),
+    token: text().notNull().unique(),
+    expiresAt: integer('expires_at', { mode: 'timestamp' }).notNull(),
+    createDt: integer('create_date', { mode: 'timestamp' })
+        .notNull()
+        .default(sql`(unixepoch())`),
+})
+export type PasswordResetToken = typeof passwordResetToken.$inferSelect
+
+export const passwordResetTokenRelations = relations(passwordResetToken, ({ one }) => ({
+    user: one(user, {
+        fields: [passwordResetToken.userId],
+        references: [user.id],
+    }),
+}))
+
+// End Password Reset Token
 
 // Review
 export const review = sqliteTable('review', {
