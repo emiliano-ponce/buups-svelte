@@ -57,7 +57,9 @@ textarea {
 }
 
 form {
-    margin: auto;
+    width: 100%;
+    max-width: var(--max-width);
+    margin: 0 auto;
 }
 
 .form-group {
@@ -83,7 +85,8 @@ form {
 
 .form-actions {
     display: flex;
-    justify-content: space-between;
+    gap: 12px;
+    justify-content: flex-end;
     align-items: center;
     margin-top: 1.5rem;
 }

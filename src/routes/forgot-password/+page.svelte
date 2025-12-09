@@ -28,21 +28,15 @@
                 <input type="email" id="email" name="email" required autofocus />
             </div>
 
-            <div class="button-group">
+            <div class="form-actions">
+                <a href={resolve('/login', {})} class="mr-auto">Back to Login</a>
                 <Button --button-color="var(--blue)" type="submit" onclick={() => playSound('beep2')}>
                     Send Reset Link
                 </Button>
-                <a href={resolve('/login', {})} class="back-link">Back to Login</a>
             </div>
         </form>
     </ContentCard>
 </div>
 
 <style>
-    .button-group {
-        display: flex;
-        flex-direction: column;
-        gap: 1rem;
-        align-items: center;
-    }
 </style>

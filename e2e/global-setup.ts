@@ -16,7 +16,7 @@ async function globalSetup() {
     const sqlite = createClient({ url: `file:${dbPath}` })
     const db = drizzle(sqlite, { schema })
 
-    migrate(db, { migrationsFolder: './drizzle' })
+    await migrate(db, { migrationsFolder: './drizzle' })
     console.log('✅ Migrations applied successfully')
 
     const passwordHash = await hashPassword('testpassword123')

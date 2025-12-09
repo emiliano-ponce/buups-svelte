@@ -3,7 +3,7 @@ import { getDb } from '$lib/server/db'
 import { user } from '$lib/server/db/schema'
 import { verifyPasswordHash } from '$lib/server/password'
 import { fail, redirect } from '@sveltejs/kit'
-import { eq } from 'drizzle-orm'
+import { eq, or } from 'drizzle-orm'
 import type { Actions } from './$types'
 
 export const actions: Actions = {
@@ -20,7 +20,7 @@ export const actions: Actions = {
         const [existingUser] = await db
             .select()
             .from(user)
-            .where(eq(user.username, username as string))
+            .where(or(eq(user.username, username as string), eq(user.email, username as string)))
 
         if (!existingUser) {
             return fail(400, { error: 'Invalid username or password' })

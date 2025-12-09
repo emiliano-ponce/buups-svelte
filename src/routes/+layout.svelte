@@ -85,17 +85,17 @@
                     <Button --button-color="var(--african-violet)" onclick={() => playSoundAndRedirect('beep2', '/')}
                         >Home</Button
                     >
-                    <Button
-                        --button-color="var(--butterscotch)"
-                        onclick={() => playSoundAndRedirect('beep2', '/review')}>Review</Button
+                    <Button --button-color="var(--orange)" onclick={() => playSoundAndRedirect('beep2', '/account')}
+                        >Account</Button
                     >
-                    <Button --button-color="var(--orange)" onclick={() => playSoundAndRedirect('beep2', '#')}
-                        >Stats</Button
+                    <Button
+                        --button-color="var(--bluey)"
+                        onclick={() => playSoundAndRedirect('beep2', '/review')}>Review</Button
                     >
                     {#if data.user}
                         <LogoutButton />
                     {:else}
-                        <Button --button-color="var(--blue)" onclick={() => playSoundAndRedirect('beep2', '/login')}
+                        <Button --button-color="var(--green)" onclick={() => playSoundAndRedirect('beep2', '/login')}
                             >Log in</Button
                         >
                     {/if}
