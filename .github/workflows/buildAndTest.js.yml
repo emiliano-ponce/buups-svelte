@@ -37,12 +37,14 @@ jobs:
               env:
                   GOOGLE_SHEETS_CREDENTIALS: ${{ secrets.GOOGLE_SHEETS_CREDENTIALS }}
                   SPREADSHEET_ID: ${{ secrets.SPREADSHEET_ID }}
+                  EMAIL_API_KEY: ${{ secrets.EMAIL_API_KEY }}
               run: npm run build
 
             - name: Run tests
               env:
                   GOOGLE_SHEETS_CREDENTIALS: ${{ secrets.GOOGLE_SHEETS_CREDENTIALS }}
                   SPREADSHEET_ID: ${{ secrets.SPREADSHEET_ID }}
+                  EMAIL_API_KEY: ${{ secrets.EMAIL_API_KEY }}
               run: npm test
 
     ci-complete:
