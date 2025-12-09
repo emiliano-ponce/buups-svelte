@@ -7,10 +7,9 @@
     import ReviewList from '$lib/components/ReviewList.svelte'
     import { onMount } from 'svelte'
     import { SvelteURLSearchParams } from 'svelte/reactivity'
-    import type { PageProps } from './$types'
     import type { GetReviewsResponse, GroupedReviews } from './api/reviews/+server'
 
-    let { data }: PageProps = $props()
+    let { data } = $props()
 
     let filtersOpen = $state(false)
     let filterRef: MediaFilters

@@ -1,8 +1,7 @@
 <script lang="ts">
     import ReviewForm from '$lib/components/ReviewForm.svelte'
-    import type { PageProps } from '../$types'
 
-    let { data }: PageProps = $props()
+    let { data } = $props()
 </script>
 
 <div class="container">

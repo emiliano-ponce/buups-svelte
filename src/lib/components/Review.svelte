@@ -14,7 +14,7 @@
 
 <div class="review">
     <div class="review-header">
-        <a class="author" href={resolve('/users/{review.author}', {})}>
+        <a class="author" href={resolve('/users/[author]', { author: review.author })}>
             <h4>{review.author}</h4>
         </a>
         <Scorebar score={review.score} />

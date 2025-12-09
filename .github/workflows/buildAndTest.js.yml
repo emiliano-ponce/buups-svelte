@@ -44,3 +44,10 @@ jobs:
                   GOOGLE_SHEETS_CREDENTIALS: ${{ secrets.GOOGLE_SHEETS_CREDENTIALS }}
                   SPREADSHEET_ID: ${{ secrets.SPREADSHEET_ID }}
               run: npm test
+
+    ci-complete:
+        runs-on: ubuntu-latest
+        needs: build
+        steps:
+            - name: CI Complete
+              run: echo "All CI checks passed"

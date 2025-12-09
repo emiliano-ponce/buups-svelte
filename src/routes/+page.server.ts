@@ -27,4 +27,4 @@ export async function load({ locals, url }) {
     }
 }
 
-export type PageData = Awaited<ReturnType<typeof load>>
+// export type PageData = Awaited<ReturnType<typeof load>>

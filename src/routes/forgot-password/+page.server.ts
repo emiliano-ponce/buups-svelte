@@ -1,4 +1,5 @@
 import { env } from '$env/dynamic/private'
+import { env as publicEnv } from '$env/dynamic/public'
 import { getDb } from '$lib/server/db'
 import { passwordResetToken, user } from '$lib/server/db/schema'
 import { createId } from '@paralleldrive/cuid2'
@@ -10,20 +11,24 @@ import type { Actions } from './$types'
 const resend = new Resend(env.EMAIL_API_KEY)
 
 async function sendPasswordResetEmail(email: string, token: string, username: string) {
-    const resetLink = `${env.PUBLIC_SITE_URL}/reset-password?token=${token}`
+    const resetLink = `${publicEnv.PUBLIC_SITE_URL}/reset-password?token=${token}`
 
-    await resend.emails.send({
-        from: 'noreply@yourdomain.com',
-        to: email,
-        subject: 'Password Reset Request',
-        html: `
+    try {
+        await resend.emails.send({
+            from: 'noreply@yourdomain.com',
+            to: email,
+            subject: 'Password Reset Request',
+            html: `
             <h2>Password Reset</h2>
             <p>Hi ${username},</p>
             <p>Click the link below to reset your password:</p>
             <a href="${resetLink}">${resetLink}</a>
             <p>This link expires in 1 hour.</p>
-        `,
-    })
+            `,
+        })
+    } catch (error) {
+        console.error('Error sending password reset email:', error)
+    }
 }
 
 export const actions: Actions = {
@@ -36,10 +41,9 @@ export const actions: Actions = {
             return fail(400, { error: 'Email is required' })
         }
 
-        const [existingUser] = await db
-            .select()
-            .from(user)
-            .where(eq(user.email, email as string))
+        const existingUser = await db.query.user.findFirst({
+            where: eq(user.email, email as string),
+        })
 
         if (!existingUser) {
             return { success: 'If an account exists with that email, a password reset link has been sent.' }

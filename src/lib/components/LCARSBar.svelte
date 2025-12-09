@@ -2,27 +2,19 @@
     import type { Snippet } from 'svelte'
 
     interface Props {
-        variant?: 'simple' | 'text'
-        text?: string
         children?: Snippet
-        alignEnd?: boolean
+        align?: 'start' | 'center' | 'end'
         class?: string
     }
 
-    let { variant = 'simple', text, children, alignEnd = false, class: className = '' }: Props = $props()
+    let { children, align = 'start', class: className = '' }: Props = $props()
 </script>
 
-{#if variant === 'simple'}
-    <div class="lcars-bar {className}"></div>
-{:else}
-    <div class="lcars-text-bar {className}" class:the-end={alignEnd}>
-        {#if text}
-            <span>{text}</span>
-        {:else if children}
-            {@render children()}
-        {/if}
-    </div>
-{/if}
+<div class="{align} {className}" class:lcars-bar={!children} class:lcars-text-bar={!!children}>
+    {#if children}
+        <span>{@render children()}</span>
+    {/if}
+</div>
 
 <style>
     .lcars-bar {
@@ -60,13 +52,13 @@
         border-left: clamp(16px, 4vh, 43px) solid var(--lcars-bar-start-color);
     }
 
-    .the-end {
+    .center {
+        justify-content: center;
+    }
+    .end {
         justify-content: flex-end;
     }
 
-    .lcars-text-bar :global(h2),
-    .lcars-text-bar :global(h3),
-    .lcars-text-bar :global(h4),
     .lcars-text-bar :global(span) {
         margin-block: 0;
         background-color: black;

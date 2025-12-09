@@ -18,7 +18,7 @@
     <ContentCard variant="sides" className="h-96">
         <form method="POST" use:enhance>
             <div class="form-group">
-                <label for="username">Username</label>
+                <label for="username">Email/Username</label>
                 <!-- svelte-ignore a11y-autofocus -->
                 <input type="text" id="username" name="username" required autofocus />
             </div>
@@ -29,7 +29,7 @@
             </div>
 
             <div class="form-actions">
-                <a href={resolve('/forgot-password', {})} class="forgot-link">Forgot password?</a>
+                <a href={resolve('/forgot-password', {})} class="mr-auto">Forgot password?</a>
                 <Button --button-color="var(--blue)" type="submit" onclick={() => playSound('beep2')}>Log In</Button>
             </div>
         </form>

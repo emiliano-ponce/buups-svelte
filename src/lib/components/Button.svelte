@@ -25,7 +25,7 @@
         flex-direction: column;
         justify-content: flex-end;
         align-items: flex-end;
-        width: var(--nav-width);
+        min-width: var(--nav-width);
         height: calc(var(--nav-width) / 2.8);
         padding-inline: 1.5rem;
         padding-bottom: 0.7rem;

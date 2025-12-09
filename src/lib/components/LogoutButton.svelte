@@ -9,4 +9,7 @@
 </form>
 
 <style>
+    form {
+        width: fit-content;
+    }
 </style>

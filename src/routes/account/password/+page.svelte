@@ -23,6 +23,7 @@
         <form method="POST" use:enhance>
             <div class="form-group">
                 <label for="currentPassword">Current Password</label>
+                <!-- svelte-ignore a11y-autofocus -->
                 <input type="password" id="currentPassword" name="currentPassword" required autofocus />
             </div>
 
@@ -41,7 +42,7 @@
                 <Button --button-color="var(--blue)" type="submit" onclick={() => playSound('beep2')}>
                     Change Password
                 </Button>
-                <a href={resolve('/settings', {})} class="back-link">Back to Settings</a>
+                <a href={resolve('/account', {})} class="back-link">Back to Account</a>
             </div>
         </form>
     </ContentCard>

@@ -133,7 +133,7 @@
 
 @media (max-width: 1300px) {
     :root {
-        font-size: 1rem;
+        font-size: 1.25rem;
         --sub-fonts: 0.9rem;
         --lfw: 180px;
         --nav-width: 180px;
@@ -147,6 +147,7 @@
 
 @media (max-width: 950px) {
     :root {
+        font-size: 1rem;
         --lfw: 150px;
     }
 }

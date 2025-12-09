@@ -3,10 +3,10 @@ import { user } from '$lib/server/db/schema'
 import { hashPassword, verifyPasswordHash } from '$lib/server/password'
 import { fail, redirect } from '@sveltejs/kit'
 import { eq } from 'drizzle-orm'
-import type { Actions, PageServerLoad } from './$types'
+import type { Actions, PageServerLoad } from '../../$types'
+
 
 export const load: PageServerLoad = async ({ locals }) => {
-    // Ensure user is authenticated
     if (!locals.user) {
         redirect(303, '/login')
     }
