@@ -200,10 +200,12 @@
                                 seasonId: selectedSeasonId?.toString() ?? '',
                                 mediaId: selectedMediaId?.toString() ?? '',
                             }}
-                            showEpisode={true}
-                            showTitle={false}
-                            showScore={false}
-                            filtersOpen={true}
+                            hide={{
+                                title: true,
+                                score: true,
+                                allOption: true
+                            }}
+                            filtersOpen
                             onChange={handleFilterChange}
                         />
                         <div class="form-group flex-1">
