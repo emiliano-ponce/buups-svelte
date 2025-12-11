@@ -9,11 +9,16 @@
 
 @theme inline {
     --mobile-breakpoint: 768px;
-    --max-width: 1440px;
+    --max-width: 1300px;
 }
 
 body {
     width: 100%;
+}
+
+main {
+    max-width: var(--max-width);
+    margin: 0 auto;
 }
 
 button,

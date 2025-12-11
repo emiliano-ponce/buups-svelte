@@ -34,18 +34,50 @@ export async function GET({ locals, url }) {
         mediaConditions.push(sql`${media.title} LIKE ${`%${titleSearch.trim()}%`}`)
     }
 
+    // Build the review score condition SQL for the subquery
+    let scoreConditionSql1 = sql``
+    let scoreConditionSql2 = sql``
+    if (scoreFilter) {
+        const scoreValue = parseInt(scoreFilter)
+        if (scoreFilter === '1') {
+            scoreConditionSql1 = sql`AND r1.score <= ${scoreValue}`
+            scoreConditionSql2 = sql`AND r3.score <= ${scoreValue}`
+        } else if (scoreFilter === '10') {
+            scoreConditionSql1 = sql`AND r1.score >= ${scoreValue}`
+            scoreConditionSql2 = sql`AND r3.score >= ${scoreValue}`
+        } else {
+            scoreConditionSql1 = sql`AND r1.score = ${scoreValue}`
+            scoreConditionSql2 = sql`AND r3.score = ${scoreValue}`
+        }
+    }
+
     // Add condition to filter media with reviews from both users
+    // and if scoreFilter is set, at least one review must meet the score condition
     mediaConditions.push(sql`${media.id} IN (
         SELECT r1.media_id
         FROM ${review} r1
         INNER JOIN ${user} u1 ON r1.author_id = u1.id
         WHERE u1.username = 'Emiliano'
+        ${scoreConditionSql1}
         AND EXISTS (
             SELECT 1
             FROM ${review} r2
             INNER JOIN ${user} u2 ON r2.author_id = u2.id
             WHERE r2.media_id = r1.media_id
             AND u2.username = 'jars'
+        )
+        UNION
+        SELECT r3.media_id
+        FROM ${review} r3
+        INNER JOIN ${user} u3 ON r3.author_id = u3.id
+        WHERE u3.username = 'jars'
+        ${scoreConditionSql2}
+        AND EXISTS (
+            SELECT 1
+            FROM ${review} r4
+            INNER JOIN ${user} u4 ON r4.author_id = u4.id
+            WHERE r4.media_id = r3.media_id
+            AND u4.username = 'Emiliano'
         )
     )`)
 

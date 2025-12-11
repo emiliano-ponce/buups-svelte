@@ -11,5 +11,6 @@
 <style>
     form {
         width: fit-content;
+        margin: 0;
     }
 </style>

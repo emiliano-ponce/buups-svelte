@@ -14,23 +14,29 @@
     interface MediaFiltersProps {
         allSeries: Series[]
         initialValues?: Partial<FilterValues>
-        showTitle?: boolean
-        showScore?: boolean
-        showEpisode?: boolean
         filtersOpen?: boolean
         onChange?: (values: FilterValues) => void
         actions?: Snippet
+        hide?: {
+            title?: boolean
+            score?: boolean
+            episode?: boolean
+            allOption?: boolean
+        }
     }
 
     const {
         allSeries,
         initialValues = {},
-        showTitle = false,
-        showScore = false,
-        showEpisode = false,
         filtersOpen = false,
         onChange,
         actions,
+        hide = {
+            title: false,
+            score: false,
+            episode: false,
+            allOption: false
+        }
     }: MediaFiltersProps = $props()
 
     const scoreOptions = [
@@ -163,11 +169,13 @@
 
 {#if filtersOpen}
     <div transition:slide class="filters-wrapper">
-        <div class="filters">
+        <div class="filters justify-between">
             <div class="filter-group">
                 <label for="series">Series</label>
                 <select id="series" bind:value={() => seriesId, handleSeriesChange}>
-                    <option value="">All</option>
+                    {#if !hide.allOption}
+                        <option value="">All</option>
+                    {/if}
                     {#each allSeries as series (series.id)}
                         <option value={`${series.id}`}>{series.title} ({series.acronym})</option>
                     {/each}
@@ -181,7 +189,9 @@
                     bind:value={() => seasonId, handleSeasonChange}
                     disabled={!seriesId || loadingSeasons}
                 >
-                    <option value="">All</option>
+                    {#if !hide.allOption}
+                        <option value="">All</option>
+                    {/if}
                     {#if loadingSeasons}
                         <option disabled>Loading...</option>
                     {:else}
@@ -193,7 +203,7 @@
                 </select>
             </div>
 
-            {#if showEpisode}
+            {#if !hide.episode}
                 <div class="filter-group">
                     <label for="media-filter">
                         {seasonId ? 'Episode' : 'Movie'}
@@ -203,7 +213,9 @@
                         bind:value={() => mediaId, handleMediaChange}
                         disabled={!seriesId || loadingMedia}
                     >
-                        <option value="">All</option>
+                        {#if !hide.allOption}
+                            <option value="">All</option>
+                        {/if}
                         {#if loadingMedia}
                             <option disabled>Loading...</option>
                         {:else}
@@ -221,11 +233,13 @@
                 </div>
             {/if}
 
-            {#if showScore}
+            {#if !hide.score}
                 <div class="filter-group">
                     <label for="score-filter">Score</label>
                     <select id="score-filter" bind:value={() => minScore, handleScoreChange}>
-                        <option value="">All</option>
+                        {#if !hide.allOption}
+                            <option value="">All</option>
+                        {/if}
                         {#each scoreOptions as option (option.value)}
                             <option value={option.value}>{option.label}</option>
                         {/each}
@@ -233,10 +247,11 @@
                 </div>
             {/if}
 
-            {#if showTitle}
-                <div class="filter-group">
+            {#if !hide.title}
+                <div class="filter-group flex-1 max-w-md">
                     <label for="title-filter">Title Search</label>
                     <input
+                        class="min-w-xs"
                         type="text"
                         id="title-filter"
                         placeholder="Search by title..."
@@ -261,6 +276,7 @@
         display: flex;
         gap: 1rem;
         flex-wrap: wrap;
+        flex: 1 1 auto;
     }
 
     .filter-group {
@@ -268,6 +284,7 @@
         flex-direction: column;
         gap: 0.5rem;
         min-width: 100px;
+        flex: 1 1 auto;
     }
 
     .filter-group label {
@@ -294,6 +311,6 @@
     }
 
     #series {
-        width: 150px;
+        min-width: 250px;
     }
 </style>

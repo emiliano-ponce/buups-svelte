@@ -139,9 +139,10 @@
     bind:this={filterRef}
     allSeries={data.allSeries}
     initialValues={data.filters}
-    showTitle
-    showScore
     {filtersOpen}
+    hide={{
+        episode: true,
+    }}
 >
     {#snippet actions()}
         <div class="filter-actions">
