@@ -14,8 +14,8 @@ async function sendPasswordResetEmail(email: string, token: string, username: st
     const resetLink = `${publicEnv.PUBLIC_SITE_URL}/reset-password?token=${token}`
 
     try {
-        await resend.emails.send({
-            from: 'noreply@yourdomain.com',
+        const { data, error } = await resend.emails.send({
+            from: 'noreply@beamusup.today',
             to: email,
             subject: 'Password Reset Request',
             html: `
@@ -26,6 +26,12 @@ async function sendPasswordResetEmail(email: string, token: string, username: st
             <p>This link expires in 1 hour.</p>
             `,
         })
+        if (error) {
+            console.error({ error })
+        }
+        if (process.env.NODE_ENV === 'development') {
+            console.log(data)
+        }
     } catch (error) {
         console.error('Error sending password reset email:', error)
     }
