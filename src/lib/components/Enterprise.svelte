@@ -1,90 +1,121 @@
+riseloader · SVELTE
+Copy
+
 <script lang="ts">
     import { browser } from '$app/environment'
     import { onDestroy, onMount } from 'svelte'
 
-    // function blink(elem: string, times: number, speed: number) {
-    //     if (times > 0 || times < 0) {
-    //         const element = document.querySelector(elem)
-    //         if (element) {
-    //             if (element.classList.contains('blink')) {
-    //                 element.classList.remove('blink')
-    //             } else {
-    //                 element.classList.add('blink')
-    //             }
-    //         }
-    //     }
-
-    //     if (times > 0 || times < 0) {
-    //         setTimeout(function () {
-    //             blink(elem, times, speed)
-    //         }, speed)
-    //         times -= 0.5
-    //     }
-    // }
+    let { onComplete, startBlastOff } = $props()
+    let isBlastingOff = $state(false)
+    let shouldUnmount = $state(false)
+    interface Star {
+        x: number
+        y: number
+        size: number
+        opacity: number
+        duration: number
+        delay: number
+    }
+    let stars: Array<Star> = $state([])
 
     onMount(() => {
-        // Prevent scrolling
         document.body.style.overflow = 'hidden'
-
-        // blink('.front-light', -1, 900);
-        // blink('.engage-4', -1, 650);
-        // blink('.engage-5', -1, 650);
-        // blink('.engage-2', -1, 700);
-        // blink('.engage-3', -1, 700);
-        // blink('.se-1', -1, 675);
-        // blink('.se-2', -1, 675);
-        // blink('.se-3', -1, 675);
-        // blink('.se-4', -1, 675);
+        generateStars()
     })
 
+    function generateStars() {
+        const starCount = Math.floor((window.innerWidth * window.innerHeight) / 5000)
+        const duration = Math.random() * 100 + 50
+        stars = Array.from({ length: starCount }, () => ({
+            x: Math.random() * 100, // percentage
+            y: Math.random() * 100,
+            size: Math.random() * 3 + 1,
+            opacity: Math.random() * 0.5 + 0.5,
+            duration,
+            delay: -Math.random() * duration
+        }))
+    }
+
     onDestroy(() => {
-        // Restore scrolling when component is destroyed
         if (browser) {
             document.body.style.overflow = ''
         }
     })
+
+    $effect(() => {
+        if (startBlastOff && !isBlastingOff) {
+            isBlastingOff = true
+            setTimeout(() => {
+                shouldUnmount = true
+                onComplete()
+            }, 1000)
+        }
+    })
 </script>
 
-<!-- Star background CSS found here: https://codepen.io/saransh/pen/BKJun -->
+{#if !shouldUnmount}
+    <div class="loading-overlay">
+        <div class="page-container">
+            {#each stars as star, index (index)}
+                <div
+                    class="star"
+                    style="
+                        left: {star.x}%;
+                        top: {star.y}%;
+                        width: {star.size}px;
+                        height: {star.size}px;
+                        opacity: {star.opacity};
+                        animation-duration: {star.duration}s;
+                        animation-delay: {star.delay}s;
+                    "
+                ></div>
+            {/each}
 
-<div class="loading-overlay">
-    <div class="page-container">
-        <div id="stars"></div>
-        <div id="stars2"></div>
-        <div id="stars3"></div>
+            <div class="ent-full" class:blasting-off={isBlastingOff}>
+                <div class="front-light"></div>
+                <div class="enterprise">
+                    <div class="main">
+                        <div class="center-circle"></div>
 
-        <div class="ent-full">
-            <div class="front-light"></div>
-            <div class="enterprise">
-                <div class="main">
-                    <div class="center-circle"></div>
-
-                    <div class="connector-vert"></div>
-                    <div class="connector-horz-1"></div>
-                    <div class="connector-horz-2"></div>
-                    <div class="engine-1">
+                        <div class="connector-vert"></div>
+                        <div class="connector-horz-1"></div>
+                        <div class="connector-horz-2"></div>
+                        <div class="engine-1">
+                            <div class="bottom"></div>
+                        </div>
+                        <div class="engine-2"></div>
                         <div class="bottom"></div>
                     </div>
-                    <div class="engine-2"></div>
-                    <div class="bottom"></div>
-                </div>
 
-                <div class="engage">
-                    <div class="engage-2"></div>
-                    <div class="engage-3"></div>
-                    <div class="engage-4"></div>
-                    <div class="engage-5"></div>
-                    <div class="small-engage se-1"></div>
-                    <div class="se-2"></div>
-                    <div class="se-3"></div>
-                    <div class="se-4"></div>
+                    <div class="engage">
+                        <div class="engage-2"></div>
+                        <div class="engage-3"></div>
+                        <div class="engage-4"></div>
+                        <div class="engage-5"></div>
+                        <div class="small-engage se-1"></div>
+                        <div class="se-2"></div>
+                        <div class="se-3"></div>
+                        <div class="se-4"></div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
+{/if}
 
 <style>
+    .star {
+        position: absolute;
+        background: white;
+        border-radius: 50%;
+        animation: fall linear infinite;
+    }
+    
+    @keyframes fall {
+        from { transform: translateY(-100vh); }
+        to { transform: translateY(100vh); }
+    }
+
     .loading-overlay {
         position: fixed;
         top: 0;
@@ -107,21 +138,39 @@
     }
 
     .ent-full {
-        animation: bobEnterprise 75s ease-in-out infinite;
+        animation: enterpriseHover 2s ease-in-out infinite;
         position: absolute;
-        top: 50%;
         left: 50%;
+        bottom: 20%;
         will-change: transform;
         opacity: 1;
     }
 
-    @keyframes bobEnterprise {
-        0%,
-        100% {
-            transform: translate(-50%, 0%);
+    .ent-full.blasting-off {
+        animation: enterpriseBlastOff 1s ease-in forwards;
+    }
+
+    @keyframes enterpriseHover {
+        0%, 100% {
+            transform: translate(-50%, 0);
+        }
+        25% {
+            transform: translate(-48%, 5px);
         }
         50% {
-            transform: translate(-50%, -120%);
+            transform: translate(-50%, 0px);
+        }
+        75% {
+            transform: translate(-52%, -5px);
+        }
+    }
+
+    @keyframes enterpriseBlastOff {
+        0% {
+            transform: translate(-50%, 0);
+        }
+        100% {
+            transform: translate(-50%, -150vh);
         }
     }
 
@@ -344,9 +393,10 @@
         left: -60px;
     }
 
-    .blink {
-        color: #fff !important;
-        opacity: 0 !important;
+    #stars, #stars2, #stars3 {
+        position: absolute;
+        left: 50%;
+        top: 0;
     }
 
     #stars {

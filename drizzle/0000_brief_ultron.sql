@@ -1,4 +1,4 @@
-CREATE TABLE `media` (
+CREATE TABLE IF NOT EXISTS `media` (
 	`id` integer PRIMARY KEY NOT NULL,
 	`title` text NOT NULL,
 	`overview` text NOT NULL,
@@ -14,7 +14,7 @@ CREATE TABLE `media` (
 	CONSTRAINT "season_check" CHECK("media"."type" <> 'episode' OR ("media"."type" = 'episode' AND "media"."season_id" IS NOT NULL))
 );
 --> statement-breakpoint
-CREATE TABLE `review` (
+CREATE TABLE IF NOT EXISTS `review` (
 	`id` integer PRIMARY KEY NOT NULL,
 	`body` text NOT NULL,
 	`score` integer NOT NULL,
@@ -23,7 +23,7 @@ CREATE TABLE `review` (
 	`create_date` integer DEFAULT (unixepoch()) NOT NULL
 );
 --> statement-breakpoint
-CREATE TABLE `season` (
+CREATE TABLE IF NOT EXISTS `season` (
 	`id` integer PRIMARY KEY NOT NULL,
 	`title` text NOT NULL,
 	`number` integer NOT NULL,
@@ -33,7 +33,7 @@ CREATE TABLE `season` (
 	`tmdb_stats` text NOT NULL
 );
 --> statement-breakpoint
-CREATE TABLE `series` (
+CREATE TABLE IF NOT EXISTS `series` (
 	`id` integer PRIMARY KEY NOT NULL,
 	`title` text NOT NULL,
 	`acronym` text NOT NULL,
@@ -42,19 +42,19 @@ CREATE TABLE `series` (
 	`tmdb_stats` text NOT NULL
 );
 --> statement-breakpoint
-CREATE TABLE `session` (
+CREATE TABLE IF NOT EXISTS `session` (
 	`id` text PRIMARY KEY NOT NULL,
 	`user_id` text NOT NULL,
 	`expires_at` integer NOT NULL,
 	FOREIGN KEY (`user_id`) REFERENCES `user`(`id`) ON UPDATE no action ON DELETE no action
 );
 --> statement-breakpoint
-CREATE TABLE `user` (
+CREATE TABLE IF NOT EXISTS `user` (
 	`id` text PRIMARY KEY NOT NULL,
 	`username` text NOT NULL,
 	`email` text NOT NULL,
 	`password_hash` text NOT NULL
 );
 --> statement-breakpoint
-CREATE UNIQUE INDEX `user_username_unique` ON `user` (`username`);--> statement-breakpoint
-CREATE UNIQUE INDEX `user_email_unique` ON `user` (`email`);
+CREATE UNIQUE INDEX IF NOT EXISTS `user_username_unique` ON `user` (`username`);--> statement-breakpoint
+CREATE UNIQUE INDEX IF NOT EXISTS `user_email_unique` ON `user` (`email`);
