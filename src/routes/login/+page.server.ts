@@ -6,6 +6,12 @@ import { fail, redirect } from '@sveltejs/kit'
 import { eq, or } from 'drizzle-orm'
 import type { Actions } from './$types'
 
+export const load = async ({ locals }) => {
+    if (locals.user) {
+        throw redirect(303, '/')
+    }
+}
+
 export const actions: Actions = {
     default: async event => {
         const db = getDb()

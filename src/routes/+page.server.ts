@@ -1,3 +1,4 @@
+import type { FilterValues } from '$lib/components/MediaFilters.svelte'
 import { getDb } from '$lib/server/db'
 import { redirect } from '@sveltejs/kit'
 
@@ -19,12 +20,10 @@ export async function load({ locals, url }) {
         user: locals.user,
         allSeries,
         filters: {
-            series: seriesFilter,
-            season: seasonFilter,
+            seriesId: seriesFilter,
+            seasonId: seasonFilter,
             score: scoreFilter,
             title: titleSearch,
-        },
+        } satisfies Partial<FilterValues>,
     }
 }
-
-// export type PageData = Awaited<ReturnType<typeof load>>
