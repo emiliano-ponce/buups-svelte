@@ -1,10 +1,12 @@
 <script lang="ts">
     import { playSound } from '$lib/utils/audioHelpers'
     import type { HTMLButtonAttributes } from 'svelte/elements'
+    import Loader from './Loader.svelte'
     interface ButtonProps extends HTMLButtonAttributes {
         sound?: string
+        loading?: boolean
     }
-    const { children, sound, ...rest }: ButtonProps = $props()
+    const { children, sound, loading, ...rest }: ButtonProps = $props()
 
     const handleClick: HTMLButtonAttributes['onclick'] = e => {
         if (sound) {
@@ -16,13 +18,18 @@
     }
 </script>
 
-<button {...rest} class={rest.class} onclick={handleClick}>{@render children?.()}</button>
+<button {...rest} class={`${rest.class} ${loading ? 'loading' : ''}`} onclick={handleClick}>
+    {#if loading}
+        <Loader />
+    {/if}
+    {@render children?.()}
+</button>
 
 <style>
     button {
         cursor: pointer;
         display: flex;
-        flex-direction: column;
+        gap: 8px;
         justify-content: flex-end;
         align-items: flex-end;
         min-width: var(--nav-width);
@@ -51,6 +58,7 @@
         &:active {
             filter: brightness(80%);
         }
+        &.loading,
         &:disabled {
             opacity: 0.5;
             pointer-events: none;

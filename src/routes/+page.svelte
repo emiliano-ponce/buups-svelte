@@ -125,7 +125,7 @@
         }
     })
 
-    const hasFilters = $derived(data.filters.series || data.filters.season || data.filters.score || data.filters.title)
+    const hasFilters = $derived(data.filters.seriesId || data.filters.seasonId || data.filters.score || data.filters.title)
 </script>
 
 <div class="heading">

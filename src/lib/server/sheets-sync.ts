@@ -1,6 +1,7 @@
 import { GOOGLE_SHEETS_CREDENTIALS, SPREADSHEET_ID } from '$env/static/private'
+import { eq } from 'drizzle-orm'
 import { google, type sheets_v4 } from 'googleapis'
-import type { Media, Review, Season, Series, User } from './db/schema'
+import { review, type Media, type Review, type Season, type Series, type User } from './db/schema'
 
 type TrekSeries = 'TOS' | 'TAS' | 'TNG' | 'DS9' | "V'GER" | 'ENT' | 'DIS' | 'PIC' | 'LWD' | 'SNW'
 
@@ -89,16 +90,10 @@ async function findEpisodeRow(
     return null
 }
 
-/**
- * Convert column index to letter (0 = A, 1 = B, etc.)
- */
 function colToLetter(col: number): string {
     return String.fromCharCode(65 + col)
 }
 
-/**
- * Sync a single review to Google Sheets
- */
 export async function syncReviewToSheet(review: ReviewWithRelations): Promise<void> {
     const sheets = getSheets()
     const { author, media } = review
@@ -120,7 +115,6 @@ export async function syncReviewToSheet(review: ReviewWithRelations): Promise<vo
             return
         }
 
-        // Update score and notes cells
         const scoreCell = `${sheetName}!${colToLetter(userCols.score)}${rowNum}`
         const notesCell = `${sheetName}!${colToLetter(userCols.notes)}${rowNum}`
 
@@ -138,7 +132,7 @@ export async function syncReviewToSheet(review: ReviewWithRelations): Promise<vo
         console.log(`Synced review to sheet: ${sheetName} row ${rowNum} for ${author.username}`)
     } catch (error) {
         console.error('Failed to sync review to sheet:', error)
-        throw error // Re-throw so caller can handle
+        throw error
     }
 }
 
@@ -223,4 +217,170 @@ export async function batchSyncReviewsToSheet(reviews: ReviewWithRelations[]): P
     })
 
     console.log(`Batch synced ${reviews.length} reviews to sheets`)
+}
+
+/**
+ * Sync reviews from Google Sheets to DB
+ * DB wins ties - only updates DB if sheet has a review and DB doesn't, or if explicitly forced
+ */
+export async function syncSheetToDB(
+    db: any, // Your Drizzle DB instance
+    seriesAcronym?: TrekSeries,
+    forceOverwrite = false
+): Promise<{ synced: number; skipped: number; errors: number }> {
+    const sheets = getSheets()
+    const stats = { synced: 0, skipped: 0, errors: 0 }
+
+    // Determine which sheets to sync
+    const sheetsToSync: TrekSeries[] = seriesAcronym
+        ? [seriesAcronym]
+        : ['TOS', 'TAS', 'TNG', 'DS9', "V'GER", 'ENT', 'DIS', 'PIC', 'LWD', 'SNW']
+
+    for (const sheetName of sheetsToSync) {
+        try {
+            const response = await sheets.spreadsheets.values.get({
+                spreadsheetId: SPREADSHEET_ID,
+                range: `${sheetName}!A:I`, // All columns we care about
+            })
+
+            const rows = response.data.values
+            if (!rows || rows.length < 2) continue // Skip if no data or only header
+
+            // Get series from DB
+            const series = await db.query.series.findFirst({
+                where: (series: any, { eq }: any) => eq(series.acronym, sheetName),
+            })
+
+            if (!series) {
+                console.warn(`Series ${sheetName} not found in DB`)
+                continue
+            }
+
+            // Process each row (skip header)
+            for (let i = 1; i < rows.length; i++) {
+                const row = rows[i]
+                if (!row) continue
+
+                const seasonStr = row[COLUMNS.SEASON]?.toString().trim()
+                const episodeStr = row[COLUMNS.EPISODE]?.toString().trim()
+
+                if (!episodeStr) continue
+
+                // Parse season (null for movies)
+                const seasonNum = seasonStr === 'M' ? null : parseInt(seasonStr, 10)
+
+                // Handle comma-separated episodes
+                const episodes = episodeStr.split(/\s*,\s*/).map(e => parseInt(e.trim(), 10))
+
+                for (const episodeNum of episodes) {
+                    if (isNaN(episodeNum)) continue
+
+                    // Find season BEFORE the media query (if needed)
+                    let seasonId = null
+                    if (seasonNum !== null) {
+                        const season = await db.query.season.findFirst({
+                            where: (season: any, { and, eq }: any) =>
+                                and(eq(season.seriesId, series.id), eq(season.number, seasonNum)),
+                        })
+                        seasonId = season?.id
+
+                        if (!seasonId) {
+                            console.warn(`Season not found: ${sheetName} S${seasonNum}`)
+                            continue
+                        }
+                    }
+
+                    // Find media in DB
+                    const media = await db.query.media.findFirst({
+                        where: (media: any, { and, eq, isNull }: any) => {
+                            const conditions = [eq(media.seriesId, series.id), eq(media.episode, episodeNum)]
+
+                            if (seasonId !== null) {
+                                conditions.push(eq(media.seasonId, seasonId))
+                            } else {
+                                conditions.push(isNull(media.seasonId))
+                            }
+
+                            return and(...conditions)
+                        },
+                    })
+
+                    if (!media) {
+                        console.warn(`Media not found: ${sheetName} S${seasonNum ?? 'M'} E${episodeNum}`)
+                        continue
+                    }
+
+                    // Process each user's review
+                    for (const [username, cols] of Object.entries(USER_COLUMNS)) {
+                        const scoreStr = row[cols.score]?.toString().trim()
+                        const notes = row[cols.notes]?.toString().trim() || ''
+
+                        if (!scoreStr) continue // No review in sheet
+
+                        const score = parseFloat(scoreStr)
+                        if (isNaN(score)) continue
+
+                        // Get user from DB
+                        const user = await db.query.user.findFirst({
+                            where: (user: any, { eq }: any) => eq(user.username, username),
+                        })
+
+                        if (!user) {
+                            console.warn(`User ${username} not found in DB`)
+                            continue
+                        }
+
+                        // Check if review exists in DB
+                        const existingReview = await db.query.review.findFirst({
+                            where: (review: any, { and, eq }: any) =>
+                                and(eq(review.mediaId, media.id), eq(review.authorId, user.id)),
+                        })
+
+                        // DB wins ties - only sync if no existing review or force overwrite
+                        if (existingReview && !forceOverwrite) {
+                            stats.skipped++
+                            continue
+                        }
+
+                        try {
+                            if (existingReview) {
+                                // Update existing
+                                await db
+                                    .update(review)
+                                    .set({
+                                        score,
+                                        body: notes,
+                                        updatedAt: new Date(),
+                                    })
+                                    .where(eq(review.id, existingReview.id))
+                            } else {
+                                // Insert new
+                                await db.insert(review).values({
+                                    mediaId: media.id,
+                                    authorId: user.id,
+                                    score,
+                                    body: notes,
+                                    createdAt: new Date(),
+                                    updatedAt: new Date(),
+                                })
+                            }
+                            stats.synced++
+                        } catch (error) {
+                            console.error(
+                                `Failed to sync review for ${username} on ${sheetName} S${seasonNum}E${episodeNum}:`,
+                                error
+                            )
+                            stats.errors++
+                        }
+                    }
+                }
+            }
+        } catch (error) {
+            console.error(`Failed to sync sheet ${sheetName}:`, error)
+            stats.errors++
+        }
+    }
+
+    console.log(`Sheet sync complete: ${stats.synced} synced, ${stats.skipped} skipped, ${stats.errors} errors`)
+    return stats
 }

@@ -3,6 +3,7 @@
     import type { Media, Review, Series } from '$lib/server/db/schema'
     import Button from './Button.svelte'
     import ContentCard from './ContentCard.svelte'
+    import Enterprise from './Enterprise.svelte'
     import MediaFilters, { type FilterValues } from './MediaFilters.svelte'
     import Scorebar from './Scorebar.svelte'
 
@@ -34,6 +35,7 @@
     )
     let isEditing = $derived(selectedReview !== null)
     let submitButtonText = $derived(isEditing ? 'Update Review' : 'Submit Review')
+    let loading = $state(false)
 
     function handleFilterChange(values: FilterValues) {
         selectedSeriesId = values.seriesId ? parseInt(values.seriesId) : null
@@ -139,6 +141,7 @@
             const formData = new FormData()
             formData.set('reviewId', selectedReview.id.toString())
 
+            loading = true
             const res = await fetch('/reviews?/delete', {
                 method: 'POST',
                 body: formData,
@@ -151,10 +154,15 @@
             }
         } catch (err) {
             console.error('Delete request failed:', err)
+        } finally {
+            loading = false
         }
     }
 </script>
 
+{#if loading}
+    <Enterprise />
+{/if}
 {#if !user}
     <div class="form-wrapper">
         <ContentCard variant="sides">
@@ -178,6 +186,7 @@
                 method="POST"
                 action={isEditing ? '/reviews?/update' : '/reviews?/create'}
                 use:enhance={() => {
+                    loading = true
                     return async ({ result, update }) => {
                         if (result.type === 'success') {
                             handleFormSuccess()
@@ -243,13 +252,13 @@
                         <div class="form-actions">
                             <Button
                                 --button-color="var(--red)"
-                                disabled={!isEditing || !selectedReview}
+                                disabled={!isEditing || !selectedReview || loading}
                                 type="button"
                                 onclick={handleDeleteClick}
-                            >
+                            > 
                                 Delete Review
                             </Button>
-                            <Button class="self-end" type="submit">{submitButtonText}</Button>
+                            <Button class="self-end" type="submit" loading={loading}>{submitButtonText}</Button>
                         </div>
                     {:else if selectedSeriesId}
                         <div class="no-media">
