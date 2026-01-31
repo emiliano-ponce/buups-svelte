@@ -3,6 +3,7 @@
     import { resolve } from '$app/paths'
     import { page } from '$app/stores'
     import Button from '$lib/components/Button.svelte'
+    import Enterprise from '$lib/components/Enterprise.svelte'
     import MediaFilters from '$lib/components/MediaFilters.svelte'
     import ReviewList from '$lib/components/ReviewList.svelte'
     import { onMount } from 'svelte'
@@ -125,7 +126,22 @@
         }
     })
 
-    const hasFilters = $derived(data.filters.seriesId || data.filters.seasonId || data.filters.score || data.filters.title)
+    const hasFilters = $derived(
+        data.filters.seriesId || data.filters.seasonId || data.filters.score || data.filters.title
+    )
+
+    let showEnterprise = $state(false)
+    let startBlastOff = $state(false)
+    function handleShowEnterprise() {
+        showEnterprise = true
+        // setTimeout(() => {
+        //     startBlastOff = true
+        // }, 1000)
+    }
+    function handleEnterpriseReset() {
+        showEnterprise = false
+        startBlastOff = false
+    }
 </script>
 
 <div class="heading">
@@ -133,7 +149,12 @@
     <Button onclick={toggleFilters} sound="beep4">
         {filtersOpen ? 'Hide' : 'Show'} Filters
     </Button>
+    <Button onclick={handleShowEnterprise} sound="beep4">Show Enterprise</Button>
 </div>
+
+{#if showEnterprise}
+    <Enterprise onComplete={handleEnterpriseReset} startBlastOff={startBlastOff} />
+{/if}
 
 <MediaFilters
     bind:this={filterRef}
