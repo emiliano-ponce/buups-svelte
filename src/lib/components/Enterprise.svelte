@@ -4,10 +4,7 @@ Copy
 <script lang="ts">
     import { browser } from '$app/environment'
     import { onDestroy, onMount } from 'svelte'
-
-    let { onComplete, startBlastOff } = $props()
-    let isBlastingOff = $state(false)
-    let shouldUnmount = $state(false)
+    
     interface Star {
         x: number
         y: number
@@ -16,6 +13,10 @@ Copy
         duration: number
         delay: number
     }
+
+    let { onComplete, startBlastOff } = $props()
+    let isBlastingOff = $state(false)
+    let shouldUnmount = $state(false)
     let stars: Array<Star> = $state([])
 
     onMount(() => {
