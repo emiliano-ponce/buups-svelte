@@ -134,9 +134,9 @@
     let startBlastOff = $state(false)
     function handleShowEnterprise() {
         showEnterprise = true
-        // setTimeout(() => {
-        //     startBlastOff = true
-        // }, 1000)
+        setTimeout(() => {
+            startBlastOff = true
+        }, 1000)
     }
     function handleEnterpriseReset() {
         showEnterprise = false

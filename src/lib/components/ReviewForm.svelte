@@ -1,6 +1,7 @@
 <script lang="ts">
     import { enhance } from '$app/forms'
     import type { Media, Review, Series } from '$lib/server/db/schema'
+    import { redirect } from '@sveltejs/kit'
     import Button from './Button.svelte'
     import ContentCard from './ContentCard.svelte'
     import Enterprise from './Enterprise.svelte'
@@ -158,10 +159,19 @@
             loading = false
         }
     }
+
+    let startBlastOff = $state(false)
+    function handleEnterpriseComplete() {
+        startBlastOff = false
+        loading = false
+        if (!isEditing) {
+            redirect(303, '/')
+        }
+    }
 </script>
 
 {#if loading}
-    <Enterprise />
+    <Enterprise onComplete={handleEnterpriseComplete} {startBlastOff} />
 {/if}
 {#if !user}
     <div class="form-wrapper">
@@ -191,6 +201,7 @@
                         if (result.type === 'success') {
                             handleFormSuccess()
                         }
+                        startBlastOff = true
                         await update()
                     }
                 }}
@@ -212,7 +223,7 @@
                             hide={{
                                 title: true,
                                 score: true,
-                                allOption: true
+                                allOption: true,
                             }}
                             filtersOpen
                             onChange={handleFilterChange}
@@ -255,10 +266,10 @@
                                 disabled={!isEditing || !selectedReview || loading}
                                 type="button"
                                 onclick={handleDeleteClick}
-                            > 
+                            >
                                 Delete Review
                             </Button>
-                            <Button class="self-end" type="submit" loading={loading}>{submitButtonText}</Button>
+                            <Button class="self-end" type="submit" {loading}>{submitButtonText}</Button>
                         </div>
                     {:else if selectedSeriesId}
                         <div class="no-media">

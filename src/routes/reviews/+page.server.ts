@@ -1,7 +1,7 @@
 import { getDb } from '$lib/server/db'
 import { review } from '$lib/server/db/schema'
 import { clearReviewFromSheet, syncReviewToSheet } from '$lib/server/sheets-sync'
-import { fail, isRedirect, redirect } from '@sveltejs/kit'
+import { fail, isRedirect } from '@sveltejs/kit'
 import { eq } from 'drizzle-orm'
 import type { Actions } from './$types'
 
@@ -73,7 +73,7 @@ export const actions: Actions = {
                 })
             }
 
-            throw redirect(303, `/`)
+            return { success: true }
         } catch (error) {
             if (isRedirect(error)) throw error
             console.error('Error creating review:', error)
