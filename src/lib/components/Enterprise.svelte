@@ -49,7 +49,7 @@ Copy
             setTimeout(() => {
                 shouldUnmount = true
                 onComplete()
-            }, 1000)
+            }, 1500)
         }
     })
 </script>
@@ -147,8 +147,19 @@ Copy
         opacity: 1;
     }
 
+    .engage, .front-light {
+        opacity: 0;
+        transition: opacity 0.5s ease-in-out;
+    }
+
     .ent-full.blasting-off {
-        animation: enterpriseBlastOff 1s ease-in forwards;
+        animation: enterpriseBlastOff 1.5s ease-in forwards;
+        .front-light {
+            opacity: 1;
+        }
+        .engage {
+            opacity: 1;
+        }
     }
 
     @keyframes enterpriseHover {
