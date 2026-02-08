@@ -1,7 +1,8 @@
 <script lang="ts">
     import { enhance } from '$app/forms'
+    import { goto } from '$app/navigation'
     import type { Media, Review, Series } from '$lib/server/db/schema'
-    import { redirect } from '@sveltejs/kit'
+    import type { ActionData } from '../../routes/reviews/$types'
     import Button from './Button.svelte'
     import ContentCard from './ContentCard.svelte'
     import Enterprise from './Enterprise.svelte'
@@ -12,9 +13,10 @@
         media: Media | null
         user: { id: string; username: string } | null
         allSeries: Series[]
+        form: ActionData
     }
 
-    const { media, user, allSeries }: ReviewFormProps = $props()
+    const { media, user, allSeries, form }: ReviewFormProps = $props()
 
     let selectedSeriesId = $derived<number | null>(media?.seriesId ?? null)
     let selectedSeasonId = $derived<number | null>(media?.seasonId ?? null)
@@ -37,11 +39,13 @@
     let isEditing = $derived(selectedReview !== null)
     let submitButtonText = $derived(isEditing ? 'Update Review' : 'Submit Review')
     let loading = $state(false)
+    let successMessage = $state('')
 
     function handleFilterChange(values: FilterValues) {
         selectedSeriesId = values.seriesId ? parseInt(values.seriesId) : null
         selectedSeasonId = values.seasonId ? parseInt(values.seasonId) : null
         selectedMediaId = values.mediaId ? parseInt(values.mediaId) : null
+        successMessage = ''
 
         if (selectedMediaId) {
             fetchMediaDetails(selectedMediaId)
@@ -115,13 +119,6 @@
         bodyValue = ''
     }
 
-    function handleFormSuccess() {
-        // Refetch to update the existing reviews state
-        if (selectedMediaId) {
-            fetchExistingReviews(selectedMediaId)
-        }
-    }
-
     function handleDeleteSuccess() {
         // Remove from local array and reset to new
         existingReviews = existingReviews.filter(r => r.id !== selectedReviewId)
@@ -165,7 +162,7 @@
         startBlastOff = false
         loading = false
         if (!isEditing) {
-            redirect(303, '/')
+            goto('/')
         }
     }
 </script>
@@ -197,12 +194,11 @@
                 action={isEditing ? '/reviews?/update' : '/reviews?/create'}
                 use:enhance={() => {
                     loading = true
-                    return async ({ result, update }) => {
-                        if (result.type === 'success') {
-                            handleFormSuccess()
-                        }
+                    return async ({ result, update, formData }) => {
                         startBlastOff = true
-                        await update()
+                        if (result.type === 'success' && isEditing) {
+                            successMessage = 'Review updated successfully!'
+                        }
                     }
                 }}
             >
@@ -271,6 +267,9 @@
                             </Button>
                             <Button class="self-end" type="submit" {loading}>{submitButtonText}</Button>
                         </div>
+                        {#if !!successMessage}
+                            <p class="success">{successMessage}</p>
+                        {/if}
                     {:else if selectedSeriesId}
                         <div class="no-media">
                             <p>Select an episode or movie to review</p>
