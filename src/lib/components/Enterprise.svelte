@@ -3,6 +3,7 @@ Copy
 
 <script lang="ts">
     import { browser } from '$app/environment'
+    import { playSound } from '$lib/utils/audioHelpers'
     import { onDestroy, onMount } from 'svelte'
     
     interface Star {
@@ -46,14 +47,16 @@ Copy
     $effect(() => {
         if (startBlastOff && !isBlastingOff) {
             isBlastingOff = true
+            playSound('warpOut')
             setTimeout(() => {
                 shouldUnmount = true
                 onComplete()
-            }, 1500)
+            }, 2000)
         }
     })
 </script>
 
+<audio src="/sounds/tng_warp_out1.mp3" id="warpOut"></audio>
 {#if !shouldUnmount}
     <div class="loading-overlay">
         <div class="page-container">
@@ -153,7 +156,7 @@ Copy
     }
 
     .ent-full.blasting-off {
-        animation: enterpriseBlastOff 1.5s ease-in forwards;
+        animation: enterpriseBlastOff 2000ms ease-in forwards;
         .front-light {
             opacity: 1;
         }
