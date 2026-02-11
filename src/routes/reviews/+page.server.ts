@@ -1,6 +1,7 @@
 import { getDb } from '$lib/server/db'
 import { review } from '$lib/server/db/schema'
 import { clearReviewFromSheet, syncReviewToSheet } from '$lib/server/sheets-sync'
+import { broadcastReviewUpdate } from '$lib/server/sse'
 import { fail, isRedirect } from '@sveltejs/kit'
 import { eq } from 'drizzle-orm'
 import type { Actions } from './$types'
@@ -53,6 +54,11 @@ export const actions: Actions = {
                     mediaId: mediaIdNum,
                 })
                 .returning()
+
+            broadcastReviewUpdate({
+                type: 'review_created',
+                reviewId: newReview.id,
+            })
 
             const reviewWithRelations = await db.query.review.findFirst({
                 where: eq(review.id, newReview.id),
@@ -118,6 +124,11 @@ export const actions: Actions = {
                 },
             })
 
+            broadcastReviewUpdate({
+                type: 'review_updated',
+                reviewId: reviewId,
+            })
+
             if (reviewWithRelations) {
                 syncReviewToSheet(reviewWithRelations).catch(console.error)
             }
@@ -158,6 +169,11 @@ export const actions: Actions = {
         try {
             // Delete from DB
             await db.delete(review).where(eq(review.id, reviewId))
+
+            broadcastReviewUpdate({
+                type: 'review_deleted',
+                reviewId,
+            })
 
             // Clear from sheet
             clearReviewFromSheet(reviewWithRelations).catch(console.error)

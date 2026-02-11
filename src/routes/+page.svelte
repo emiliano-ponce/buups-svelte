@@ -5,6 +5,7 @@
     import Button from '$lib/components/Button.svelte'
     import MediaFilters from '$lib/components/MediaFilters.svelte'
     import ReviewList from '$lib/components/ReviewList.svelte'
+    import { sseStore } from '$lib/stores/sse'
     import { onMount } from 'svelte'
     import { SvelteURLSearchParams } from 'svelte/reactivity'
     import type { GetReviewsResponse, GroupedReviews } from './api/reviews/+server'
@@ -97,6 +98,7 @@
     })
 
     onMount(() => {
+        sseStore.connect()
         currentFilters = $page.url.searchParams.toString()
         loadReviews(1, false)
 
@@ -113,10 +115,20 @@
         )
 
         return () => {
+            sseStore.disconnect()
             if (observer) {
                 observer.disconnect()
             }
         }
+    })
+
+    $effect(() => {
+        return sseStore.subscribe(message => {
+            if (!message) return
+            if (message.type !== 'connected' && !loading && !initialLoading) {
+                loadReviews(1, false)
+            }
+        })
     })
 
     $effect(() => {

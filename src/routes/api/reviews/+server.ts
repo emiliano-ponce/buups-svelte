@@ -3,10 +3,11 @@ import { media, review, user, type Media, type Review, type User } from '$lib/se
 import { json } from '@sveltejs/kit'
 import { and, desc, eq, gte, sql, type SQL } from 'drizzle-orm'
 import { lte } from 'drizzle-orm/mysql-core/expressions'
+import type { RequestHandler } from './$types'
 
 const MEDIA_PER_PAGE = 10
 
-export async function GET({ locals, url }) {
+export const GET: RequestHandler = async ({ locals, url }) => {
     const db = getDb()
     if (!locals.user) {
         return json({ error: 'Unauthorized' }, { status: 401 })

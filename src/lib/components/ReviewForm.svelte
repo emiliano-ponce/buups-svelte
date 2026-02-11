@@ -1,8 +1,8 @@
 <script lang="ts">
     import { enhance } from '$app/forms'
     import { goto } from '$app/navigation'
+    import { resolve } from '$app/paths'
     import type { Media, Review, Series } from '$lib/server/db/schema'
-    import type { ActionData } from '../../routes/reviews/$types'
     import Button from './Button.svelte'
     import ContentCard from './ContentCard.svelte'
     import Enterprise from './Enterprise.svelte'
@@ -13,10 +13,9 @@
         media: Media | null
         user: { id: string; username: string } | null
         allSeries: Series[]
-        form: ActionData
     }
 
-    const { media, user, allSeries, form }: ReviewFormProps = $props()
+    const { media, user, allSeries }: ReviewFormProps = $props()
 
     let selectedSeriesId = $derived<number | null>(media?.seriesId ?? null)
     let selectedSeasonId = $derived<number | null>(media?.seasonId ?? null)
@@ -162,7 +161,7 @@
         startBlastOff = false
         loading = false
         if (!isEditing) {
-            goto('/')
+            goto(resolve('/', {}))
         }
     }
 </script>
@@ -194,7 +193,7 @@
                 action={isEditing ? '/reviews?/update' : '/reviews?/create'}
                 use:enhance={() => {
                     loading = true
-                    return async ({ result, update, formData }) => {
+                    return async ({ result }) => {
                         startBlastOff = true
                         if (result.type === 'success' && isEditing) {
                             successMessage = 'Review updated successfully!'
