@@ -30,7 +30,7 @@
 
             <div class="form-actions">
                 <a href={resolve('/forgot-password', {})} class="mr-auto">Forgot password?</a>
-                <Button --button-color="var(--blue)" type="submit" onclick={() => playSound('beep2')}>Log In</Button>
+                <Button --button-color="var(--blue)" type="submit" onclick={() => playSound('beep2', 'buttons')}>Log In</Button>
             </div>
         </form>
     </ContentCard>

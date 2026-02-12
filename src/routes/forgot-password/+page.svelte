@@ -30,7 +30,7 @@
 
             <div class="form-actions">
                 <a href={resolve('/login', {})} class="mr-auto">Back to Login</a>
-                <Button --button-color="var(--blue)" type="submit" onclick={() => playSound('beep2')}>
+                <Button --button-color="var(--blue)" type="submit" onclick={() => playSound('beep2', 'buttons')}>
                     Send Reset Link
                 </Button>
             </div>

@@ -33,7 +33,7 @@
                 <input type="password" id="confirmPassword" name="confirmPassword" required />
             </div>
 
-            <Button --button-color="var(--blue)" class="ml-auto" type="submit" onclick={() => playSound('beep2')}>
+            <Button --button-color="var(--blue)" class="ml-auto" type="submit" onclick={() => playSound('beep2', 'buttons')}>
                 Change Password
             </Button>
         </form>

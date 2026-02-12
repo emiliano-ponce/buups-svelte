@@ -39,7 +39,7 @@
             </div>
 
             <div class="button-group">
-                <Button --button-color="var(--blue)" type="submit" onclick={() => playSound('beep2')}>
+                <Button --button-color="var(--blue)" type="submit" onclick={() => playSound('beep2', 'buttons')}>
                     Change Password
                 </Button>
                 <a href={resolve('/account', {})} class="back-link">Back to Account</a>

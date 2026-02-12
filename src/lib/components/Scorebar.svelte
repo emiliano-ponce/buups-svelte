@@ -51,7 +51,15 @@
     })
 
     function beginAudio() {
-        if (!audioCtx || !powerOnBuffer || !powerHoldBuffer || isPlaying || !gainNode) return
+        if (
+            !settings.scorebarSliderEnabled ||
+            !audioCtx ||
+            !powerOnBuffer ||
+            !powerHoldBuffer ||
+            isPlaying ||
+            !gainNode
+        )
+            return
         isPlaying = true
 
         const powerOnSource = audioCtx.createBufferSource()
@@ -72,7 +80,7 @@
     }
 
     function endAudio() {
-        if (!audioCtx || !powerHoldSource || !powerOffBuffer) return
+        if (!audioCtx || !powerHoldSource || !powerOffBuffer || !settings.scorebarSliderEnabled) return
 
         powerHoldSource.loop = false
         powerHoldSource.onended = () => {

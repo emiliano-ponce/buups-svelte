@@ -23,7 +23,7 @@
         <div>
             <Button
                 --button-color="var(--moonlit-violet)"
-                onclick={() => playSoundAndRedirect('beep2', '/account/password')}>Change Password</Button
+                onclick={() => playSoundAndRedirect('beep2', '/account/password', 'buttons')}>Change Password</Button
             >
         </div>
     </div>

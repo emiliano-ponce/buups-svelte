@@ -47,7 +47,7 @@ Copy
     $effect(() => {
         if (startBlastOff && !isBlastingOff) {
             isBlastingOff = true
-            playSound('warpOut')
+            playSound('warpOut', 'enterprise')
             setTimeout(() => {
                 shouldUnmount = true
                 onComplete()

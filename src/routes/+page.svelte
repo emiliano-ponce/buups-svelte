@@ -6,6 +6,7 @@
     import MediaFilters from '$lib/components/MediaFilters.svelte'
     import ReviewList from '$lib/components/ReviewList.svelte'
     import { sseStore } from '$lib/stores/sse'
+    import { playSound } from '$lib/utils/audioHelpers'
     import { onMount } from 'svelte'
     import { SvelteURLSearchParams } from 'svelte/reactivity'
     import type { GetReviewsResponse, GroupedReviews } from './api/reviews/+server'
@@ -126,6 +127,7 @@
         return sseStore.subscribe(message => {
             if (!message) return
             if (message.type !== 'connected' && !loading && !initialLoading) {
+                playSound('incoming-transmission', 'reviewUpdates')
                 loadReviews(1, false)
             }
         })

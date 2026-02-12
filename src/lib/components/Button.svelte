@@ -10,7 +10,7 @@
 
     const handleClick: HTMLButtonAttributes['onclick'] = e => {
         if (sound) {
-            playSound(sound)
+            playSound(sound, 'buttons')
         }
         if (rest.onclick) {
             rest.onclick(e)

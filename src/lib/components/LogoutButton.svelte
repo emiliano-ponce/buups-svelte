@@ -5,7 +5,7 @@
 </script>
 
 <form method="POST" action="/logout" use:enhance>
-    <Button type="submit" --button-color="var(--red)" onclick={() => playSound('beep2')}>Logout</Button>
+    <Button type="submit" --button-color="var(--red)" onclick={() => playSound('beep2', 'buttons')}>Logout</Button>
 </form>
 
 <style>

@@ -1486,12 +1486,6 @@ code {
     color: var(--background);
 }
 
-.active:after {
-    content: '\276F';
-    transform: rotate(-90deg);
-    transition: 0.4s ease;
-}
-
 .accordionContent {
     padding-block: 0.5rem;
     padding-inline: 3.5rem;

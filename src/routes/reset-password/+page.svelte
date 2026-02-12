@@ -55,7 +55,7 @@
                         --button-color="var(--blue)"
                         class="ml-auto"
                         type="submit"
-                        onclick={() => playSound('beep2')}
+                        onclick={() => playSound('beep2', 'buttons')}
                     >
                         Reset Password
                     </Button>

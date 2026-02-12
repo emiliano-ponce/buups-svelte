@@ -8,6 +8,7 @@
     import { playSoundAndRedirect } from '$lib/utils/audioHelpers'
     import { makeCascade, type CascadeData } from '$lib/utils/cascadeHelper'
     import { updateIsMobile } from '$lib/utils/global.svelte'
+    import { settings } from '$lib/utils/settings.svelte'
     import { onMount } from 'svelte'
     import '../app.css'
     import '../classic.css'
@@ -16,7 +17,6 @@
     let { children, data }: LayoutProps = $props()
 
     let cascade: CascadeData = $state([])
-    let lcarsKeystroke: HTMLAudioElement | null = null
     let settingsOpen = $state(false)
 
     function handleResize() {
@@ -41,32 +41,34 @@
             })
         })
 
-        lcarsKeystroke = document.getElementById('LCARSkeystroke') as HTMLAudioElement
-        const playButtons = document.querySelectorAll<HTMLButtonElement>('.playSoundButton')
-        playButtons.forEach(btn => {
-            btn.addEventListener('click', () => {
-                if (!lcarsKeystroke) return
-                lcarsKeystroke.pause()
-                lcarsKeystroke.currentTime = 0
-                lcarsKeystroke.play()
-            })
-        })
-
         updateIsMobile()
         window.addEventListener('resize', handleResize)
         return () => window.removeEventListener('resize', handleResize)
     })
-    // const playBgm = $derived(data.user ? true : false)
+    let playBgm = $state(settings.bgmEnabled)
+    $effect(() => {
+        const bgmAudio = document.getElementById('bgm') as HTMLAudioElement | null
+        if (!bgmAudio) return
+        
+        if (settings.bgmEnabled) {
+            bgmAudio.play().catch(() => {
+                // Browser may block autoplay, ignore the error
+            })
+        } else {
+            bgmAudio.pause()
+        }
+    })
 </script>
 
 <audio id="beep1" src="/sounds/beep1.mp3" preload="auto"></audio>
 <audio id="beep2" src="/sounds/beep2.mp3" preload="auto"></audio>
 <audio id="beep3" src="/sounds/beep3.mp3" preload="auto"></audio>
 <audio id="beep4" src="/sounds/beep4.mp3" preload="auto"></audio>
-<!-- <audio id="bgm" src="/sounds/tos_bridge_9.mp3" preload="auto" loop volume={0.65} autoplay={playBgm}></audio> -->
+<audio id="bgm" src="/sounds/tos_bridge_9.mp3" preload="auto" loop volume={0.65} autoplay={playBgm}></audio>
 <audio id="power-on" src="/sounds/power_on.mp3" preload="auto"></audio>
 <audio id="power-hold" src="/sounds/power_hold.mp3" preload="auto"></audio>
 <audio id="power-off" src="/sounds/power_off.mp3" preload="auto"></audio>
+<audio id="incomming-transmission" src="/sounds/incomingtransmission_clean.mp3" preload="auto"></audio>
 
 <div style="flex: 1 1 1100px;">
     <div class="wrap">
@@ -82,22 +84,21 @@
                 <DataCascade data={cascade} />
 
                 <Navigation>
-                    <Button --button-color="var(--african-violet)" onclick={() => playSoundAndRedirect('beep2', '/')}
-                        >Home</Button
-                    >
-                    <Button --button-color="var(--orange)" onclick={() => playSoundAndRedirect('beep2', '/account')}
-                        >Account</Button
-                    >
-                    <Button
-                        --button-color="var(--bluey)"
-                        onclick={() => playSoundAndRedirect('beep2', '/review')}>Review</Button
-                    >
+                    <Button --button-color="var(--african-violet)" onclick={() => playSoundAndRedirect('beep2', '/', 'buttons')}>
+                        Home
+                    </Button>
+                    <Button --button-color="var(--orange)" onclick={() => playSoundAndRedirect('beep2', '/account', 'buttons')}>
+                        Account
+                    </Button>
+                    <Button --button-color="var(--bluey)" onclick={() => playSoundAndRedirect('beep2', '/review', 'buttons')}>
+                        Review
+                    </Button>
                     {#if data.user}
                         <LogoutButton />
                     {:else}
-                        <Button --button-color="var(--green)" onclick={() => playSoundAndRedirect('beep2', '/login')}
-                            >Log in</Button
-                        >
+                        <Button --button-color="var(--green)" onclick={() => playSoundAndRedirect('beep2', '/login', 'buttons')}>
+                            Log in
+                        </Button>
                     {/if}
                 </Navigation>
             </div>
@@ -114,7 +115,7 @@
 
     <div class="wrap" id="gap">
         <div class="left-frame">
-            <ScrollToTop onclick={() => playSoundAndRedirect('beep4', '#')} />
+            <ScrollToTop onclick={() => playSoundAndRedirect('beep4', '#', 'buttons')} />
 
             <div>
                 <div class="panel-3">03<span class="hop">-111968</span></div>

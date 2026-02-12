@@ -1,3 +1,4 @@
+<!-- SettingsPopover.svelte -->
 <script lang="ts">
     import { settings } from '$lib/utils/settings.svelte'
 
@@ -38,20 +39,95 @@
     <div bind:this={popoverElement} class="settings-popover">
         <div class="settings-header">Settings</div>
         <div class="settings-content">
-            <label for="volume-slider">
-                <span class="volume-label">Volume</span>
-                <span class="volume-value">{volumePercentage}%</span>
-            </label>
-            <input
-                id="volume-slider"
-                type="range"
-                min="0"
-                max="1"
-                step="0.1"
-                value={settings.volume}
-                oninput={handleVolumeChange}
-                class="volume-slider"
-            />
+            <!-- Volume Slider -->
+            <div class="setting-group">
+                <label for="volume-slider">
+                    <span class="volume-label">Volume</span>
+                    <span class="volume-value">{volumePercentage}%</span>
+                </label>
+                <input
+                    id="volume-slider"
+                    type="range"
+                    min="0"
+                    max="1"
+                    step="0.1"
+                    value={settings.volume}
+                    oninput={handleVolumeChange}
+                    class="volume-slider"
+                    style="--volume: {settings.volume}"
+                />
+            </div>
+
+            <div class="setting-group">
+                <label class="toggle-label">
+                    <span>BGM</span>
+                    <button
+                        class="toggle-button"
+                        class:active={settings.bgmEnabled}
+                        onclick={() => settings.toggleBooleanSetting('bgmEnabled')}
+                        aria-label="Toggle background music"
+                    >
+                        <span class="toggle-slider"></span>
+                    </button>
+                </label>
+            </div>
+
+            <div class="setting-group">
+                <label class="toggle-label">
+                    <span>Scorebar Slider</span>
+                    <button
+                        class="toggle-button"
+                        class:active={settings.scorebarSliderEnabled}
+                        onclick={() => settings.toggleBooleanSetting('scorebarSliderEnabled')}
+                        aria-label="Toggle scorebar slider sound"
+                    >
+                        <span class="toggle-slider"></span>
+                    </button>
+                </label>
+            </div>
+
+            <div class="setting-group">
+                <label class="toggle-label">
+                    <span>Button Beeps</span>
+                    <button
+                        class="toggle-button"
+                        class:active={settings.buttonBeepsEnabled}
+                        onclick={() => settings.toggleBooleanSetting('buttonBeepsEnabled')}
+                        aria-label="Toggle button beeps"
+                    >
+                        <span class="toggle-slider"></span>
+                    </button>
+                </label>
+            </div>
+
+            <div class="setting-group">
+                <label class="toggle-label">
+                    <span>Review Updates</span>
+                    <button
+                        class="toggle-button"
+                        class:active={settings.reviewUpdatesEnabled}
+                        onclick={() => settings.toggleBooleanSetting('reviewUpdatesEnabled')}
+                        aria-label="Toggle review update sounds"
+                    >
+                        <span class="toggle-slider"></span>
+                    </button>
+                </label>
+            </div>
+
+            <div class="setting-group">
+                <label class="toggle-label">
+                    <span>Enterprise Blast Off</span>
+                    <button
+                        class="toggle-button"
+                        class:active={settings.reviewUpdatesEnabled}
+                        onclick={() => settings.toggleBooleanSetting('enterprise')}
+                        aria-label="Toggle review update sounds"
+                    >
+                        <span class="toggle-slider"></span>
+                    </button>
+                </label>
+            </div>
+
         </div>
     </div>
 {/if}
@@ -81,7 +157,13 @@
     .settings-content {
         display: flex;
         flex-direction: column;
-        gap: 10px;
+        gap: 15px;
+    }
+
+    .setting-group {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
     }
 
     label {
@@ -90,7 +172,11 @@
         align-items: center;
         color: var(--orange, #ff9966);
         font-size: 1.1rem;
-        margin-bottom: 5px;
+    }
+
+    .toggle-label {
+        cursor: pointer;
+        user-select: none;
     }
 
     .volume-label {
@@ -102,6 +188,45 @@
         color: var(--butterscotch, #ffcc99);
     }
 
+    /* Toggle Switch */
+    .toggle-button {
+        position: relative;
+        width: 50px;
+        height: 26px;
+        background: #333;
+        border: 2px solid #555;
+        border-radius: 13px;
+        cursor: pointer;
+        transition: all 0.3s;
+        padding: 0;
+    }
+
+    .toggle-button:hover {
+        border-color: var(--african-violet, #9999ff);
+    }
+
+    .toggle-button.active {
+        background: var(--african-violet, #9999ff);
+        border-color: var(--african-violet, #9999ff);
+    }
+
+    .toggle-slider {
+        position: absolute;
+        top: 2px;
+        left: 2px;
+        width: 18px;
+        height: 18px;
+        background: #fff;
+        border-radius: 50%;
+        transition: transform 0.3s;
+    }
+
+    .toggle-button.active .toggle-slider {
+        transform: translateX(24px);
+        background: var(--butterscotch, #ffcc99);
+    }
+
+    /* Volume Slider */
     .volume-slider {
         padding: 0.65rem 0;
         width: 100%;
