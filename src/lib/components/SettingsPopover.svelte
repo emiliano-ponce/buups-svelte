@@ -119,9 +119,9 @@
                     <span>Enterprise Blast Off</span>
                     <button
                         class="toggle-button"
-                        class:active={settings.reviewUpdatesEnabled}
+                        class:active={settings.enterprise}
                         onclick={() => settings.toggleBooleanSetting('enterprise')}
-                        aria-label="Toggle review update sounds"
+                        aria-label="Toggle enterprise blass off sound"
                     >
                         <span class="toggle-slider"></span>
                     </button>

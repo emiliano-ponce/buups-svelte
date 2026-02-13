@@ -68,7 +68,7 @@
 <audio id="power-on" src="/sounds/power_on.mp3" preload="auto"></audio>
 <audio id="power-hold" src="/sounds/power_hold.mp3" preload="auto"></audio>
 <audio id="power-off" src="/sounds/power_off.mp3" preload="auto"></audio>
-<audio id="incomming-transmission" src="/sounds/incomingtransmission_clean.mp3" preload="auto"></audio>
+<audio id="incoming-transmission" src="/sounds/incomingtransmission_clean.mp3" preload="auto"></audio>
 
 <div style="flex: 1 1 1100px;">
     <div class="wrap">

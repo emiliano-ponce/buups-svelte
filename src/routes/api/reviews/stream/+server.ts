@@ -1,7 +1,6 @@
 import { addSSEClient, removeSSEClient } from '$lib/server/sse'
 import type { RequestHandler } from './$types'
 
-
 export const GET: RequestHandler = async ({ request }) => {
     const stream = new ReadableStream({
         start(controller) {
