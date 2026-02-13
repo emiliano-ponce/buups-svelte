@@ -41,15 +41,32 @@
             })
         })
 
+        function handleVisibilityChange() {
+            const bgmAudio = document.getElementById('bgm') as HTMLAudioElement | null
+            if (!bgmAudio) return
+
+            if (document.hidden) {
+                bgmAudio.pause()
+            } else if (settings.bgmEnabled) {
+                bgmAudio.play().catch(() => {})
+            }
+        }
+
+        document.addEventListener('visibilitychange', handleVisibilityChange)
+
         updateIsMobile()
         window.addEventListener('resize', handleResize)
-        return () => window.removeEventListener('resize', handleResize)
+        
+        return () => {
+            window.removeEventListener('resize', handleResize)
+            document.removeEventListener('visibilitychange', handleVisibilityChange)
+        }
     })
     let playBgm = $state(settings.bgmEnabled)
     $effect(() => {
         const bgmAudio = document.getElementById('bgm') as HTMLAudioElement | null
         if (!bgmAudio) return
-        
+
         if (settings.bgmEnabled) {
             bgmAudio.play().catch(() => {
                 // Browser may block autoplay, ignore the error
@@ -84,19 +101,31 @@
                 <DataCascade data={cascade} />
 
                 <Navigation>
-                    <Button --button-color="var(--african-violet)" onclick={() => playSoundAndRedirect('beep2', '/', 'buttons')}>
+                    <Button
+                        --button-color="var(--african-violet)"
+                        onclick={() => playSoundAndRedirect('beep2', '/', 'buttons')}
+                    >
                         Home
                     </Button>
-                    <Button --button-color="var(--orange)" onclick={() => playSoundAndRedirect('beep2', '/account', 'buttons')}>
+                    <Button
+                        --button-color="var(--orange)"
+                        onclick={() => playSoundAndRedirect('beep2', '/account', 'buttons')}
+                    >
                         Account
                     </Button>
-                    <Button --button-color="var(--bluey)" onclick={() => playSoundAndRedirect('beep2', '/review', 'buttons')}>
+                    <Button
+                        --button-color="var(--bluey)"
+                        onclick={() => playSoundAndRedirect('beep2', '/review', 'buttons')}
+                    >
                         Review
                     </Button>
                     {#if data.user}
                         <LogoutButton />
                     {:else}
-                        <Button --button-color="var(--green)" onclick={() => playSoundAndRedirect('beep2', '/login', 'buttons')}>
+                        <Button
+                            --button-color="var(--green)"
+                            onclick={() => playSoundAndRedirect('beep2', '/login', 'buttons')}
+                        >
                             Log in
                         </Button>
                     {/if}
