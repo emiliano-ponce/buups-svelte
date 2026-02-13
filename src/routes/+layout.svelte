@@ -56,13 +56,15 @@
 
         updateIsMobile()
         window.addEventListener('resize', handleResize)
-        
+
         return () => {
             window.removeEventListener('resize', handleResize)
             document.removeEventListener('visibilitychange', handleVisibilityChange)
         }
     })
-    let playBgm = $state(settings.bgmEnabled)
+
+    let playBgm = $derived(settings.bgmEnabled)
+
     $effect(() => {
         const bgmAudio = document.getElementById('bgm') as HTMLAudioElement | null
         if (!bgmAudio) return
