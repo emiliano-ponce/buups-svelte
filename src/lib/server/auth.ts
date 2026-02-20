@@ -27,6 +27,10 @@ export async function createSession(token: string, userId: string) {
     return session
 }
 
+function getIsAdmin(username: string) {
+    return username === 'Emiliano' || username === 'jars'
+}
+
 export async function validateSessionToken(token: string) {
     const db = getDb()
     const sessionId = encodeHexLowerCase(sha256(new TextEncoder().encode(token)))
@@ -57,7 +61,7 @@ export async function validateSessionToken(token: string) {
         await db.update(table.session).set({ expiresAt: session.expiresAt }).where(eq(table.session.id, session.id))
     }
 
-    return { session, user }
+    return { session, user: { ...user, isAdmin: getIsAdmin(user.username) } }
 }
 
 export type SessionValidationResult = Awaited<ReturnType<typeof validateSessionToken>>

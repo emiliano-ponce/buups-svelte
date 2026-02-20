@@ -1,5 +1,5 @@
 import { getDb } from '$lib/server/db'
-import { media, review, user, type Media, type Review, type User } from '$lib/server/db/schema'
+import { media, review, type Media, type Review, type User } from '$lib/server/db/schema'
 import { json } from '@sveltejs/kit'
 import { and, desc, eq, gte, sql, type SQL } from 'drizzle-orm'
 import { lte } from 'drizzle-orm/mysql-core/expressions'
@@ -13,6 +13,8 @@ export const GET: RequestHandler = async ({ locals, url }) => {
         return json({ error: 'Unauthorized' }, { status: 401 })
     }
 
+    const isAdmin = locals.user.username === 'Emiliano' || locals.user.username === 'jars'
+    // locals.user.isAdmin
     const seriesFilter = url.searchParams.get('series') ?? ''
     const seasonFilter = url.searchParams.get('season') ?? ''
     const scoreFilter = url.searchParams.get('score') ?? ''
@@ -37,50 +39,32 @@ export const GET: RequestHandler = async ({ locals, url }) => {
 
     // Build the review score condition SQL for the subquery
     let scoreConditionSql1 = sql``
-    let scoreConditionSql2 = sql``
     if (scoreFilter) {
         const scoreValue = parseInt(scoreFilter)
         if (scoreFilter === '1') {
             scoreConditionSql1 = sql`AND r1.score <= ${scoreValue}`
-            scoreConditionSql2 = sql`AND r3.score <= ${scoreValue}`
         } else if (scoreFilter === '10') {
             scoreConditionSql1 = sql`AND r1.score >= ${scoreValue}`
-            scoreConditionSql2 = sql`AND r3.score >= ${scoreValue}`
         } else {
             scoreConditionSql1 = sql`AND r1.score = ${scoreValue}`
-            scoreConditionSql2 = sql`AND r3.score = ${scoreValue}`
         }
     }
 
-    // Add condition to filter media with reviews from both users
-    // and if scoreFilter is set, at least one review must meet the score condition
-    mediaConditions.push(sql`${media.id} IN (
-        SELECT r1.media_id
-        FROM ${review} r1
-        INNER JOIN ${user} u1 ON r1.author_id = u1.id
-        WHERE u1.username = 'Emiliano'
-        ${scoreConditionSql1}
-        AND EXISTS (
-            SELECT 1
-            FROM ${review} r2
-            INNER JOIN ${user} u2 ON r2.author_id = u2.id
-            WHERE r2.media_id = r1.media_id
-            AND u2.username = 'jars'
-        )
-        UNION
-        SELECT r3.media_id
-        FROM ${review} r3
-        INNER JOIN ${user} u3 ON r3.author_id = u3.id
-        WHERE u3.username = 'jars'
-        ${scoreConditionSql2}
-        AND EXISTS (
-            SELECT 1
-            FROM ${review} r4
-            INNER JOIN ${user} u4 ON r4.author_id = u4.id
-            WHERE r4.media_id = r3.media_id
-            AND u4.username = 'Emiliano'
-        )
-    )`)
+    // Add condition to filter media with at least 1 review
+    // If scoreFilter is set, at least one review must meet the score condition
+    if (scoreFilter) {
+        mediaConditions.push(sql`${media.id} IN (
+            SELECT r1.media_id
+            FROM ${review} r1
+            WHERE 1=1
+            ${scoreConditionSql1}
+        )`)
+    } else {
+        mediaConditions.push(sql`${media.id} IN (
+            SELECT DISTINCT media_id
+            FROM ${review}
+        )`)
+    }
 
     const reviewConditions: SQL<unknown>[] = []
 
@@ -132,6 +116,8 @@ export const GET: RequestHandler = async ({ locals, url }) => {
         reviews: mediaItem.reviews.map(rev => ({
             ...rev,
             author: rev.author.username,
+            // Hide jars's review body for non-admin users
+            body: !isAdmin && rev.author.username === 'jars' ? '' : rev.body,
         })),
     }))
 
