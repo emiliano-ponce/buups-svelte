@@ -1,6 +1,3 @@
-riseloader · SVELTE
-Copy
-
 <script lang="ts">
     import { browser } from '$app/environment'
     import { playSound } from '$lib/utils/audioHelpers'
