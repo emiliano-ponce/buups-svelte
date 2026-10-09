@@ -161,6 +161,7 @@ export const series = sqliteTable('series', {
     overview: text().notNull(),
     imageUrl: text('image_url'),
     tmdbStats,
+    tmdbUpdatedAt: integer('tmdb_updated_at', { mode: 'timestamp' }),
 })
 export type Series = typeof series.$inferSelect
 

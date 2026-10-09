@@ -71,6 +71,7 @@ const makeSeries = (tmdbSeries: TMDBSeries, acronym: TrekSeries): Omit<schema.Se
         imageUrl: makeImgUrl(poster_path),
         overview,
         title: name,
+        tmdbUpdatedAt: new Date(),
         tmdbStats: {
             voteAvg: vote_average,
             voteCount: vote_count,
