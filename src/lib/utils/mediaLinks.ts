@@ -18,7 +18,7 @@ export function getMediaLink(media: MediaWithRelations): string {
 export function getMediaBreadcrumbs(media: MediaWithRelations) {
     const { type, series, season, episode } = media
 
-    const crumbs = [{ label: series.acronym as string, href: `/series/${series.acronym}` }]
+    const crumbs = [{ label: series.acronym as string, href: `/series/${encodeURIComponent(series.acronym)}` }]
 
     if (type === 'episode' && season) {
         crumbs.push({ label: `S${season.number}`, href: `/series/${series.acronym}/season/${season.number}` })
@@ -29,7 +29,7 @@ export function getMediaBreadcrumbs(media: MediaWithRelations) {
     }
 
     if (type === 'movie' || type === 'special') {
-        crumbs.push({ label: `Movie ${episode}`, href: `/series/${series.acronym}/movies/${media.title}` })
+        crumbs.push({ label: `Movie ${episode}`, href: getMediaLink(media) })
     }
 
     return crumbs

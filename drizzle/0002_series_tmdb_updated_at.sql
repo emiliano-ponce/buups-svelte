@@ -1,0 +1,1 @@
+ALTER TABLE `series` ADD `tmdb_updated_at` integer;

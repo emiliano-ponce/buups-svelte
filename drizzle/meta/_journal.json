@@ -15,6 +15,13 @@
       "when": 1765168241197,
       "tag": "0001_flowery_sentry",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1791576563026,
+      "tag": "0002_series_tmdb_updated_at",
+      "breakpoints": true
     }
   ]
 }
