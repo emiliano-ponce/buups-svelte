@@ -1,4 +1,4 @@
-CREATE TABLE `password_reset_token` (
+CREATE TABLE IF NOT EXISTS `password_reset_token` (
 	`id` text PRIMARY KEY NOT NULL,
 	`user_id` text NOT NULL,
 	`token` text NOT NULL,
@@ -7,5 +7,5 @@ CREATE TABLE `password_reset_token` (
 	FOREIGN KEY (`user_id`) REFERENCES `user`(`id`) ON UPDATE no action ON DELETE no action
 );
 --> statement-breakpoint
-CREATE UNIQUE INDEX `password_reset_token_token_unique` ON `password_reset_token` (`token`);--> statement-breakpoint
+CREATE UNIQUE INDEX IF NOT EXISTS `password_reset_token_token_unique` ON `password_reset_token` (`token`);--> statement-breakpoint
 ALTER TABLE `user` ADD `require_password_change` integer DEFAULT true NOT NULL;
