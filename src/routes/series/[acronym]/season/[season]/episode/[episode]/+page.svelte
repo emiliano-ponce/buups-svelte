@@ -65,7 +65,7 @@
     <nav class="prev-next" aria-label="Episode navigation">
         {#if data.prev}
             <BeepLink href={episodeHref(s.acronym, data.prev.season, data.prev.episode)} class="prev">
-                <span class="dir">‹ Previous · S{data.prev.season}E{data.prev.episode}</span>
+                <span class="dir">‹ S{data.prev.season}E{data.prev.episode}</span>
                 <span>{data.prev.title}</span>
             </BeepLink>
         {:else}
@@ -73,7 +73,7 @@
         {/if}
         {#if data.next}
             <BeepLink href={episodeHref(s.acronym, data.next.season, data.next.episode)} class="next">
-                <span class="dir">Next · S{data.next.season}E{data.next.episode} ›</span>
+                <span class="dir">S{data.next.season}E{data.next.episode} ›</span>
                 <span>{data.next.title}</span>
             </BeepLink>
         {/if}
