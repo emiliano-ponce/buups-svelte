@@ -248,6 +248,7 @@
     .subtitle {
         font-size: 1.25rem;
         color: var(--link-color);
+        white-space: nowrap;
     }
 
     @media (max-width: 768px) {
