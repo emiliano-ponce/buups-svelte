@@ -1,6 +1,7 @@
 <script lang="ts">
     import { resolve } from '$app/paths'
-    
+    import { playSound } from '$lib/utils/audioHelpers'
+
     interface MediaLinksProps {
         breadcrumbs: { label: string; href: string }[]
     }
@@ -11,7 +12,7 @@
 <div class="media-links">
     {#each breadcrumbs as crumb, i (crumb.href)}
         {#if i > 0}<span class="separator"></span>{/if}
-        <a href={resolve(crumb.href, {})}>{crumb.label}</a>
+        <a href={resolve(crumb.href, {})} onclick={() => playSound('beep1', 'buttons')}>{crumb.label}</a>
     {/each}
 </div>
 
