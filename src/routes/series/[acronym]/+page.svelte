@@ -1,9 +1,11 @@
 <script lang="ts">
     import { resolve } from '$app/paths'
+    import BeepLink from '$lib/components/BeepLink.svelte'
     import ContentCard from '$lib/components/ContentCard.svelte'
     import ReviewList from '$lib/components/ReviewList.svelte'
     import SeriesLink from '$lib/components/SeriesLink.svelte'
     import { playSound } from '$lib/utils/audioHelpers'
+    import { episodeHref, seasonHref } from '$lib/utils/mediaRoutes'
     import { formatScore } from '$lib/utils/seriesStats'
     import { tmdbImageSize } from '$lib/utils/tmdbImage'
     import type { PageProps } from './$types'
@@ -96,7 +98,7 @@
                     <tbody>
                         {#each data.seasons as season (season.id)}
                             <tr>
-                                <td>{season.title}</td>
+                                <td><BeepLink href={seasonHref(s.acronym, season.number)}>{season.title}</BeepLink></td>
                                 <td>{season.rated}/{season.total}</td>
                                 <td>{formatScore(season.emiliano)}</td>
                                 <td>{formatScore(season.jars)}</td>
@@ -157,7 +159,17 @@
                         {#each data.top as item, i (item.media.id)}
                             <tr>
                                 <td>{i + 1}</td>
-                                <td><span class="muted">{label(item.media)}</span> {item.media.title}</td>
+                                <td>
+                                    <span class="muted">{label(item.media)}</span>
+                                    {#if item.media.seasonNumber !== null}
+                                        <BeepLink
+                                            href={episodeHref(s.acronym, item.media.seasonNumber, item.media.episode)}
+                                            >{item.media.title}</BeepLink
+                                        >
+                                    {:else}
+                                        {item.media.title}
+                                    {/if}
+                                </td>
                                 <td>{formatScore(item.scores.emiliano)}</td>
                                 <td>{formatScore(item.scores.jars)}</td>
                                 <td class="strong">{formatScore(item.scores.overall)}</td>
@@ -186,7 +198,17 @@
                         {#each data.bottom as item, i (item.media.id)}
                             <tr>
                                 <td>{i + 1}</td>
-                                <td><span class="muted">{label(item.media)}</span> {item.media.title}</td>
+                                <td>
+                                    <span class="muted">{label(item.media)}</span>
+                                    {#if item.media.seasonNumber !== null}
+                                        <BeepLink
+                                            href={episodeHref(s.acronym, item.media.seasonNumber, item.media.episode)}
+                                            >{item.media.title}</BeepLink
+                                        >
+                                    {:else}
+                                        {item.media.title}
+                                    {/if}
+                                </td>
                                 <td>{formatScore(item.scores.emiliano)}</td>
                                 <td>{formatScore(item.scores.jars)}</td>
                                 <td class="strong">{formatScore(item.scores.overall)}</td>
@@ -216,7 +238,17 @@
                         {#each data.disagreements as item, i (item.media.id)}
                             <tr>
                                 <td>{i + 1}</td>
-                                <td><span class="muted">{label(item.media)}</span> {item.media.title}</td>
+                                <td>
+                                    <span class="muted">{label(item.media)}</span>
+                                    {#if item.media.seasonNumber !== null}
+                                        <BeepLink
+                                            href={episodeHref(s.acronym, item.media.seasonNumber, item.media.episode)}
+                                            >{item.media.title}</BeepLink
+                                        >
+                                    {:else}
+                                        {item.media.title}
+                                    {/if}
+                                </td>
                                 <td>{formatScore(item.scores.emiliano)}</td>
                                 <td>{formatScore(item.scores.jars)}</td>
                                 <td class="strong">{formatScore(item.diff)}</td>

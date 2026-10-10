@@ -1,0 +1,114 @@
+/* Shared layout styles for series / season / episode pages. Import inside a component's <style> via :global scope wrapper. */
+.media-page {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding-bottom: 4rem;
+}
+.media-page .header {
+    display: flex;
+    gap: 1rem;
+}
+.media-page .poster {
+    width: 180px;
+    height: auto;
+    object-fit: cover;
+    align-self: flex-start;
+}
+.media-page .poster.wide {
+    width: 320px;
+}
+.media-page .overview {
+    color: var(--banner-color);
+}
+.media-page .progress {
+    margin-top: 0.75rem;
+    color: var(--orange);
+    text-transform: uppercase;
+}
+.media-page .table-wrap {
+    overflow-x: auto;
+}
+.media-page table {
+    width: 100%;
+    border-collapse: collapse;
+}
+.media-page th {
+    text-align: left;
+    color: var(--orange);
+    text-transform: uppercase;
+    font-weight: normal;
+    padding: 0.25rem 0.5rem;
+}
+.media-page td {
+    color: var(--banner-color);
+    padding: 0.25rem 0.5rem;
+    border-top: 1px solid color-mix(in srgb, var(--african-violet) 40%, transparent);
+}
+.media-page .th-emiliano {
+    color: var(--bluey);
+}
+.media-page .th-jars {
+    color: var(--african-violet);
+}
+.media-page .strong {
+    color: var(--butterscotch);
+}
+.media-page .muted {
+    opacity: 0.7;
+}
+.media-page .note {
+    color: var(--banner-color);
+    margin-bottom: 0.5rem;
+}
+.media-page .center {
+    text-align: center;
+}
+.media-page .section-heading {
+    color: var(--orange);
+    text-transform: uppercase;
+}
+.media-page .quick-nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    align-items: center;
+}
+.media-page .quick-nav a {
+    display: inline-flex;
+    align-items: center;
+    height: 2.25rem;
+    padding: 0 0.85rem;
+    border-radius: 100vmax;
+    background: var(--african-violet);
+    color: black;
+    text-decoration: none;
+    text-transform: uppercase;
+    font-weight: bold;
+    font-size: 0.85rem;
+}
+.media-page .quick-nav a.back-link {
+    background: var(--orange);
+}
+.media-page .quick-nav a.current {
+    background: var(--butterscotch);
+    outline: 2px solid var(--orange);
+    outline-offset: 2px;
+}
+.media-page .quick-nav a:hover,
+.media-page .quick-nav a:focus-visible {
+    filter: brightness(1.15);
+}
+@media (max-width: 700px) {
+    .media-page .header {
+        flex-direction: column;
+    }
+    .media-page .poster {
+        width: 120px;
+    }
+    .media-page .poster.wide {
+        width: 100%;
+    }
+}
