@@ -1,5 +1,6 @@
 import { getDb } from '$lib/server/db'
 import { media, series } from '$lib/server/db/schema'
+import { getSeriesList } from '$lib/server/seriesSummaries'
 import { refreshSeriesIfStale } from '$lib/server/tmdbRefresh'
 import {
     aggregateScores,
@@ -29,7 +30,8 @@ export const load: PageServerLoad = async ({ locals, params }) => {
     // Stale-while-revalidate: serve stored TMDB data now, refresh in the background.
     refreshSeriesIfStale(record)
 
-    const [seasons, mediaRows] = await Promise.all([
+    const [seriesList, seasons, mediaRows] = await Promise.all([
+        getSeriesList(),
         db.query.season.findMany({
             where: (s, { eq }) => eq(s.seriesId, record.id),
             orderBy: (s, { asc }) => [asc(s.number)],
@@ -91,6 +93,7 @@ export const load: PageServerLoad = async ({ locals, params }) => {
             imageUrl: record.imageUrl,
             tmdb: record.tmdbStats,
         },
+        seriesList,
         totals: aggregateScores(episodes),
         seasons: seasonRows,
         movies: movies.map(m => ({ ...m, scores: getMediaScores(m) })),

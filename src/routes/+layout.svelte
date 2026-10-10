@@ -121,6 +121,12 @@
                     >
                         Review
                     </Button>
+                    <Button
+                        --button-color="var(--butterscotch)"
+                        onclick={() => playSoundAndRedirect('beep2', '/series', 'buttons')}
+                    >
+                        Series
+                    </Button>
                     {#if data.user}
                         <LogoutButton />
                     {:else}
