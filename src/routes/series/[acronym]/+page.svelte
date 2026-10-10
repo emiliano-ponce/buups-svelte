@@ -1,6 +1,11 @@
 <script lang="ts">
     import ContentCard from '$lib/components/ContentCard.svelte'
     import ReviewList from '$lib/components/ReviewList.svelte'
+    import ReviewerScore from '$lib/components/ReviewerScore.svelte'
+    import SeriesLink from '$lib/components/SeriesLink.svelte'
+    import { resolve } from '$app/paths'
+    import { playSound } from '$lib/utils/audioHelpers'
+    import { tmdbImageSize } from '$lib/utils/tmdbImage'
     import { formatScore } from '$lib/utils/seriesStats'
     import type { PageProps } from './$types'
 
@@ -34,6 +39,23 @@
 </svelte:head>
 
 <div class="series-page">
+    <nav class="quick-nav" aria-label="Series">
+        <a href={resolve('/series', {})} class="all-link" onclick={() => playSound('beep1', 'buttons')}>All Series</a>
+        {#each data.seriesList as item (item.id)}
+            <SeriesLink
+                acronym={item.acronym}
+                class="quick-link {item.id === s.id ? 'current' : ''}"
+                current={item.id === s.id}
+                title={item.title}
+            >
+                {#if item.imageUrl}
+                    <img src={tmdbImageSize(item.imageUrl, 'w92')} alt="" />
+                {/if}
+                <span>{item.acronym}</span>
+            </SeriesLink>
+        {/each}
+    </nav>
+
     <ContentCard title={s.title} subtitle={s.acronym}>
         <div class="header">
             {#if s.imageUrl}
@@ -66,8 +88,8 @@
                         <tr>
                             <th>Season</th>
                             <th>Reviewed</th>
-                            <th>Emiliano</th>
-                            <th>Jars</th>
+                            <th class="th-emiliano">Emiliano</th>
+                            <th class="th-jars">Jars</th>
                             <th>Overall</th>
                             <th>TMDB</th>
                         </tr>
@@ -97,8 +119,8 @@
                     <thead>
                         <tr>
                             <th>Movie</th>
-                            <th>Emiliano</th>
-                            <th>Jars</th>
+                            <th class="th-emiliano">Emiliano</th>
+                            <th class="th-jars">Jars</th>
                             <th>Overall</th>
                             <th>TMDB</th>
                         </tr>
@@ -127,7 +149,11 @@
                         <li>
                             <span class="muted">{label(item.media)}</span>
                             {item.media.title}
-                            <span class="score">{formatScore(item.scores.overall)}</span>
+                            <span class="score">
+                                <ReviewerScore who="emiliano" score={item.scores.emiliano} />
+                                <ReviewerScore who="jars" score={item.scores.jars} />
+                                <strong title="Overall">{formatScore(item.scores.overall)}</strong>
+                            </span>
                         </li>
                     {/each}
                 </ol>
@@ -138,7 +164,11 @@
                         <li>
                             <span class="muted">{label(item.media)}</span>
                             {item.media.title}
-                            <span class="score">{formatScore(item.scores.overall)}</span>
+                            <span class="score">
+                                <ReviewerScore who="emiliano" score={item.scores.emiliano} />
+                                <ReviewerScore who="jars" score={item.scores.jars} />
+                                <strong title="Overall">{formatScore(item.scores.overall)}</strong>
+                            </span>
                         </li>
                     {/each}
                 </ol>
@@ -155,9 +185,9 @@
                         <span class="muted">{label(item.media)}</span>
                         {item.media.title}
                         <span class="score">
-                            E {formatScore(item.scores.emiliano)} · J {formatScore(item.scores.jars)} (Δ{formatScore(
-                                item.diff
-                            )})
+                            <ReviewerScore who="emiliano" score={item.scores.emiliano} />
+                            <ReviewerScore who="jars" score={item.scores.jars} />
+                            <strong title="Difference">Δ{formatScore(item.diff)}</strong>
                         </span>
                     </li>
                 {/each}
@@ -244,6 +274,12 @@
         padding: 0.25rem 0.5rem;
         border-top: 1px solid color-mix(in srgb, var(--african-violet) 40%, transparent);
     }
+    .th-emiliano {
+        color: var(--bluey);
+    }
+    .th-jars {
+        color: var(--african-violet);
+    }
     .strong {
         color: var(--butterscotch);
     }
@@ -275,8 +311,50 @@
     }
     .rank .score {
         margin-left: auto;
+        display: inline-flex;
+        gap: 0.5rem;
+        align-items: center;
         color: var(--butterscotch);
         white-space: nowrap;
+    }
+    .quick-nav {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.4rem;
+        align-items: center;
+    }
+    .quick-nav :global(a) {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35rem;
+        height: 2.25rem;
+        padding: 0 0.85rem 0 0.25rem;
+        border-radius: 100vmax;
+        background: var(--african-violet);
+        color: black;
+        text-decoration: none;
+        text-transform: uppercase;
+        font-weight: bold;
+        font-size: 0.85rem;
+    }
+    .quick-nav :global(a img) {
+        width: 1.75rem;
+        height: 1.75rem;
+        border-radius: 50%;
+        object-fit: cover;
+    }
+    .quick-nav :global(a.all-link) {
+        background: var(--orange);
+        padding-left: 0.85rem;
+    }
+    .quick-nav :global(a.current) {
+        background: var(--butterscotch);
+        outline: 2px solid var(--orange);
+        outline-offset: 2px;
+    }
+    .quick-nav :global(a:hover),
+    .quick-nav :global(a:focus-visible) {
+        filter: brightness(1.15);
     }
     .section-heading {
         color: var(--orange);
