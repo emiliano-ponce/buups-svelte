@@ -2,6 +2,7 @@
     import Button from '$lib/components/Button.svelte'
     import DataCascade from '$lib/components/DataCascade.svelte'
     import LogoutButton from '$lib/components/LogoutButton.svelte'
+    import MorePopover from '$lib/components/MorePopover.svelte'
     import Navigation from '$lib/components/Navigation.svelte'
     import ScrollToTop from '$lib/components/ScrollToTop.svelte'
     import SettingsPopover from '$lib/components/SettingsPopover.svelte'
@@ -90,7 +91,7 @@
 <audio id="incoming-transmission" src="/sounds/incomingtransmission_clean.mp3" preload="auto"></audio>
 
 <div style="flex: 1 1 1100px;">
-    <div class="wrap">
+    <div class="wrap top-wrap">
         <div class="left-frame-top">
             <SettingsPopover bind:open={settingsOpen} />
             <div class="panel-2">02<span class="hop">-262000</span></div>
@@ -110,23 +111,12 @@
                         Home
                     </Button>
                     <Button
-                        --button-color="var(--orange)"
-                        onclick={() => playSoundAndRedirect('beep2', '/account', 'buttons')}
-                    >
-                        Account
-                    </Button>
-                    <Button
                         --button-color="var(--bluey)"
                         onclick={() => playSoundAndRedirect('beep2', '/review', 'buttons')}
                     >
                         Review
                     </Button>
-                    <Button
-                        --button-color="var(--butterscotch)"
-                        onclick={() => playSoundAndRedirect('beep2', '/series', 'buttons')}
-                    >
-                        Series
-                    </Button>
+                    <MorePopover />
                     {#if data.user}
                         <LogoutButton />
                     {:else}
@@ -194,4 +184,9 @@
 <div class="baseboard"></div>
 
 <style>
+    :global(.wrap.top-wrap) {
+        position: relative;
+        z-index: 2;
+        overflow: visible;
+    }
 </style>

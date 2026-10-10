@@ -1,44 +1,23 @@
 <!-- SettingsPopover.svelte -->
 <script lang="ts">
+    import Popover from '$lib/components/Popover.svelte'
     import { settings } from '$lib/utils/settings.svelte'
 
     let { open = $bindable(false) } = $props()
-    let popoverElement: HTMLDivElement | null = $state(null)
-    let buttonElement: HTMLButtonElement | null = $state(null)
 
     function handleVolumeChange(e: Event) {
         const target = e.target as HTMLInputElement
         settings.setVolume(parseFloat(target.value))
     }
 
-    function handleClickOutside(e: MouseEvent) {
-        if (
-            open &&
-            popoverElement &&
-            buttonElement &&
-            !popoverElement.contains(e.target as Node) &&
-            !buttonElement.contains(e.target as Node)
-        ) {
-            open = false
-        }
-    }
-
-    $effect(() => {
-        if (open) {
-            document.addEventListener('click', handleClickOutside)
-            return () => document.removeEventListener('click', handleClickOutside)
-        }
-    })
-
     const volumePercentage = $derived(Math.round(settings.volume * 100))
 </script>
 
-<button bind:this={buttonElement} onclick={() => (open = !open)} class="panel-1-button"> Settings </button>
-
-{#if open}
-    <div bind:this={popoverElement} class="settings-popover">
-        <div class="settings-header">Settings</div>
-        <div class="settings-content">
+<Popover bind:open title="Settings" align="start" class="full-width" panelTop="60px" minWidth="300px">
+    {#snippet trigger(toggle)}
+        <button onclick={toggle} class="panel-1-button" aria-expanded={open} aria-haspopup="dialog">Settings</button>
+    {/snippet}
+    <div class="settings-content">
             <!-- Volume Slider -->
             <div class="setting-group">
                 <label for="volume-slider">
@@ -128,32 +107,10 @@
                 </label>
             </div>
 
-        </div>
     </div>
-{/if}
+</Popover>
 
 <style>
-    .settings-popover {
-        position: absolute;
-        top: 60px;
-        left: 20px;
-        background: #000;
-        border: 2px solid var(--african-violet, #9999ff);
-        border-radius: 20px;
-        padding: 20px;
-        min-width: 300px;
-        z-index: 1000;
-        box-shadow: 0 4px 20px rgba(153, 153, 255, 0.3);
-    }
-
-    .settings-header {
-        font-size: 1.5rem;
-        font-weight: bold;
-        color: var(--african-violet, #9999ff);
-        margin-bottom: 15px;
-        text-transform: uppercase;
-    }
-
     .settings-content {
         display: flex;
         flex-direction: column;

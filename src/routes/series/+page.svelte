@@ -29,8 +29,8 @@
                         <div class="text">
                             <p class="overview">{truncate(s.overview, 320)}</p>
                             <div class="scores">
-                                <span class="overall" title="Overall average"
-                                    >Overall <strong>{formatScore(s.scores.overall)}</strong></span
+                                <span class="overall" title="Average score"
+                                    >Average <strong>{formatScore(s.scores.overall)}</strong></span
                                 >
                                 <ReviewerScore who="emiliano" score={s.scores.emiliano} />
                                 <ReviewerScore who="jars" score={s.scores.jars} />

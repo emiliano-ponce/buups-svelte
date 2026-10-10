@@ -1,12 +1,11 @@
 <script lang="ts">
+    import { resolve } from '$app/paths'
     import ContentCard from '$lib/components/ContentCard.svelte'
     import ReviewList from '$lib/components/ReviewList.svelte'
-    import ReviewerScore from '$lib/components/ReviewerScore.svelte'
     import SeriesLink from '$lib/components/SeriesLink.svelte'
-    import { resolve } from '$app/paths'
     import { playSound } from '$lib/utils/audioHelpers'
-    import { tmdbImageSize } from '$lib/utils/tmdbImage'
     import { formatScore } from '$lib/utils/seriesStats'
+    import { tmdbImageSize } from '$lib/utils/tmdbImage'
     import type { PageProps } from './$types'
 
     let { data }: PageProps = $props()
@@ -22,7 +21,7 @@
               : 'Special'
 
     const stats = $derived([
-        { label: 'Overall', value: formatScore(totals.overall), color: 'var(--orange)' },
+        { label: 'Average', value: formatScore(totals.overall), color: 'var(--orange)' },
         { label: 'Emiliano', value: formatScore(totals.emiliano), color: 'var(--bluey)' },
         { label: 'Jars', value: formatScore(totals.jars), color: 'var(--african-violet)' },
         {
@@ -90,7 +89,7 @@
                             <th>Reviewed</th>
                             <th class="th-emiliano">Emiliano</th>
                             <th class="th-jars">Jars</th>
-                            <th>Overall</th>
+                            <th>Average</th>
                             <th>TMDB</th>
                         </tr>
                     </thead>
@@ -121,7 +120,7 @@
                             <th>Movie</th>
                             <th class="th-emiliano">Emiliano</th>
                             <th class="th-jars">Jars</th>
-                            <th>Overall</th>
+                            <th>Average</th>
                             <th>TMDB</th>
                         </tr>
                     </thead>
@@ -142,56 +141,90 @@
     {/if}
 
     {#if data.top.length}
-        <div class="two-col">
-            <ContentCard title="Top Rated" variant="left">
-                <ol class="rank">
-                    {#each data.top as item (item.media.id)}
-                        <li>
-                            <span class="muted">{label(item.media)}</span>
-                            {item.media.title}
-                            <span class="score">
-                                <ReviewerScore who="emiliano" score={item.scores.emiliano} />
-                                <ReviewerScore who="jars" score={item.scores.jars} />
-                                <strong title="Overall">{formatScore(item.scores.overall)}</strong>
-                            </span>
-                        </li>
-                    {/each}
-                </ol>
-            </ContentCard>
-            <ContentCard title="Bottom Rated" variant="left">
-                <ol class="rank">
-                    {#each data.bottom as item (item.media.id)}
-                        <li>
-                            <span class="muted">{label(item.media)}</span>
-                            {item.media.title}
-                            <span class="score">
-                                <ReviewerScore who="emiliano" score={item.scores.emiliano} />
-                                <ReviewerScore who="jars" score={item.scores.jars} />
-                                <strong title="Overall">{formatScore(item.scores.overall)}</strong>
-                            </span>
-                        </li>
-                    {/each}
-                </ol>
-            </ContentCard>
-        </div>
+        <ContentCard title="Top Rated" variant="left">
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Rank</th>
+                            <th>Episode</th>
+                            <th class="th-emiliano">Emiliano</th>
+                            <th class="th-jars">Jars</th>
+                            <th>Average</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {#each data.top as item, i (item.media.id)}
+                            <tr>
+                                <td>{i + 1}</td>
+                                <td><span class="muted">{label(item.media)}</span> {item.media.title}</td>
+                                <td>{formatScore(item.scores.emiliano)}</td>
+                                <td>{formatScore(item.scores.jars)}</td>
+                                <td class="strong">{formatScore(item.scores.overall)}</td>
+                            </tr>
+                        {/each}
+                    </tbody>
+                </table>
+            </div>
+        </ContentCard>
+    {/if}
+
+    {#if data.bottom.length}
+        <ContentCard title="Bottom Rated" variant="left">
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Rank</th>
+                            <th>Episode</th>
+                            <th class="th-emiliano">Emiliano</th>
+                            <th class="th-jars">Jars</th>
+                            <th>Average</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {#each data.bottom as item, i (item.media.id)}
+                            <tr>
+                                <td>{i + 1}</td>
+                                <td><span class="muted">{label(item.media)}</span> {item.media.title}</td>
+                                <td>{formatScore(item.scores.emiliano)}</td>
+                                <td>{formatScore(item.scores.jars)}</td>
+                                <td class="strong">{formatScore(item.scores.overall)}</td>
+                            </tr>
+                        {/each}
+                    </tbody>
+                </table>
+            </div>
+        </ContentCard>
     {/if}
 
     {#if data.disagreements.length}
         <ContentCard title="Disagreements" variant="left">
             <p class="muted note">Biggest gaps between Emiliano and Jars.</p>
-            <ol class="rank">
-                {#each data.disagreements as item (item.media.id)}
-                    <li>
-                        <span class="muted">{label(item.media)}</span>
-                        {item.media.title}
-                        <span class="score">
-                            <ReviewerScore who="emiliano" score={item.scores.emiliano} />
-                            <ReviewerScore who="jars" score={item.scores.jars} />
-                            <strong title="Difference">Δ{formatScore(item.diff)}</strong>
-                        </span>
-                    </li>
-                {/each}
-            </ol>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Rank</th>
+                            <th>Episode</th>
+                            <th class="th-emiliano">Emiliano</th>
+                            <th class="th-jars">Jars</th>
+                            <th>Delta</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {#each data.disagreements as item, i (item.media.id)}
+                            <tr>
+                                <td>{i + 1}</td>
+                                <td><span class="muted">{label(item.media)}</span> {item.media.title}</td>
+                                <td>{formatScore(item.scores.emiliano)}</td>
+                                <td>{formatScore(item.scores.jars)}</td>
+                                <td class="strong">{formatScore(item.diff)}</td>
+                            </tr>
+                        {/each}
+                    </tbody>
+                </table>
+            </div>
         </ContentCard>
     {/if}
 
@@ -293,30 +326,6 @@
     .center {
         text-align: center;
     }
-    .two-col {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 1rem;
-    }
-    .rank {
-        list-style: none;
-        padding: 0;
-        margin: 0;
-        color: var(--banner-color);
-    }
-    .rank li {
-        display: flex;
-        gap: 0.5rem;
-        padding: 0.2rem 0;
-    }
-    .rank .score {
-        margin-left: auto;
-        display: inline-flex;
-        gap: 0.5rem;
-        align-items: center;
-        color: var(--butterscotch);
-        white-space: nowrap;
-    }
     .quick-nav {
         display: flex;
         flex-wrap: wrap;
@@ -367,12 +376,8 @@
         .poster {
             width: 120px;
         }
-        .stat-grid,
-        .two-col {
+        .stat-grid {
             grid-template-columns: 1fr 1fr;
-        }
-        .two-col {
-            grid-template-columns: 1fr;
         }
         .stat-value {
             font-size: 1.6rem;
