@@ -3,6 +3,7 @@
     "version": "0.0.1",
     "scripts": {
         "dev": "vite dev",
+        "dev:prod": "cross-env NODE_ENV=production vite dev --mode prod",
         "build": "cross-env NODE_OPTIONS='--max-old-space-size=4096' vite build",
         "start": "cross-env HOST=localhost ORIGIN=http://localhost:3000 node --env-file=.env build",
         "start:prod": "cross-env HOST=localhost NODE_ENV=production ORIGIN=http://localhost:3000 node --env-file=.env.prod build",
