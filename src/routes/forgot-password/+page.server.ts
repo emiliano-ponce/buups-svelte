@@ -8,13 +8,21 @@ import { eq } from 'drizzle-orm'
 import { Resend } from 'resend'
 import type { Actions } from './$types'
 
-const resend = new Resend(env.EMAIL_API_KEY)
+// Created lazily so builds (and pages that never send email) don't require EMAIL_API_KEY.
+let resend: Resend | null = null
+function getResend() {
+    if (!resend) {
+        if (!env.EMAIL_API_KEY) throw new Error('EMAIL_API_KEY is not set')
+        resend = new Resend(env.EMAIL_API_KEY)
+    }
+    return resend
+}
 
 async function sendPasswordResetEmail(email: string, token: string, username: string) {
     const resetLink = `${publicEnv.PUBLIC_SITE_URL}/reset-password?token=${token}`
 
     try {
-        const { data, error } = await resend.emails.send({
+        const { data, error } = await getResend().emails.send({
             from: 'noreply@beamusup.today',
             to: email,
             subject: 'Password Reset Request',
