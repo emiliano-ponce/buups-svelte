@@ -1,4 +1,4 @@
-import { GOOGLE_SHEETS_CREDENTIALS, SPREADSHEET_ID } from '$env/static/private'
+import { env } from '$env/dynamic/private'
 import { eq } from 'drizzle-orm'
 import { google, type sheets_v4 } from 'googleapis'
 import { review, type Media, type Review, type Season, type Series, type User } from './db/schema'
@@ -37,7 +37,7 @@ let sheetsClient: sheets_v4.Sheets | null = null
 function getSheets(): sheets_v4.Sheets {
     if (!sheetsClient) {
         const auth = new google.auth.GoogleAuth({
-            credentials: JSON.parse(GOOGLE_SHEETS_CREDENTIALS),
+            credentials: JSON.parse(env.GOOGLE_SHEETS_CREDENTIALS ?? ''),
             scopes: ['https://www.googleapis.com/auth/spreadsheets'],
         })
 
@@ -58,7 +58,7 @@ async function findEpisodeRow(
     const sheets = getSheets()
 
     const response = await sheets.spreadsheets.values.get({
-        spreadsheetId: SPREADSHEET_ID,
+        spreadsheetId: env.SPREADSHEET_ID,
         range: `${sheetName}!A:B`, // Season and Episode columns
     })
 
@@ -119,7 +119,7 @@ export async function syncReviewToSheet(review: ReviewWithRelations): Promise<vo
         const notesCell = `${sheetName}!${colToLetter(userCols.notes)}${rowNum}`
 
         await sheets.spreadsheets.values.batchUpdate({
-            spreadsheetId: SPREADSHEET_ID,
+            spreadsheetId: env.SPREADSHEET_ID,
             requestBody: {
                 valueInputOption: 'RAW',
                 data: [
@@ -158,7 +158,7 @@ export async function clearReviewFromSheet(review: ReviewWithRelations): Promise
         const notesCell = `${sheetName}!${colToLetter(userCols.notes)}${rowNum}`
 
         await sheets.spreadsheets.values.batchUpdate({
-            spreadsheetId: SPREADSHEET_ID,
+            spreadsheetId: env.SPREADSHEET_ID,
             requestBody: {
                 valueInputOption: 'RAW',
                 data: [
@@ -209,7 +209,7 @@ export async function batchSyncReviewsToSheet(reviews: ReviewWithRelations[]): P
     if (updateData.length === 0) return
 
     await sheets.spreadsheets.values.batchUpdate({
-        spreadsheetId: SPREADSHEET_ID,
+        spreadsheetId: env.SPREADSHEET_ID,
         requestBody: {
             valueInputOption: 'RAW',
             data: updateData,
@@ -239,7 +239,7 @@ export async function syncSheetToDB(
     for (const sheetName of sheetsToSync) {
         try {
             const response = await sheets.spreadsheets.values.get({
-                spreadsheetId: SPREADSHEET_ID,
+                spreadsheetId: env.SPREADSHEET_ID,
                 range: `${sheetName}!A:I`, // All columns we care about
             })
 
