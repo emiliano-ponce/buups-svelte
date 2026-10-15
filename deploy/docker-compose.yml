@@ -1,0 +1,19 @@
+services:
+    buups-svelte:
+        build:
+            context: ..
+            dockerfile: Dockerfile
+        container_name: buups-svelte
+        restart: unless-stopped
+        env_file:
+            - .env
+        environment:
+            PORT: '3000'
+        networks:
+            - edge
+        # No ports published to the host — Caddy reaches this container directly
+        # over the shared "edge" network by its name (buups-svelte:3000).
+
+networks:
+    edge:
+        external: true
