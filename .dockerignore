@@ -1,0 +1,17 @@
+.git
+.github
+node_modules
+build
+.svelte-kit
+.env
+.env.*
+!.env.example
+deploy/.env
+*.db
+*.db-*
+test-results
+playwright-report
+e2e/results
+storybook-static
+.vscode
+.DS_Store
