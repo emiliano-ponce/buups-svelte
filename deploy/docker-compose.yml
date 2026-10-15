@@ -1,3 +1,4 @@
+name: buups-svelte
 services:
     buups-svelte:
         build:
@@ -6,7 +7,7 @@ services:
         container_name: buups-svelte
         restart: unless-stopped
         env_file:
-            - .env
+            - ${APP_ENV_FILE:-.env}
         environment:
             PORT: '3000'
         networks:
